@@ -32,7 +32,7 @@
 									<div class="inputs-wrap">
 										<input class="form-input" type="text" name="project_name" value="<?php echo esc_html($project_name); ?>">
 										<?php if ($project_id): ?>
-											<a href="https://google.com" target="_blank" class="button button-primary">Settings</a>
+											<a href="https://google.com" target="_blank" class="button button-primary"><span class="dashicons dashicons-external"></span> Settings</a>
 										<?php else: ?>
 											<input type="submit" name="send_project_name" class="button button-primary" value="Create">
 										<?php endif ?>
