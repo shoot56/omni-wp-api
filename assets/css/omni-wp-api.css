@@ -1,3 +1,99 @@
 /*.tab-content {
 	display: none;
 }*/
+.omni-config__container {
+	max-width: 640px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.omni-config .tabs-list {
+	padding-top: 24px;
+}
+.omni-config .tab-item {
+	display: none;
+}
+.omni-config .tab-control {
+	padding:10px 10px 0;
+	margin:0;
+	list-style:none;
+	display: flex;
+	gap: 10px;
+	border-bottom: 1px solid #c3c4c7;
+}
+.omni-config .tab-control li {
+	margin: 0;
+}
+.omni-config .tab-control .tab-opener {
+	text-decoration: none;
+	color: inherit;
+	border: 1px solid #c3c4c7;
+	border-bottom-width: 0;
+	padding: 5px 10px;
+	font-weight: 600;
+	background-color: #dcdcde;
+	color: #50575e;
+	font-size: 14px;
+	display: block;
+}
+.omni-config .tab-control .tab-opener:hover,
+.omni-config .tab-control .tab-opener.active,
+.omni-config .tab-control .tab-opener:focus {
+	background-color: #fff;
+	color: #3c434a;
+}
+.omni-config .tab-item.active {
+	display: block;
+}
+
+.omni-config .form-row {
+	display:-ms-grid;
+	display:grid;
+	-ms-grid-columns:100px 1fr;
+	grid-template-columns:100px 1fr;
+	grid-gap: 24px;
+	margin-bottom: 36px;
+}
+.omni-config .form-label {
+	font-weight: 600;
+	line-height: 30px;
+
+}
+.omni-config .form-input {
+	width: 100%;
+}
+.omni-config .api-status {
+	display:-ms-grid;
+	display:grid;
+	-ms-grid-columns:1fr 24px;
+	grid-template-columns:1fr 24px;
+	grid-gap: 10px;
+	align-items: center;
+}
+.omni-config .api-verify {
+	display:-ms-grid;
+	display:grid;
+	-ms-grid-columns:1fr 24px 100px;
+	grid-template-columns:1fr 24px 100px;
+	grid-gap: 10px;
+	align-items: center;
+}
+.omni-config .inputs-wrap {
+	display:-ms-grid;
+	display:grid;
+	-ms-grid-columns:1fr 100px;
+	grid-template-columns:1fr 100px;
+	grid-gap: 10px;
+	align-items: center;
+}
+.omni-config .status .dashicons-yes-alt {
+	color: green;
+}
+.omni-config .status .dashicons-dismiss {
+	color: red;
+}
+.omni-config .button {
+	text-align: center;
+}
+.omni-config .form-info {
+	margin-top: 7px;
+}

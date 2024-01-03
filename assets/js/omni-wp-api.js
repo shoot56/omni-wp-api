@@ -1,38 +1,26 @@
-// function handleTabClick(event) {
-// 	event.preventDefault();
-// 	const targetTabId = event.target.getAttribute("href").substring(1);
+(function($) {
+    // Получите индекс активного таба из localStorage, если он был сохранен
+    var activeTabIndex = localStorage.getItem('activeTabIndex');
 
-// 	const tabs = document.querySelectorAll(".tab-content");
-// 	tabs.forEach((tab) => {
-// 		tab.style.display = "none";
-// 	});
+    // По умолчанию активируйте первый таб, если индекс не был сохранен
+    if (activeTabIndex === null) {
+        activeTabIndex = 0;
+    }
 
-// 	const tabLinks = document.querySelectorAll(".nav-tab");
-// 	tabLinks.forEach((tabLink) => {
-// 		tabLink.classList.remove("nav-tab-active"); 
-// 	});
+    // Установите активный таб
+    $('.tab-opener').eq(activeTabIndex).addClass('active');
+    $('.tab-item').eq(activeTabIndex).addClass('active');
 
-// 	document.getElementById(targetTabId).style.display = "block";
-// 	event.target.classList.add("nav-tab-active"); 
+    // Обработчик клика
+    $('.tab-opener').click(function(event) {
+        event.preventDefault();
+        if (!$(this).hasClass('active')) {
+            var aim = $(this).parents('.tab-control').find('.tab-opener').removeClass('active').index(this);
+            $(this).addClass('active');
+            $(this).parents('.tabset').find('.tab-item').removeClass('active').eq(aim).addClass('active');
 
-// 	localStorage.setItem("activeTab", targetTabId);
-// }
-
-// const tabs = document.querySelectorAll(".nav-tab");
-// tabs.forEach((tab) => {
-// 	tab.addEventListener("click", handleTabClick);
-// });
-
-// const activeTab = localStorage.getItem("activeTab");
-// if (activeTab) {
-// 	const tabLink = document.querySelector(`.nav-tab[href="#${activeTab}"]`);
-// 	if (tabLink) {
-// 		tabLink.click();
-// 	}
-// } else {
-// 	const firstTab = document.querySelector(".nav-tab");
-// 	if (firstTab) {
-// 		firstTab.click();
-// 	}
-// }
-
+            // Сохраните индекс активного таба в localStorage
+            localStorage.setItem('activeTabIndex', aim);
+        }
+    });
+})(jQuery);
