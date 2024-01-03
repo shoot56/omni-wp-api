@@ -4,6 +4,8 @@
  * Description: Customizable REST API endpoints with API Key authentication.
  * Version: 1.0
  * Author: Procoders
+ * GitHub Plugin URI: shoot56/omni-wp-api
+ * Primary Branch: main
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
