@@ -202,6 +202,10 @@
 	border-color: #2271b1;
 	background-color: #f6f7f7;
 }
+.omni-config .btn-omni[disabled] {
+	opacity: .5;
+	pointer-events: none;
+}
 .omni-config .btn-omni--block {
 	display: flex;
 	width: 100%;
