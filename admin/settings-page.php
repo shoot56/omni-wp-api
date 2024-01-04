@@ -280,7 +280,27 @@ $project_id = get_option('_omni_project_id');
 									</li>
 								<?php endforeach ?>
 							</ul>
-
+							<script>
+								var checkboxes = document.querySelectorAll('.content-type-head input[type="checkbox"]');
+								function handleCheckboxChange(event) {
+									var parentItem = event.target.closest('.content-types__item');
+									if (!parentItem) {
+										return; 
+									}
+									var attributesWrap = parentItem.querySelector('.attributes-wrap');
+									if (event.target.checked) {
+										attributesWrap.style.display = 'block'; 
+									} else {
+										attributesWrap.style.display = 'none'; 
+									}
+								}
+								checkboxes.forEach(function(checkbox) {
+									checkbox.addEventListener('change', handleCheckboxChange);
+								});
+								checkboxes.forEach(function(checkbox) {
+									handleCheckboxChange({ target: checkbox });
+								});
+							</script>
 
 							<?php
 
