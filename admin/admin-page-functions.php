@@ -25,6 +25,11 @@ function custom_post_type_settings_page() {
 		$selected_post_types = isset($_POST['post_types']) ? $_POST['post_types'] : array();
 		
 		update_option('_omni_selected_post_types', $selected_post_types);
+
+		if (isset($_POST['post_type_fields'])) {
+			$selected_fields = $_POST['post_type_fields'];
+			update_option('_omni_selected_fields_option', $selected_fields);
+		}
 	}
 
 
