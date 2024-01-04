@@ -103,3 +103,79 @@
 .omni-config .form-info {
 	margin-top: 7px;
 }
+.omni-config .form-columns {
+	display:-ms-grid;
+	display:grid;
+	-ms-grid-columns:repeat(2, 1fr);
+	grid-template-columns:repeat(2, 1fr);
+	grid-gap: 24px;
+}
+.omni-config .checkbox-list {
+	margin: 0;
+}
+.omni-config .form-block {
+	position: relative;
+	border: 1px solid #c3c4c7;
+	border-top-width: 0;
+	margin-top: 15px;
+	margin-block: 24px;
+}
+.omni-config .form-block p:first-child {
+	margin-top: 0;
+}
+.omni-config .form-block p:last-child {
+	margin-bottom: 0;
+}
+.omni-config .form-block__title {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	top: -15px;
+	overflow: hidden;
+	font-size: 14px;
+	line-height: 30px;
+	font-weight: 600;
+	padding: 0 24px;
+	box-sizing: border-box;
+}
+.omni-config .form-block__title span {
+	display: inline-block;
+	vertical-align: top;
+	position: relative;
+}
+.omni-config .form-block__title span:before {
+	content: '';
+	position: absolute;
+	top: 15px;
+	right: 100%;
+	margin-right: 10px;
+	border-top: 1px solid #c3c4c7;
+	width: 100vw;
+}
+.omni-config .form-block__title span:after {
+	content: '';
+	position: absolute;
+	top: 15px;
+	left: 100%;
+	margin-left: 10px;
+	border-top: 1px solid #c3c4c7;
+	width: 100vw;
+}
+.omni-config .form-block__frame {
+	padding: 24px 24px 24px;
+}
+.omni-config .form-block__wrap {
+	display:-ms-grid;
+	display:grid;
+	-ms-grid-columns:1fr 140px;
+	grid-template-columns:1fr 140px;
+	grid-gap: 24px;
+}
+.omni-config .cache-input {
+	display:-ms-grid;
+	display:grid;
+	-ms-grid-columns:2fr 1fr 1fr;
+	grid-template-columns:2fr 1fr 1fr;
+	grid-gap: 24px;
+	align-items: center;
+}

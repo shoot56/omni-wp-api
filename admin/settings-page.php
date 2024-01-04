@@ -41,6 +41,80 @@
 								</div>
 							</div>
 						</form>
+						<form method="post">
+							<div class="form-row">
+								<div class="form-row__label">
+									<div class="form-label">Options</div>
+								</div>
+								<div class="form-row__item">
+									<ul class="checkbox-list">
+										<li>
+											<label class="checkbox-holder">
+												<input name="ai_search_answer" type="checkbox" class="checkbox" />
+												<span class="checkbox-item">&nbsp;</span>
+												<span class="checkbox-label">AI answer</span>
+											</label>
+										</li>
+										<li>
+											<label class="checkbox-holder">
+												<input name="ai_search_content" type="checkbox" class="checkbox" />
+												<span class="checkbox-item">&nbsp;</span>
+												<span class="checkbox-label">Content</span>
+											</label>
+										</li>
+										<li>
+											<label class="checkbox-holder">
+												<input name="ai_search_autocomplete" type="checkbox" class="checkbox" />
+												<span class="checkbox-item">&nbsp;</span>
+												<span class="checkbox-label">Autocomplete</span>
+											</label>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="form-columns">
+								<div class="form-col">
+									<div class="form-row">
+										<div class="form-row__label">
+											<div class="form-label">Results limit</div>
+										</div>
+										<div class="form-row__item">
+											<input class="form-input" type="number" name="ai_search_results_limit" value="">
+										</div>
+									</div>
+								</div>
+								<div class="form-col">
+									<div class="form-row">
+										<div class="form-row__label">
+											<div class="form-label">Trust level</div>
+										</div>
+										<div class="form-row__item">
+											<input class="form-input" type="number" name="ai_search_trust_level" value="">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-block">
+								<div class="form-block__title"><span>Cache</span></div>
+								<div class="form-block__frame">
+									<div class="form-block__wrap">
+										<div class="form-block__content">
+											<p>Output results can be cached to prevent numerous requests to AI and save the costs. If you set it to 0 no cache is going to be applied</p>
+											<div class="cache-input">
+												<div class="form-label">Cache period</div>
+												<input class="form-input" type="number" name="ai_cache" value="">
+												<div class="cache-input__info">hours</div>
+											</div>
+										</div>
+										<div class="form-block__button">
+											<button class="button button-warning">Purge cache</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<button name="save_general" type="submit" class="button button-primary">Save</button>
+						</form>
 					<?php else: ?>
 						<form method="post">
 							<div class="form-row">
@@ -118,9 +192,46 @@
 					</form>
 				</div>
 				<div class="tab-item">
-					<h3>Sync Settings</h3>
-					<h3>Clear and Reinitialize</h3>
-					<h3>Purge and change API key</h3>
+					
+					<div class="form-block">
+						<div class="form-block__title"><span>Sync Settings</span></div>
+						<div class="form-block__frame">
+							<div class="form-block__wrap">
+								<div class="form-block__content">
+									<p>Output results can be cached to prevent numerous requests to AI and save the costs. If you set it to 0 no cache is going to be applied</p>
+								</div>
+								<div class="form-block__button">
+									<button class="button button-warning">Sync Now</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-block">
+						<div class="form-block__title"><span>Clear and Reinitialize</span></div>
+						<div class="form-block__frame">
+							<div class="form-block__wrap">
+								<div class="form-block__content">
+									<p>Output results can be cached to prevent numerous requests to AI and save the costs. If you set it to 0 no cache is going to be applied</p>
+								</div>
+								<div class="form-block__button">
+									<button class="button button-warning">Re-Index</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-block">
+						<div class="form-block__title"><span>Purge and change API key</span></div>
+						<div class="form-block__frame">
+							<div class="form-block__wrap">
+								<div class="form-block__content">
+									<p>Output results can be cached to prevent numerous requests to AI and save the costs. If you set it to 0 no cache is going to be applied</p>
+								</div>
+								<div class="form-block__button">
+									<button class="button button-warning">Delete</button>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="tab-item">
 					<p>Here you can see you users search requests</p>
