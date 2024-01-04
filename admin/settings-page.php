@@ -1,3 +1,10 @@
+<?php 
+$api_key_status = get_option('_omni_api_key_status');
+$omni_api_key = get_option('_omni_api_key');
+$project_name = get_option('_omni_project_name');
+$project_id = get_option('_omni_project_id');
+ ?>
+
 <div class="omni-config wrap">
 	<div class="omni-config__container">
 		<h2>Omnimind Configuration</h2>
@@ -42,6 +49,14 @@
 							</div>
 						</form>
 						<form method="post">
+							<?php 
+							$ai_search_answer = get_option('_omni_ai_search_answer');
+							$ai_search_content = get_option('_omni_ai_search_content');
+							$ai_search_autocomplete = get_option('_omni_ai_search_autocomplete');
+							$ai_search_results_limit = get_option('_omni_ai_search_results_limit');
+							$ai_search_trust_level = get_option('_omni_ai_search_trust_level');
+							$ai_cache = get_option('_omni_ai_cache');
+							 ?>
 							<div class="form-row">
 								<div class="form-row__label">
 									<div class="form-label">Options</div>
@@ -50,21 +65,21 @@
 									<ul class="checkbox-list">
 										<li>
 											<label class="checkbox-holder">
-												<input name="ai_search_answer" type="checkbox" class="checkbox" />
+												<input name="ai_search_answer" type="checkbox" class="checkbox" <?php checked(1, $ai_search_answer); ?> />
 												<span class="checkbox-item">&nbsp;</span>
 												<span class="checkbox-label">AI answer</span>
 											</label>
 										</li>
 										<li>
 											<label class="checkbox-holder">
-												<input name="ai_search_content" type="checkbox" class="checkbox" />
+												<input name="ai_search_content" type="checkbox" class="checkbox" <?php checked(1, $ai_search_content); ?> />
 												<span class="checkbox-item">&nbsp;</span>
 												<span class="checkbox-label">Content</span>
 											</label>
 										</li>
 										<li>
 											<label class="checkbox-holder">
-												<input name="ai_search_autocomplete" type="checkbox" class="checkbox" />
+												<input name="ai_search_autocomplete" type="checkbox" class="checkbox" <?php checked(1, $ai_search_autocomplete); ?> />
 												<span class="checkbox-item">&nbsp;</span>
 												<span class="checkbox-label">Autocomplete</span>
 											</label>
@@ -79,7 +94,7 @@
 											<div class="form-label">Results limit</div>
 										</div>
 										<div class="form-row__item">
-											<input class="form-input" type="number" name="ai_search_results_limit" value="">
+											<input class="form-input" type="number" name="ai_search_results_limit" value="<?php echo (esc_attr($ai_search_results_limit)) ? esc_attr($ai_search_results_limit)  : '5'; ?>">
 										</div>
 									</div>
 								</div>
@@ -89,7 +104,7 @@
 											<div class="form-label">Trust level</div>
 										</div>
 										<div class="form-row__item">
-											<input class="form-input" type="number" name="ai_search_trust_level" value="">
+											<input class="form-input" type="number" name="ai_search_trust_level" value="<?php echo (esc_attr($ai_search_trust_level) ? esc_attr($ai_search_trust_level) : '5'); ?>">
 										</div>
 									</div>
 								</div>
@@ -103,7 +118,7 @@
 											<p>Output results can be cached to prevent numerous requests to AI and save the costs. If you set it to 0 no cache is going to be applied</p>
 											<div class="cache-input">
 												<div class="form-label">Cache period</div>
-												<input class="form-input" type="number" name="ai_cache" value="">
+												<input class="form-input" type="number" name="ai_cache" value="<?php echo (esc_attr($ai_cache) ? esc_attr($ai_cache) : '24'); ?>">
 												<div class="cache-input__info">hours</div>
 											</div>
 										</div>
@@ -192,46 +207,51 @@
 					</form>
 				</div>
 				<div class="tab-item">
-					
-					<div class="form-block">
-						<div class="form-block__title"><span>Sync Settings</span></div>
-						<div class="form-block__frame">
-							<div class="form-block__wrap">
-								<div class="form-block__content">
-									<p>Output results can be cached to prevent numerous requests to AI and save the costs. If you set it to 0 no cache is going to be applied</p>
-								</div>
-								<div class="form-block__button">
-									<button class="button button-warning">Sync Now</button>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="form-block">
-						<div class="form-block__title"><span>Clear and Reinitialize</span></div>
-						<div class="form-block__frame">
-							<div class="form-block__wrap">
-								<div class="form-block__content">
-									<p>Output results can be cached to prevent numerous requests to AI and save the costs. If you set it to 0 no cache is going to be applied</p>
-								</div>
-								<div class="form-block__button">
-									<button class="button button-warning">Re-Index</button>
+					<form method="post">
+						<div class="form-block">
+							<div class="form-block__title"><span>Sync Settings</span></div>
+							<div class="form-block__frame">
+								<div class="form-block__wrap">
+									<div class="form-block__content">
+										<p>Output results can be cached to prevent numerous requests to AI and save the costs. If you set it to 0 no cache is going to be applied</p>
+									</div>
+									<div class="form-block__button">
+										<button name="send_post_types" type="submit" class="button button-warning">Sync Now</button>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="form-block">
-						<div class="form-block__title"><span>Purge and change API key</span></div>
-						<div class="form-block__frame">
-							<div class="form-block__wrap">
-								<div class="form-block__content">
-									<p>Output results can be cached to prevent numerous requests to AI and save the costs. If you set it to 0 no cache is going to be applied</p>
-								</div>
-								<div class="form-block__button">
-									<button class="button button-warning">Delete</button>
+					</form>
+					<form method="post">
+						<div class="form-block">
+							<div class="form-block__title"><span>Clear and Reinitialize</span></div>
+							<div class="form-block__frame">
+								<div class="form-block__wrap">
+									<div class="form-block__content">
+										<p>Output results can be cached to prevent numerous requests to AI and save the costs. If you set it to 0 no cache is going to be applied</p>
+									</div>
+									<div class="form-block__button">
+										<button name="reindex_project" type="submit" class="button button-warning">Re-Index</button>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+					</form>
+					<form method="post">
+						<div class="form-block">
+							<div class="form-block__title"><span>Purge and change API key</span></div>
+							<div class="form-block__frame">
+								<div class="form-block__wrap">
+									<div class="form-block__content">
+										<p>Output results can be cached to prevent numerous requests to AI and save the costs. If you set it to 0 no cache is going to be applied</p>
+									</div>
+									<div class="form-block__button">
+										<button name="delete_project" type="submit" class="button button-warning">Delete</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
 				</div>
 				<div class="tab-item">
 					<p>Here you can see you users search requests</p>
