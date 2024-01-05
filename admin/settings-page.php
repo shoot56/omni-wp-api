@@ -188,20 +188,23 @@ $project_id = get_option('_omni_project_id');
 												<th>Searchable</th>
 												<th>Label</th>
 											</tr>
+											<?php $counter = 0; ?>
 											<?php foreach ($additional_fields as $field): ?>
 												<tr>
 													<td><?php echo esc_html($field); ?></td>
 													<td>
+														<input class="form-input" type="hidden" name="post_type_fields[post][<?php echo $counter; ?>][name]" value="<?php echo esc_attr($field); ?>">
 														<?php 
-														if (isset($selected_fields['post']) && in_array($field, $selected_fields['post'])) {
-															echo '<input name="post_type_fields[post][]" value="' . esc_attr($field) . '" type="checkbox" class="checkbox" checked />';
+														if (isset($selected_fields['post'][$counter]['status']) && $selected_fields['post'][$counter]['status'] == 1) {
+															echo '<input name="post_type_fields[post]['.$counter.'][status]" value="1" type="checkbox" class="checkbox" checked />';
 														} else {
-															echo '<input name="post_type_fields[post][]" value="' . esc_attr($field) . '" type="checkbox" class="checkbox" />';
+															echo '<input name="post_type_fields[post]['.$counter.'][status]" value="1" type="checkbox" class="checkbox" />';
 														}
 														?>
 													</td>
-													<td>??</td>
+													<td><input class="form-input" type="text" name="post_type_fields[post][<?php echo $counter; ?>][label]" value="<?php echo isset($selected_fields['post'][$counter]['label']) ? esc_attr($selected_fields['post'][$counter]['label']) : ''; ?>"></td>
 												</tr>
+												<?php $counter++; ?>
 											<?php endforeach ?>
 										</table>
 									</div>
@@ -221,20 +224,23 @@ $project_id = get_option('_omni_project_id');
 												<th>Searchable</th>
 												<th>Label</th>
 											</tr>
+											<?php $counter = 0; ?>
 											<?php foreach ($additional_fields as $field): ?>
 												<tr>
 													<td><?php echo esc_html($field); ?></td>
 													<td>
+														<input class="form-input" type="hidden" name="post_type_fields[page][<?php echo $counter; ?>][name]" value="<?php echo esc_attr($field); ?>">
 														<?php 
-														if (isset($selected_fields['page']) && in_array($field, $selected_fields['page'])) {
-															echo '<input name="post_type_fields[page][]" value="' . esc_attr($field) . '" type="checkbox" class="checkbox" checked />';
+														if (isset($selected_fields['page'][$counter]['status']) && $selected_fields['page'][$counter]['status'] == 1) {
+															echo '<input name="post_type_fields[page]['.$counter.'][status]" value="1" type="checkbox" class="checkbox" checked />';
 														} else {
-															echo '<input name="post_type_fields[page][]" value="' . esc_attr($field) . '" type="checkbox" class="checkbox" />';
+															echo '<input name="post_type_fields[page]['.$counter.'][status]" value="1" type="checkbox" class="checkbox" />';
 														}
 														?>
 													</td>
-													<td>??</td>
+													<td><input class="form-input" type="text" name="post_type_fields[page][<?php echo $counter; ?>][label]" value="<?php echo isset($selected_fields['page'][$counter]['label']) ? esc_attr($selected_fields['page'][$counter]['label']) : ''; ?>"></td>
 												</tr>
+												<?php $counter++; ?>
 											<?php endforeach ?>
 										</table>
 									</div>
@@ -258,23 +264,27 @@ $project_id = get_option('_omni_project_id');
 													<th>Searchable</th>
 													<th>Label</th>
 												</tr>
+												<?php $counter = 0; ?>
 												<?php foreach ($additional_fields as $field): ?>
 													<tr>
 														<td><?php echo esc_html($field); ?></td>
 														<td>
+															<input class="form-input" type="hidden" name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][<?php echo $counter; ?>][name]" value="<?php echo esc_attr($field); ?>">
 															<?php 
-															if (isset($selected_fields[$post_type->name]) && in_array($field, $selected_fields[$post_type->name])) {
-																echo '<input name="post_type_fields[' . esc_attr($post_type->name) . '][]" value="' . esc_attr($field) . '" type="checkbox" class="checkbox" checked />';
+															if (isset($selected_fields[$post_type->name][$counter]['status']) && $selected_fields[$post_type->name][$counter]['status'] == 1) {
+																echo '<input name="post_type_fields['.esc_attr($post_type->name).']['.$counter.'][status]" value="1" type="checkbox" class="checkbox" checked />';
 															} else {
-																echo '<input name="post_type_fields[' . esc_attr($post_type->name) . '][]" value="' . esc_attr($field) . '" type="checkbox" class="checkbox" />';
+																echo '<input name="post_type_fields['.esc_attr($post_type->name).']['.$counter.'][status]" value="1" type="checkbox" class="checkbox" />';
 															}
 															?>
 														</td>
-														<td>??</td>
+														<td><input class="form-input" type="text" name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][<?php echo $counter; ?>][label]" value="<?php echo isset($selected_fields[$post_type->name][$counter]['label']) ? esc_attr($selected_fields[$post_type->name][$counter]['label']) : ''; ?>"></td>
 													</tr>
+													<?php $counter++; ?>
 												<?php endforeach ?>
 											</table>
 										</div>
+										
 
 
 									</li>
@@ -311,6 +321,11 @@ $project_id = get_option('_omni_project_id');
 					</form>
 				</div>
 				<div class="tab-item">
+					<?php 
+					$selected_fields = get_option('_omni_selected_fields_option');
+					$selected_post_types = get_option('_omni_selected_post_types');
+					 ?>
+					
 					<form method="post">
 						<div class="form-block">
 							<div class="form-block__title"><span>Sync Settings</span></div>

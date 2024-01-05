@@ -167,6 +167,7 @@ function delete_project() {
 function send_data($post_types) {
 	$omni_api_key = get_option('_omni_api_key');
 	$project_id = get_option('_omni_project_id');
+	$fields_array = get_option('_omni_selected_fields_option');
 	$all_post_data = '';
 
 	foreach ($post_types as $post_type) {
@@ -177,6 +178,7 @@ function send_data($post_types) {
 		);
 		$posts = get_posts($args);
 
+
 		$post_type_data = array();
 
 		foreach ($posts as $post) {
@@ -185,28 +187,48 @@ function send_data($post_types) {
 			$post_content = $post->post_content;
 			$post_url = get_permalink($post->ID);
 			$post_author = get_the_author_meta('display_name', $post->post_author);
-			$all_post_data .= <<<EOD
+			// start
+			if (isset($fields_array[$post_type])) {
+				foreach ($fields_array[$post_type] as $field) {
+					if (isset($field['status']) && $field['status'] == 1) {
+						if ($field['label']) {
+							$label = $field['label'];
+						} else {
+							$label = $field['name'];
+						}
+						switch ($field['name']) {
+							case 'ID':
+								$content = $post_id;
+								break;
+							case 'Title':
+								$content = $post_title;
+								break;
+							case 'Content':
+								$content = $post_content;
+								break;
+							case 'Author':
+								$content = $post_author;
+								break;
+							default:
+								break;
+						}
+						$all_post_data .= <<<EOD
 
-			id: {$post_id}
+						{$label}: {$content}
 
-			EOD;
-			$all_post_data .= <<<EOD
-			title: {$post_title}
+						EOD;
+					}
+				}
 
-			EOD;
-			$all_post_data .= <<<EOD
-			content: {$post_content}
 
-			EOD;
+				
+			}
+			// end
+			
 			$all_post_data .= <<<EOD
 			url: {$post_url}
 
 			EOD;
-			$all_post_data .= <<<EOD
-			author: {$post_author}
-
-			EOD;
-
 		}
 	}
 
@@ -243,3 +265,4 @@ function send_data($post_types) {
 		}
 	}
 }
+
