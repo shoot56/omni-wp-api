@@ -21,16 +21,41 @@ function custom_post_type_settings_page() {
 	$project_name = get_option('_omni_project_name');
 	$project_id = get_option('_omni_project_id');
 
+	
 	if (isset($_POST['save_post_types'])) {
 		$selected_post_types = isset($_POST['post_types']) ? $_POST['post_types'] : array();
-		
+
 		update_option('_omni_selected_post_types', $selected_post_types);
 
 		if (isset($_POST['post_type_fields'])) {
 			$selected_fields = $_POST['post_type_fields'];
-			update_option('_omni_selected_fields_option', $selected_fields);
+
+			$filtered_selected_fields = array();
+			foreach ($selected_fields as $post_type => $fields) {
+				if (in_array($post_type, $selected_post_types)) {
+					$title_columns = isset($fields['advanced-title-columns']) ? $fields['advanced-title-columns'] : array();
+					$metadata_columns = isset($fields['advanced-metadata-columns']) ? $fields['advanced-metadata-columns'] : array();
+					$filtered_fields = array();
+					foreach ($fields as $field) {
+						if (!empty($field['status'])) {
+							$filtered_fields[$field['name']] = $field;
+						}
+					}
+					$filtered_selected_fields[$post_type] = $filtered_fields;
+					if (!empty($title_columns)) {
+						$filtered_selected_fields[$post_type]['advanced-title-columns'] = $title_columns;
+					}
+					if (!empty($metadata_columns)) {
+						$filtered_selected_fields[$post_type]['advanced-metadata-columns'] = $metadata_columns;
+					}
+				}
+			}
+
+			update_option('_omni_selected_fields_option', $filtered_selected_fields);
 		}
 	}
+
+
 
 
 	if (isset($_POST['send_post_types'])) {

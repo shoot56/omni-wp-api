@@ -283,3 +283,23 @@
 .omni-config .attributes-table tr:nth-child(2n) td {
 	background-color: rgba(0,0,0,.05);
 }
+
+.advanced-settings {
+	margin-top: 20px;
+	border-top: 1px solid #ccc;
+	padding-top: 20px;
+}
+.advanced-settings__content {
+	display: none;
+}
+.advanced-settings.active .advanced-settings__opener {
+/*	background-color: #fff;*/
+}
+.advanced-settings .select2-container {
+	width: 100%;
+	display: block;
+	box-sizing: border-box;
+}
+.advanced-settings .select2-search.select2-search--inline {
+	display: none;
+}

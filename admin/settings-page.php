@@ -170,19 +170,17 @@ $project_id = get_option('_omni_project_id');
 						$post_types = get_post_types($args, $output, $operator);
 						unset( $post_types[ 'attachment' ] );
 						$selected_fields = get_option('_omni_selected_fields_option');
-						// $additional_fields = array('ID', 'Title', 'Content', 'Author');
-						$additional_fields = array(
-							'ID' => array(),
-							'Title' => array(),
-							'Content' => array(),
-							'Author' => array(),
-						);
-
 
 						if ($post_types) {
 							?>
+							<?php echo '<pre>',print_r($selected_fields,1),'</pre>'; ?>
 							<ul class="content-types">
 								<?php foreach ($post_types as $post_type): ?>
+									<?php $additional_fields = array(
+										'Title' => array(),
+										'Content' => array(),
+										'Author' => array(),
+									); ?>
 									<li class="content-types__item">
 										<?php 
 										$post_count = wp_count_posts($post_type->name);
@@ -200,42 +198,133 @@ $project_id = get_option('_omni_project_id');
 													<th>Attribute</th>
 													<th>Searchable</th>
 													<th>Label</th>
+													<th>example value</th>
 												</tr>
 												<?php $counter = 0; ?>
 												<?php
 												$post_ids = get_posts(
 													[
-														'numberposts' => 1,
+														'numberposts' => -1,
 														'post_type'   => $post_type->name,
 													]
 												);
+												$custom_fields = [];
 
-												if ( isset( $post_ids[0] ) ) {
-													$post_id = $post_ids[0]->ID;
+												foreach ($post_ids as $post) {
+													$post_id = $post->ID;
+													$post_custom_fields = get_post_custom($post_id);
+
+													foreach ($post_custom_fields as $key => $values) {
+														if (!isset($custom_fields[$key])) {
+															$custom_fields[$key] = $values;
+														} else {
+															$custom_fields[$key] = array_merge($custom_fields[$key], $values);
+														}
+													}
 												}
-												$custom_fields = get_post_custom($post_id); 
+
+												// if ( isset( $post_ids[0] ) ) {
+												// 	$post_id = $post_ids[0]->ID;
+												// }
+												// $custom_fields_acf = get_field_objects($post_id); 
+												// $custom_fields = get_post_custom($post_id); 
+												// $custom_fields_meta = get_post_meta($post_id); 
 												$additional_fields = array_merge($additional_fields, $custom_fields);
 												?>
+												<?php /*
+												<tr>
+													<td colspan="4">
+														<?php 
+														$filteredKeys = array_filter($custom_fields, function ($key) use ($custom_fields_acf) {
+															if (is_array($custom_fields_acf)) {
+																return !array_key_exists($key, $custom_fields_acf);
+															} else {
+																return false;
+															}
+														}, ARRAY_FILTER_USE_KEY);
+														 ?>
+														 <?php echo '<pre>',print_r($filteredKeys,1),'</pre>'; ?>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="2">
+														<?php 
+															echo '<pre>',print_r($custom_fields_acf,1),'</pre>'; 
+															?>
+													</td>
+													<td>
+														
+													</td>
+													<td colspan="1">
+														<?php 
+															echo '<pre>',print_r($custom_fields,1),'</pre>'; 
+															?>
+													</td>
+												</tr>
+												*/ ?>
 												<?php foreach ($additional_fields as  $key => $values): ?>
-													<?php if (substr($key, 0, 1) != "_"): ?>
-														<tr>
-															<td><?php echo esc_html($key); ?></td>
-															<td>
-																<input class="form-input" type="hidden" name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][<?php echo $counter; ?>][name]" value="<?php echo esc_attr($key); ?>">
-																<?php 
-																if (isset($selected_fields[$post_type->name][$counter]['status']) && $selected_fields[$post_type->name][$counter]['status'] == 1) {
-																	echo '<input name="post_type_fields['.esc_attr($post_type->name).']['.$counter.'][status]" value="1" type="checkbox" class="checkbox" checked />';
-																} else {
-																	echo '<input name="post_type_fields['.esc_attr($post_type->name).']['.$counter.'][status]" value="1" type="checkbox" class="checkbox" />';
-																}
-																?>
-															</td>
-															<td><input class="form-input" type="text" name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][<?php echo $counter; ?>][label]" value="<?php echo isset($selected_fields[$post_type->name][$counter]['label']) ? esc_attr($selected_fields[$post_type->name][$counter]['label']) : ''; ?>"></td>
-														</tr>
-													<?php endif ?>
+													<tr>
+														<td><?php echo esc_html($key); ?></td>
+														<td>
+															
+															<input class="form-input" type="hidden" name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][<?php echo $key; ?>][name]" value="<?php echo esc_attr($key); ?>">
+															
+															<?php 
+															if (isset($selected_fields[$post_type->name][$key]['status']) && $selected_fields[$post_type->name][$key]['status'] == 1) {
+																echo '<input name="post_type_fields['.esc_attr($post_type->name).']['.$key.'][status]" value="1" type="checkbox" class="checkbox" checked />';
+															} else {
+																echo '<input name="post_type_fields['.esc_attr($post_type->name).']['.$key.'][status]" value="1" type="checkbox" class="checkbox" />';
+															}
+															?>
+
+														</td>
+														<td><input class="form-input" type="text" name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][<?php echo $key; ?>][label]" value="<?php echo isset($selected_fields[$post_type->name][$key]['label']) ? esc_attr($selected_fields[$post_type->name][$key]['label']) : ''; ?>"></td>
+														<td>
+															<?php 
+															// echo get_post_meta( $post_id, $key, true ) 
+															?>
+														</td>
+													</tr>
+													
 													<?php $counter++; ?>
 												<?php endforeach ?>
 											</table>
+											<div class="advanced-settings">
+												<button class="advanced-settings__opener btn-omni btn-omni--primary">Advanced Settings</button>
+												<div class="advanced-settings__content">
+													<div class="advanced-settings__row">
+														<div class="advanced-settings__label">Select Title Columns</div>
+														<div class="advanced-settings__input">
+															<select class="js-example-basic-multiple" name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][advanced-title-columns][]" multiple="multiple">
+																<?php 
+																$saved_title_columns = isset($selected_fields[$post_type->name]['advanced-title-columns']) ? $selected_fields[$post_type->name]['advanced-title-columns'] : array();
+																foreach ($additional_fields as $key => $values): 
+																	$selected = in_array($key, $saved_title_columns) ? 'selected' : '';
+																	?>
+																	<option value="<?php echo esc_html($key); ?>" <?php echo $selected; ?>><?php echo esc_html($key); ?></option>
+																<?php endforeach ?>
+															</select>
+														</div>
+													</div>
+													<div class="advanced-settings__row">
+														<div class="advanced-settings__label">Select Metadata Columns</div>
+														<div class="advanced-settings__input">
+															<select class="js-example-basic-multiple" name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][advanced-metadata-columns][]" multiple="multiple">
+																<?php 
+																$saved_title_columns = isset($selected_fields[$post_type->name]['advanced-metadata-columns']) ? $selected_fields[$post_type->name]['advanced-metadata-columns'] : array();
+																foreach ($additional_fields as $key => $values): 
+																	$selected = in_array($key, $saved_title_columns) ? 'selected' : '';
+																	?>
+																	<option value="<?php echo esc_html($key); ?>" <?php echo $selected; ?>><?php echo esc_html($key); ?></option>
+																<?php endforeach ?>
+															</select>
+														</div>
+													</div>
+												</div>
+											</div>
+
+
+
 										</div>
 										
 

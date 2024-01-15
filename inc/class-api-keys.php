@@ -188,6 +188,10 @@ function send_data($post_types) {
 			$post_url = get_permalink($post->ID);
 			$post_author = get_the_author_meta('display_name', $post->post_author);
 			// start
+			$all_post_data .= <<<EOD
+			ID: {$post_id}
+
+			EOD;
 			if (isset($fields_array[$post_type])) {
 				foreach ($fields_array[$post_type] as $field) {
 					if (isset($field['status']) && $field['status'] == 1) {
@@ -196,10 +200,8 @@ function send_data($post_types) {
 						} else {
 							$label = $field['name'];
 						}
+						$content = get_post_meta( $post_id, $field['name'], true );
 						switch ($field['name']) {
-							case 'ID':
-								$content = $post_id;
-								break;
 							case 'Title':
 								$content = $post_title;
 								break;
@@ -219,8 +221,6 @@ function send_data($post_types) {
 						EOD;
 					}
 				}
-
-
 				
 			}
 			// end
@@ -251,6 +251,7 @@ function send_data($post_types) {
 		echo 'Произошла ошибка при отправке данных на удаленный сервер.';
 		return false;
 	} else {
+		echo '<pre style="white-space: pre-line;">',print_r($json_body,1),'</pre>';
 		$response_code = wp_remote_retrieve_response_code($response);
 		if ($response_code === 200) {
 			$body = wp_remote_retrieve_body($response);
