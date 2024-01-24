@@ -63,9 +63,9 @@ function custom_post_type_settings_page() {
 
 		$data_sended = send_data($selected_post_types);
 		if ($data_sended === true) {
-			echo 'Данные успешно отправлены на удаленный сервер в формате CSV.';
+			echo 'Data successfully sent to remote server in CSV format.';
 		} else {
-			echo 'Произошла ошибка при отправке данных на удаленный сервер.';
+			echo 'An error occurred when sending data to a remote server.';
 		}
 		
 	}
@@ -74,27 +74,27 @@ function custom_post_type_settings_page() {
 		$project_name = sanitize_text_field($_POST['project_name']);
 		$project_created = create_project($project_name);
 		if ($project_created === true) {
-			// echo 'Проект успешно создан.';
+			// echo 'Project created';
 		} else {
-			// echo 'Не удалось создать проект.';
+			// echo 'Failed to create project';
 		}
 	}
 
 	if (isset($_POST['delete_project'])) {
 		$project_deleted = delete_project();
 		if ($project_deleted === true) {
-			echo 'Проект успешно удален.';
+			// echo 'Project deleted';
 		} else {
-			echo 'Не удалось удалить проект.';
+			// echo 'Failed to delete project';
 		}
 	}
 
 	if (isset($_POST['reindex_project'])) {
 		$project_reindexed = reindex_project();
 		if ($project_reindexed === true) {
-			echo 'Проект успешно обновлен.';
+			// echo 'Project updated';
 		} else {
-			echo 'Не удалось обновить проект.';
+			// echo 'Failed to update project';
 		}
 	}
 

@@ -99,21 +99,24 @@ function reindex_project() {
 				);
 				$delete_response = wp_remote_request($new_url, $new_args);
 				if (is_wp_error($delete_response)) {
+					error_log('Error in DELETE request in reindex_project: ' . $delete_response->get_error_message());
+
 					return false;
 				} else {
 					$delete_response_code = wp_remote_retrieve_response_code($delete_response);
 					if ($delete_response_code === 200) {
-						echo 'deleted';
+						error_log('Successful deletion in reindex_project.');
 						$selected_post_types = get_option('_omni_selected_post_types');
 
 						$data_sended = send_data($selected_post_types);
 						if ($data_sended === true) {
-							echo 'Данные успешно Updated';
+							error_log('Data successfully updated in reindex_project.');
 						} else {
-							echo 'Произошла ошибка при отправке данных на удаленный сервер.';
+							error_log('Error sending data in reindex_project.');
 						}
 						return true;
 					} else {
+						error_log('Error in DELETE request: Response code ' . $delete_response_code);
 						return false;
 					}
 				}
@@ -121,6 +124,7 @@ function reindex_project() {
 			
 			return true;
 		} else {
+			error_log('Error in GET request: Response code ' . $response_code);
 			return false;
 		}
 	}
@@ -130,12 +134,8 @@ function delete_project() {
 	$omni_api_key = get_option('_omni_api_key');
 	$project_id = get_option('_omni_project_id');
 	$url = 'https://dev-api.omnimind.ai/rest/v1/projects/' . $project_id;
-	// $data = array(
-	//     'omni_key' => $omni_api_key,
-	//     // 'name' => sanitize_text_field($project_name),
-	// );
+	
 	$args = array(
-		// 'body' => json_encode($data), 
 		'headers' => array(
 			// 'Content-Type' => 'application/json',
 			'Authorization' => 'Bearer ' . $omni_api_key,
@@ -149,9 +149,6 @@ function delete_project() {
 	} else {
 		$response_code = wp_remote_retrieve_response_code($response);
 		if ($response_code === 200) {
-			// $response_data = json_decode(wp_remote_retrieve_body($response), true);
-			// $project_id = $response_data['id'];
-			// $project_name = $response_data['name'];
 			update_option('_omni_api_key', '');
 			update_option('_omni_project_id', '');
 			update_option('_omni_project_name', '');
@@ -248,10 +245,9 @@ function send_data($post_types) {
 	));
 
 	if (is_wp_error($response)) {
-		echo 'Произошла ошибка при отправке данных на удаленный сервер.';
+		error_log('An error occurred when sending data to a remote server: ' . $error_message);
 		return false;
 	} else {
-		echo '<pre style="white-space: pre-line;">',print_r($json_body,1),'</pre>';
 		$response_code = wp_remote_retrieve_response_code($response);
 		if ($response_code === 200) {
 			$body = wp_remote_retrieve_body($response);
@@ -262,6 +258,98 @@ function send_data($post_types) {
 			}
 			return true;
 		} else {
+			error_log('Error when sending data: server response with code: ' . $response_code);
+			return false;
+		}
+	}
+}
+
+function send_post($post_id) {
+	$omni_api_key = get_option('_omni_api_key');
+	$project_id = get_option('_omni_project_id');
+	$fields_array = get_option('_omni_selected_fields_option');
+	$all_post_data = '';
+
+	$post_title = get_the_title($post_id);
+	$post_content = get_post_field('post_content', $post_id);
+	$post_url = get_permalink($post_id);
+	$author_id = get_post_field ('post_author', $post_id);
+	$post_author = get_the_author_meta('display_name', $author_id);
+	$post_type = get_post_type($post_id);
+			// start
+	$all_post_data .= <<<EOD
+	ID: {$post_id}
+
+	EOD;
+	if (isset($fields_array[$post_type])) {
+		foreach ($fields_array[$post_type] as $field) {
+			if (isset($field['status']) && $field['status'] == 1) {
+				if ($field['label']) {
+					$label = $field['label'];
+				} else {
+					$label = $field['name'];
+				}
+				$content = get_post_meta( $post_id, $field['name'], true );
+				switch ($field['name']) {
+					case 'Title':
+					$content = $post_title;
+					break;
+					case 'Content':
+					$content = $post_content;
+					break;
+					case 'Author':
+					$content = $post_author;
+					break;
+					default:
+					break;
+				}
+				$all_post_data .= <<<EOD
+
+				{$label}: {$content}
+
+				EOD;
+			}
+		}
+
+	}
+			// end
+
+	$all_post_data .= <<<EOD
+	url: {$post_url}
+
+	EOD;
+
+	$json_data = array(
+		'omni_key' => $omni_api_key, 
+		'nowait' => true,
+		'title' => get_site_url(), 
+		'content' => $all_post_data, 
+		'metadata' => array('title' => get_bloginfo('name')),
+	);
+	$json_body = json_encode($json_data);
+	$response = wp_safe_remote_post('https://dev-api.omnimind.ai/rest/v1/projects/'. $project_id .'/training/text', array(
+		'body' => $json_body, 
+		'headers' => array(
+			'Content-Type' => 'application/json', 
+		),
+	));
+
+	if (is_wp_error($response)) {
+		$error_message = $response->get_error_message();
+		error_log('An error occurred when sending data to a remote server: ' . $error_message);
+		return false;
+	} else {
+		$response_code = wp_remote_retrieve_response_code($response);
+		if ($response_code === 200) {
+			$body = wp_remote_retrieve_body($response);
+			$data = json_decode($body);
+			if ($data && isset($data->id)) {
+				$id = $data->id;
+				update_option('_omni_chain_id', $id);
+			}
+			return true;
+		} else {
+			error_log('Error when sending data: server response with code: ' . $response_code);
 			return false;
 		}
 	}

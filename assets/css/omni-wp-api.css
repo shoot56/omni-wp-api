@@ -228,6 +228,16 @@
 	border-color: #135e96;
 	color: #fff;
 }
+.omni-config .btn-omni--success {
+	background: #198754;
+	border-color: #146c43;
+	color: #fff;
+}
+.omni-config .btn-omni--success:hover {
+	background: #157347;
+	border-color: #146c43;
+	color: #fff;
+}
 .omni-config .btn-omni--warning {
 	background: #ffc107;
 	border-color: #ffc107;
@@ -271,6 +281,7 @@
 .omni-config .attributes-table {
 	border: 1px solid #ccc;
 	border-collapse: collapse;
+	width: 100%;
 }
 .omni-config .attributes-table td,
 .omni-config .attributes-table th {
@@ -284,22 +295,65 @@
 	background-color: rgba(0,0,0,.05);
 }
 
-.advanced-settings {
+.omni-config .advanced-settings {
 	margin-top: 20px;
 	border-top: 1px solid #ccc;
 	padding-top: 20px;
 }
-.advanced-settings__content {
+.omni-config .advanced-settings__content {
 	display: none;
 }
-.advanced-settings.active .advanced-settings__opener {
+.omni-config .advanced-settings.active .advanced-settings__opener {
 /*	background-color: #fff;*/
 }
-.advanced-settings .select2-container {
+.omni-config .advanced-settings .select2-container {
 	width: 100%;
 	display: block;
 	box-sizing: border-box;
 }
-.advanced-settings .select2-search.select2-search--inline {
+.omni-config .advanced-settings .select2-search.select2-search--inline {
 	display: none;
+}
+
+.omni-config .advanced-settings__label {
+	margin: 0 0 5px;
+	font-weight: bold;
+}
+.omni-config .advanced-settings__row {
+	margin-top: 15px;
+}
+
+.omni-config .select2-container .select2-selection--multiple .select2-selection__rendered {
+	vertical-align: top;
+	padding: 0;
+}
+.omni-config .select2-container .select2-selection--multiple {
+	padding: 0;
+}
+
+.omni-config .custom-field {
+	padding: 15px 0 0;
+	display:-ms-grid;
+	display:grid;
+	-ms-grid-columns:1fr 80px;
+	grid-template-columns:1fr 80px;
+	grid-gap: 20px;
+	position: relative;
+}
+.omni-config .autocomplete-items {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	width: 100%;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	overflow: auto;
+	max-height: 200px;
+}
+.omni-config .autocomplete-items__item {
+	padding: 5px 15px;
+}
+.omni-config .autocomplete-items__item:hover {
+	background-color: #eee;
 }

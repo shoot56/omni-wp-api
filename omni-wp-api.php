@@ -33,3 +33,4 @@ add_action('admin_enqueue_scripts', 'omni_wp_api_enqueue_scripts');
 
 
 
+add_action('save_post','send_post');

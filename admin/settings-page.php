@@ -173,7 +173,9 @@ $project_id = get_option('_omni_project_id');
 
 						if ($post_types) {
 							?>
-							<?php echo '<pre>',print_r($selected_fields,1),'</pre>'; ?>
+							<?php 
+							// echo '<pre>',print_r($selected_fields,1),'</pre>'; 
+							?>
 							<ul class="content-types">
 								<?php foreach ($post_types as $post_type): ?>
 									<?php $additional_fields = array(
@@ -193,15 +195,7 @@ $project_id = get_option('_omni_project_id');
 											<span class="checkbox-label"><?php echo esc_html($label_with_count); ?></span>
 										</label>
 										<div class="attributes-wrap">
-											<table class="attributes-table">
-												<tr>
-													<th>Attribute</th>
-													<th>Searchable</th>
-													<th>Label</th>
-													<th>example value</th>
-												</tr>
-												<?php $counter = 0; ?>
-												<?php
+											<?php
 												$post_ids = get_posts(
 													[
 														'numberposts' => -1,
@@ -222,46 +216,23 @@ $project_id = get_option('_omni_project_id');
 														}
 													}
 												}
-
-												// if ( isset( $post_ids[0] ) ) {
-												// 	$post_id = $post_ids[0]->ID;
-												// }
-												// $custom_fields_acf = get_field_objects($post_id); 
-												// $custom_fields = get_post_custom($post_id); 
-												// $custom_fields_meta = get_post_meta($post_id); 
-												$additional_fields = array_merge($additional_fields, $custom_fields);
+												if (is_array($custom_fields)) {
+													$jsonData = json_encode(array_keys($custom_fields));
+												} else {
+													$jsonData = json_encode([]);
+												}
 												?>
-												<?php /*
+												<div class="autocomplete-data" data-post-type="<?php echo esc_attr($post_type->name); ?>" style="display:none;">
+													<?php echo $jsonData; ?>
+												</div>
+											<table class="attributes-table">
 												<tr>
-													<td colspan="4">
-														<?php 
-														$filteredKeys = array_filter($custom_fields, function ($key) use ($custom_fields_acf) {
-															if (is_array($custom_fields_acf)) {
-																return !array_key_exists($key, $custom_fields_acf);
-															} else {
-																return false;
-															}
-														}, ARRAY_FILTER_USE_KEY);
-														 ?>
-														 <?php echo '<pre>',print_r($filteredKeys,1),'</pre>'; ?>
-													</td>
+													<th>Attribute</th>
+													<th>Searchable</th>
+													<th>Label</th>
 												</tr>
-												<tr>
-													<td colspan="2">
-														<?php 
-															echo '<pre>',print_r($custom_fields_acf,1),'</pre>'; 
-															?>
-													</td>
-													<td>
-														
-													</td>
-													<td colspan="1">
-														<?php 
-															echo '<pre>',print_r($custom_fields,1),'</pre>'; 
-															?>
-													</td>
-												</tr>
-												*/ ?>
+												
+												
 												<?php foreach ($additional_fields as  $key => $values): ?>
 													<tr>
 														<td><?php echo esc_html($key); ?></td>
@@ -279,16 +250,38 @@ $project_id = get_option('_omni_project_id');
 
 														</td>
 														<td><input class="form-input" type="text" name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][<?php echo $key; ?>][label]" value="<?php echo isset($selected_fields[$post_type->name][$key]['label']) ? esc_attr($selected_fields[$post_type->name][$key]['label']) : ''; ?>"></td>
-														<td>
-															<?php 
-															// echo get_post_meta( $post_id, $key, true ) 
-															?>
-														</td>
+														
 													</tr>
 													
-													<?php $counter++; ?>
 												<?php endforeach ?>
+												<?php 
+												// additional fields
+												if (isset($selected_fields[$post_type->name])) {
+													foreach ($selected_fields[$post_type->name] as $key => $values) {
+														if ($key == 'advanced-title-columns' || $key == 'advanced-metadata-columns' || $key == 'Title' || $key == 'Content' || $key == 'Author') {
+															continue; 
+														}
+														echo '<tr>';
+														echo '<td>' . esc_html($key) . '</td>';
+														echo '<td>';
+														echo '<input class="form-input" type="hidden" name="post_type_fields[' . esc_attr($post_type->name) . '][' . $key . '][name]" value="' . esc_attr($key) . '">';
+														$checked = (isset($values['status']) && $values['status'] == 1) ? 'checked' : '';
+														echo '<input name="post_type_fields[' . esc_attr($post_type->name) . '][' . $key . '][status]" value="1" type="checkbox" class="checkbox" ' . $checked . ' />';
+														echo '</td>';
+														echo '<td><input class="form-input" type="text" name="post_type_fields[' . esc_attr($post_type->name) . '][' . $key . '][label]" value="' . (isset($values['label']) ? esc_attr($values['label']) : '') . '"></td>';
+														echo '</tr>';
+													}
+												}
+												?>
+
 											</table>
+											<div class="custom-field">
+												<!-- <input type="text" class="new-field-name autoComplete" name=""> -->
+												<input type="text" class="new-field-name" data-post-type="<?php echo esc_attr($post_type->name); ?>">
+
+												<button type="button" class="add-field btn-omni btn-omni--success" data-post-type="<?php echo esc_attr($post_type->name); ?>">add field</button>
+											</div>
+
 											<div class="advanced-settings">
 												<button class="advanced-settings__opener btn-omni btn-omni--primary">Advanced Settings</button>
 												<div class="advanced-settings__content">
@@ -303,6 +296,17 @@ $project_id = get_option('_omni_project_id');
 																	?>
 																	<option value="<?php echo esc_html($key); ?>" <?php echo $selected; ?>><?php echo esc_html($key); ?></option>
 																<?php endforeach ?>
+																<?php if (isset($selected_fields[$post_type->name])): ?>
+																	<?php foreach ($selected_fields[$post_type->name] as $key => $values): ?>
+																		<?php 
+																		if ($key == 'advanced-title-columns' || $key == 'advanced-metadata-columns' || $key == 'Title' || $key == 'Content' || $key == 'Author') {
+																			continue; 
+																		}
+																		$selected = in_array($key, $saved_title_columns) ? 'selected' : '';
+																		?>
+																		<option value="<?php echo esc_html($key); ?>" <?php echo $selected; ?>><?php echo esc_html($key); ?></option>
+																	<?php endforeach ?>
+																<?php endif ?>
 															</select>
 														</div>
 													</div>
@@ -317,6 +321,7 @@ $project_id = get_option('_omni_project_id');
 																	?>
 																	<option value="<?php echo esc_html($key); ?>" <?php echo $selected; ?>><?php echo esc_html($key); ?></option>
 																<?php endforeach ?>
+
 															</select>
 														</div>
 													</div>
@@ -333,25 +338,7 @@ $project_id = get_option('_omni_project_id');
 								<?php endforeach ?>
 							</ul>
 							<script>
-								var checkboxes = document.querySelectorAll('.content-type-head input[type="checkbox"]');
-								function handleCheckboxChange(event) {
-									var parentItem = event.target.closest('.content-types__item');
-									if (!parentItem) {
-										return; 
-									}
-									var attributesWrap = parentItem.querySelector('.attributes-wrap');
-									if (event.target.checked) {
-										attributesWrap.style.display = 'block'; 
-									} else {
-										attributesWrap.style.display = 'none'; 
-									}
-								}
-								checkboxes.forEach(function(checkbox) {
-									checkbox.addEventListener('change', handleCheckboxChange);
-								});
-								checkboxes.forEach(function(checkbox) {
-									handleCheckboxChange({ target: checkbox });
-								});
+
 							</script>
 
 							<?php
@@ -426,3 +413,115 @@ $project_id = get_option('_omni_project_id');
 	</div>
 
 </div>
+
+<script>
+	// checkbox expand post type
+	var checkboxes = document.querySelectorAll('.content-type-head input[type="checkbox"]');
+	function handleCheckboxChange(event) {
+		var parentItem = event.target.closest('.content-types__item');
+		if (!parentItem) {
+			return; 
+		}
+		var attributesWrap = parentItem.querySelector('.attributes-wrap');
+		if (event.target.checked) {
+			attributesWrap.style.display = 'block'; 
+		} else {
+			attributesWrap.style.display = 'none'; 
+		}
+	}
+	checkboxes.forEach(function(checkbox) {
+		checkbox.addEventListener('change', handleCheckboxChange);
+	});
+	checkboxes.forEach(function(checkbox) {
+		handleCheckboxChange({ target: checkbox });
+	});
+	// add new field
+	document.addEventListener('DOMContentLoaded', function() {
+		document.querySelectorAll('.add-field').forEach(button => {
+			button.addEventListener('click', function() {
+				var tableName = this.getAttribute('data-post-type');
+				var fieldNameInput = this.parentNode.querySelector('.new-field-name');
+				var fieldName = fieldNameInput.value;
+
+				if (fieldName.trim() !== '') {
+					var formattedFieldName = formatFieldName(fieldName);
+
+					var parentItem = this.closest('.content-types__item');
+					var table = parentItem.querySelector('.attributes-table');
+					var newRow = table.insertRow();
+
+					newRow.innerHTML = `
+					<td>${fieldName}</td>
+					<td>
+					<input type="hidden" name="post_type_fields[${tableName}][${fieldName}][name]" value="${fieldName}">
+					<input type="checkbox" name="post_type_fields[${tableName}][${fieldName}][status]" value="1" class="checkbox">
+					</td>
+					<td>
+					<input type="text" class="form-input" name="post_type_fields[${tableName}][${fieldName}][label]" value="${formattedFieldName}">
+					</td>
+					`;
+				}
+				fieldNameInput.value = '';
+			});
+		});
+	});
+
+	function formatFieldName(fieldName) {
+		if (fieldName[0] === '_') {
+			fieldName = fieldName.substring(1);
+		}
+
+		return fieldName.replace(/^[a-z]/, function(match) {
+			return match.toUpperCase();
+		}).replace(/_/g, ' ');
+	}
+
+	// autocomplete
+	document.addEventListener('DOMContentLoaded', function() {
+		document.querySelectorAll('.new-field-name').forEach(input => {
+			input.addEventListener('input', function() {
+				var postType = this.getAttribute('data-post-type');
+				var autocompleteData = JSON.parse(document.querySelector('.autocomplete-data[data-post-type="' + postType + '"]').textContent);
+				var value = this.value.toLowerCase();
+
+				closeAllLists(input);
+
+				if (!value) return false;
+				var list = document.createElement("DIV");
+				list.setAttribute("class", "autocomplete-items");
+				this.parentNode.appendChild(list);
+
+				autocompleteData.forEach(function(item) {
+					if (item.toLowerCase().includes(value)) {
+						var itemDiv = document.createElement("DIV");
+						itemDiv.setAttribute("class", "autocomplete-items__item");
+						itemDiv.innerHTML = item; 
+						itemDiv.innerHTML += "<input type='hidden' value='" + item + "'>";
+						itemDiv.addEventListener("click", function() {
+							input.value = this.getElementsByTagName("input")[0].value;
+							closeAllLists(input);
+						});
+						list.appendChild(itemDiv);
+					}
+				});
+			});
+		});
+
+		function closeAllLists(el, inputElement) {
+			var items = document.getElementsByClassName("autocomplete-items");
+			for (var i = 0; i < items.length; i++) {
+				if (el != items[i] && el != inputElement) {
+					items[i].parentNode.removeChild(items[i]);
+				}
+			}
+		}
+
+		document.addEventListener("click", function (e) {
+			closeAllLists(e.target);
+		});
+	});
+
+
+
+
+</script>
