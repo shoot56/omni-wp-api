@@ -60,6 +60,7 @@ function create_project($project_name) {
 function reindex_project() {
 	$omni_api_key = get_option('_omni_api_key');
 	$project_id = get_option('_omni_project_id');
+	$selected_post_types = get_option('_omni_selected_post_types');
 	$url = 'https://dev-api.omnimind.ai/rest/v1/projects/'. $project_id .'/resources/urls/';
 	
 	$args = array(
@@ -73,6 +74,7 @@ function reindex_project() {
 
 	if (is_wp_error($response)) {
 		return false;
+		omni_error_log('Reindex error code: ' . $response);
 	} else {
 		$response_code = wp_remote_retrieve_response_code($response);
 		if ($response_code === 200) {
@@ -106,15 +108,6 @@ function reindex_project() {
 					$delete_response_code = wp_remote_retrieve_response_code($delete_response);
 					if ($delete_response_code === 200) {
 						omni_error_log('Successful deletion in reindex_project.');
-						$selected_post_types = get_option('_omni_selected_post_types');
-
-						$data_sended = send_data($selected_post_types);
-						if ($data_sended === true) {
-							omni_error_log('Data successfully updated in reindex_project.');
-						} else {
-							omni_error_log('Error sending data in reindex_project.');
-						}
-						return true;
 					} else {
 						omni_error_log('Error in DELETE request: Response code ' . $delete_response_code);
 						return false;
@@ -122,6 +115,12 @@ function reindex_project() {
 				}
 			}
 			
+			$data_sended = send_data($selected_post_types);
+			if ($data_sended === true) {
+				omni_error_log('Data successfully updated in reindex_project.');
+			} else {
+				omni_error_log('Error sending data in reindex_project.');
+			}
 			return true;
 		} else {
 			omni_error_log('Error in GET request: Response code ' . $response_code);
@@ -165,7 +164,9 @@ function send_data($post_types) {
 	$omni_api_key = get_option('_omni_api_key');
 	$project_id = get_option('_omni_project_id');
 	$fields_array = get_option('_omni_selected_fields_option');
-	$all_post_data = '';
+	// $all_post_data = '';
+
+	$chains = array();
 
 	foreach ($post_types as $post_type) {
 		$args = array(
@@ -176,19 +177,23 @@ function send_data($post_types) {
 		$posts = get_posts($args);
 
 
-		$post_type_data = array();
+		// $post_type_data = array();
 
 		foreach ($posts as $post) {
+
 			$post_id = $post->ID;
 			$post_title = $post->post_title;
 			$post_content = $post->post_content;
+			// remove all tags and br from content
+			$post_content = wp_strip_all_tags($post_content, false);
 			$post_url = get_permalink($post->ID);
 			$post_author = get_the_author_meta('display_name', $post->post_author);
-			// start
-			$all_post_data .= <<<EOD
-			ID: {$post_id}
+			if ($post_title == '') {
+				$post_title = $post_url;
+			}
 
-			EOD;
+			$post_data = '';
+
 			if (isset($fields_array[$post_type])) {
 				foreach ($fields_array[$post_type] as $field) {
 					if (isset($field['status']) && $field['status'] == 1) {
@@ -211,7 +216,7 @@ function send_data($post_types) {
 							default:
 								break;
 						}
-						$all_post_data .= <<<EOD
+						$post_data .= <<<EOD
 
 						{$label}: {$content}
 
@@ -220,30 +225,47 @@ function send_data($post_types) {
 				}
 				
 			}
-			// end
 			
-			$all_post_data .= <<<EOD
+			$post_data .= <<<EOD
 			url: {$post_url}
 
 			EOD;
+			$chain_item = array(
+				"chain" => "basic-informer",
+				"payload" => array(
+					"indexName" => $project_id,
+					"no-wait" => true,
+					"json" => array(
+						"informer" => array(
+							"type" => "text",
+							"family" => "informer",
+							"settings" => array(
+								"content" => $post_data,
+								"metadata" => array(
+									"title" => $post_title,
+									"url" => $post_url,
+									"id" => $post_id
+								)
+							)
+						)
+					)
+				)
+			);
+			array_push($chains, $chain_item);
 		}
 	}
-
 	$json_data = array(
-		'omni_key' => $omni_api_key, 
-		'nowait' => true,
-		'title' => get_site_url(), 
-		'content' => $all_post_data, 
-		'metadata' => array('title' => get_bloginfo('name')),
+		"chains" => $chains
 	);
 	$json_body = json_encode($json_data);
-	$response = wp_safe_remote_post('https://dev-api.omnimind.ai/rest/v1/projects/'. $project_id .'/training/text', array(
-		'body' => $json_body, 
+	$response = wp_safe_remote_post('https://dev-api.omnimind.ai/v1/functions/chain/template/run-multiple', array(
 		'headers' => array(
-			'Content-Type' => 'application/json', 
+			'Content-Type' => 'application/json',
+			'Authorization' => 'Bearer ' . $omni_api_key,
 		),
+		'body' => $json_body, 
+		'method'     => 'POST'
 	));
-
 	if (is_wp_error($response)) {
 		omni_error_log('An error occurred when sending data to a remote server: ' . $error_message);
 		return false;
@@ -256,6 +278,7 @@ function send_data($post_types) {
 				$id = $data->id;
 				update_option('_omni_chain_id', $id);
 			}
+			// echo '<pre>',print_r($json_body,1),'</pre>';
 			return true;
 		} else {
 			omni_error_log('Error when sending data: server response with code: ' . $response_code);
@@ -265,6 +288,10 @@ function send_data($post_types) {
 }
 
 function send_post($post_id) {
+
+	// fix multiple sending request
+	if (wp_doing_ajax() || !is_admin()) return;
+
 	$omni_api_key = get_option('_omni_api_key');
 	$project_id = get_option('_omni_project_id');
 	$fields_array = get_option('_omni_selected_fields_option');
@@ -310,7 +337,8 @@ function send_post($post_id) {
 				EOD;
 			}
 		}
-
+	} else {
+		return;
 	}
 			// end
 
@@ -347,6 +375,7 @@ function send_post($post_id) {
 				$id = $data->id;
 				update_option('_omni_chain_id', $id);
 			}
+			omni_error_log('Post updated: ' . $post_title . ' - Post type: ' .$post_type);
 			return true;
 		} else {
 			omni_error_log('Error when sending data: server response with code: ' . $response_code);
