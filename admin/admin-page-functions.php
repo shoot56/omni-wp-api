@@ -64,10 +64,10 @@ function custom_post_type_settings_page() {
 		$data_sended = send_data($selected_post_types);
 		if ($data_sended === true) {
 			// echo 'Data successfully sent to remote server in CSV format.';
-			error_log('Data successfully sent to remote server in CSV format.');
+			omni_error_log('Data successfully sent to remote server in CSV format.');
 		} else {
 			// echo 'An error occurred when sending data to a remote server.';
-			error_log('An error occurred when sending data to a remote server.');
+			omni_error_log('An error occurred when sending data to a remote server.');
 		}
 		
 	}

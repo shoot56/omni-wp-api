@@ -99,24 +99,24 @@ function reindex_project() {
 				);
 				$delete_response = wp_remote_request($new_url, $new_args);
 				if (is_wp_error($delete_response)) {
-					error_log('Error in DELETE request in reindex_project: ' . $delete_response->get_error_message());
+					omni_error_log('Error in DELETE request in reindex_project: ' . $delete_response->get_error_message());
 
 					return false;
 				} else {
 					$delete_response_code = wp_remote_retrieve_response_code($delete_response);
 					if ($delete_response_code === 200) {
-						error_log('Successful deletion in reindex_project.');
+						omni_error_log('Successful deletion in reindex_project.');
 						$selected_post_types = get_option('_omni_selected_post_types');
 
 						$data_sended = send_data($selected_post_types);
 						if ($data_sended === true) {
-							error_log('Data successfully updated in reindex_project.');
+							omni_error_log('Data successfully updated in reindex_project.');
 						} else {
-							error_log('Error sending data in reindex_project.');
+							omni_error_log('Error sending data in reindex_project.');
 						}
 						return true;
 					} else {
-						error_log('Error in DELETE request: Response code ' . $delete_response_code);
+						omni_error_log('Error in DELETE request: Response code ' . $delete_response_code);
 						return false;
 					}
 				}
@@ -124,7 +124,7 @@ function reindex_project() {
 			
 			return true;
 		} else {
-			error_log('Error in GET request: Response code ' . $response_code);
+			omni_error_log('Error in GET request: Response code ' . $response_code);
 			return false;
 		}
 	}
@@ -245,7 +245,7 @@ function send_data($post_types) {
 	));
 
 	if (is_wp_error($response)) {
-		error_log('An error occurred when sending data to a remote server: ' . $error_message);
+		omni_error_log('An error occurred when sending data to a remote server: ' . $error_message);
 		return false;
 	} else {
 		$response_code = wp_remote_retrieve_response_code($response);
@@ -258,7 +258,7 @@ function send_data($post_types) {
 			}
 			return true;
 		} else {
-			error_log('Error when sending data: server response with code: ' . $response_code);
+			omni_error_log('Error when sending data: server response with code: ' . $response_code);
 			return false;
 		}
 	}
@@ -336,7 +336,7 @@ function send_post($post_id) {
 
 	if (is_wp_error($response)) {
 		$error_message = $response->get_error_message();
-		error_log('An error occurred when sending data to a remote server: ' . $error_message);
+		omni_error_log('An error occurred when sending data to a remote server: ' . $error_message);
 		return false;
 	} else {
 		$response_code = wp_remote_retrieve_response_code($response);
@@ -349,14 +349,14 @@ function send_post($post_id) {
 			}
 			return true;
 		} else {
-			error_log('Error when sending data: server response with code: ' . $response_code);
+			omni_error_log('Error when sending data: server response with code: ' . $response_code);
 			return false;
 		}
 	}
 }
 
-function my_plugin_error_log($message) {
-    $log_file = plugin_dir_path(__FILE__) . 'my-plugin-errors.log';
+function omni_error_log($message) {
+    $log_file = plugin_dir_path(dirname(__FILE__)) . 'omni-logs.log';
 
     $message = date("Y-m-d H:i:s") . " - " . $message . "\n";
 
