@@ -355,3 +355,10 @@ function send_post($post_id) {
 	}
 }
 
+function my_plugin_error_log($message) {
+    $log_file = plugin_dir_path(__FILE__) . 'my-plugin-errors.log';
+
+    $message = date("Y-m-d H:i:s") . " - " . $message . "\n";
+
+    file_put_contents($log_file, $message, FILE_APPEND | LOCK_EX);
+}
