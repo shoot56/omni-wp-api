@@ -61,7 +61,25 @@ function custom_post_type_settings_page() {
 	if (isset($_POST['send_post_types'])) {
 		$selected_post_types = get_option('_omni_selected_post_types');
 
-		$data_sended = send_data($selected_post_types);
+		// $data_sended = send_data($selected_post_types);
+		$data_sended = sync_data($selected_post_types);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
 		if ($data_sended === true) {
 			// echo 'Data successfully sent to remote server in CSV format.';
 			omni_error_log('Data successfully sent to remote server in CSV format.');

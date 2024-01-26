@@ -1,11 +1,11 @@
 <?php
 // Function to generate a new API key
-function generate_api_key() {
-	return bin2hex(random_bytes(32)); // Generate a 64-character hexadecimal key
-}
+
+
+
 
 function verify_api_key($api_key) {
-	$url = 'https://dev-api.omnimind.ai/v1/functions/users/me';
+	$url = ENV_URL . '/v1/functions/users/me';
 	$headers = array(
 		'Authorization' => 'Bearer ' . $api_key,
 	);
@@ -26,7 +26,7 @@ function verify_api_key($api_key) {
 }
 
 function create_project($project_name) {
-	$url = 'https://dev-api.omnimind.ai/rest/v1/projects/';
+	$url = ENV_URL . '/rest/v1/projects/';
 	$omni_api_key = get_option('_omni_api_key');
 	$data = array(
 		'omni_key' => $omni_api_key,
@@ -61,7 +61,7 @@ function reindex_project() {
 	$omni_api_key = get_option('_omni_api_key');
 	$project_id = get_option('_omni_project_id');
 	$selected_post_types = get_option('_omni_selected_post_types');
-	$url = 'https://dev-api.omnimind.ai/rest/v1/projects/'. $project_id .'/resources/urls/';
+	$url = ENV_URL . '/rest/v1/projects/'. $project_id .'/resources/urls/';
 	
 	$args = array(
 		'headers' => array(
@@ -85,7 +85,7 @@ function reindex_project() {
 				$data_url = $data[0]->url;
 
 
-				$new_url = 'https://dev-api.omnimind.ai/rest/v1/projects/'. $project_id .'/resources/urls/';
+				$new_url = ENV_URL . '/rest/v1/projects/'. $project_id .'/resources/urls/';
 
 				$new_data = array(
 					'omni_key' => $omni_api_key,
@@ -132,7 +132,7 @@ function reindex_project() {
 function delete_project() {
 	$omni_api_key = get_option('_omni_api_key');
 	$project_id = get_option('_omni_project_id');
-	$url = 'https://dev-api.omnimind.ai/rest/v1/projects/' . $project_id;
+	$url = ENV_URL . '/rest/v1/projects/' . $project_id;
 	
 	$args = array(
 		'headers' => array(
@@ -151,6 +151,9 @@ function delete_project() {
 			update_option('_omni_api_key', '');
 			update_option('_omni_project_id', '');
 			update_option('_omni_project_name', '');
+			update_option('_omni_selected_post_types', '');
+			update_option('_omni_selected_fields_option', '');
+			update_option('_omni_uploaded_fields_option', '');
 			update_option('_omni_api_key_status', false);
 			return true;
 		} else {
@@ -159,106 +162,245 @@ function delete_project() {
 	}
 }
 
+// function send_data($post_types) {
+// 	$omni_api_key = get_option('_omni_api_key');
+// 	$project_id = get_option('_omni_project_id');
+// 	$fields_array = get_option('_omni_selected_fields_option');
+// 	$chains = array();
+// 	foreach ($post_types as $post_type) {
+// 		$args = array(
+// 			'post_type' => $post_type,
+// 			'post_status' => 'publish',
+// 			'posts_per_page' => -1,
+// 		);
+// 		$posts = get_posts($args);
+// 		foreach ($posts as $post) {
+// 			$post_id = $post->ID;
+// 			$post_title = $post->post_title;
+// 			$post_content = $post->post_content;
+// 			// remove all tags and br from content
+// 			$post_content = wp_strip_all_tags($post_content, false);
+// 			$post_url = get_permalink($post->ID);
+// 			$post_author = get_the_author_meta('display_name', $post->post_author);
+// 			if ($post_title == '') {
+// 				$post_title = $post_url;
+// 			}
+// 			$post_data = '';
+// 			if (isset($fields_array[$post_type])) {
+// 				foreach ($fields_array[$post_type] as $field) {
+// 					if (isset($field['status']) && $field['status'] == 1) {
+// 						if ($field['label']) {
+// 							$label = $field['label'];
+// 						} else {
+// 							$label = $field['name'];
+// 						}
+// 						$content = get_post_meta( $post_id, $field['name'], true );
+// 						switch ($field['name']) {
+// 							case 'Title':
+// 								$content = $post_title;
+// 								break;
+// 							case 'Content':
+// 								$content = $post_content;
+// 								break;
+// 							case 'Author':
+// 								$content = $post_author;
+// 								break;
+// 							default:
+// 								break;
+// 						}
+// 						$post_data .= <<<EOD
 
-function send_data($post_types) {
+// 						{$label}: {$content}
+
+// 						EOD;
+// 					}
+// 				}
+// 			}
+			
+// 			$post_data .= <<<EOD
+// 			url: {$post_url}
+
+// 			EOD;
+// 			$chain_item = array(
+// 				"chain" => "basic-informer",
+// 				"payload" => array(
+// 					"indexName" => $project_id,
+// 					"no-wait" => true,
+// 					"json" => array(
+// 						"informer" => array(
+// 							"type" => "text",
+// 							"family" => "informer",
+// 							"settings" => array(
+// 								"content" => $post_data,
+// 								"metadata" => array(
+// 									"title" => $post_title,
+// 									"url" => $post_url,
+// 									"eid" => $post_id
+// 								)
+// 							)
+// 						)
+// 					)
+// 				)
+// 			);
+// 			array_push($chains, $chain_item);
+// 		}
+// 	}
+// 	$json_data = array(
+// 		"chains" => $chains
+// 	);
+// 	$json_body = json_encode($json_data);
+// 	$endpoint = ENV_URL . '/v1/functions/chain/template/run-multiple';
+// 	$response = wp_safe_remote_post( $endpoint, array(
+// 		'headers' => array(
+// 			'Content-Type' => 'application/json',
+// 			'Authorization' => 'Bearer ' . $omni_api_key,
+// 		),
+// 		'body' => $json_body, 
+// 		'method'     => 'POST'
+// 	));
+// 	if (is_wp_error($response)) {
+// 		omni_error_log('An error occurred when sending data to a remote server: ' . wp_remote_retrieve_response_code($response));
+// 		return false;
+// 	} else {
+// 		$response_code = wp_remote_retrieve_response_code($response);
+// 		if ($response_code === 200) {
+// 			$body = wp_remote_retrieve_body($response);
+// 			$data = json_decode($body);
+// 			if ($data && isset($data->id)) {
+// 				$id = $data->id;
+// 				update_option('_omni_chain_id', $id);
+// 			}
+// 			return true;
+// 		} else {
+// 			omni_error_log('Error when sending data: server response with code: ' . $response_code);
+// 			return false;
+// 		}
+// 	}
+// }
+function sync_data() {
 	$omni_api_key = get_option('_omni_api_key');
 	$project_id = get_option('_omni_project_id');
 	$fields_array = get_option('_omni_selected_fields_option');
-	// $all_post_data = '';
+	$uploaded_fields_array = get_option('_omni_uploaded_fields_option');
 
 	$chains = array();
+	$types_to_delete = array_diff_key($uploaded_fields_array, $fields_array);
+	$types_to_add = array_diff_key($fields_array, $uploaded_fields_array);
 
-	foreach ($post_types as $post_type) {
-		$args = array(
-			'post_type' => $post_type,
-			'post_status' => 'publish',
-			'posts_per_page' => -1,
-		);
-		$posts = get_posts($args);
-
-
-		// $post_type_data = array();
-
-		foreach ($posts as $post) {
-
-			$post_id = $post->ID;
-			$post_title = $post->post_title;
-			$post_content = $post->post_content;
-			// remove all tags and br from content
-			$post_content = wp_strip_all_tags($post_content, false);
-			$post_url = get_permalink($post->ID);
-			$post_author = get_the_author_meta('display_name', $post->post_author);
-			if ($post_title == '') {
-				$post_title = $post_url;
-			}
-
-			$post_data = '';
-
-			if (isset($fields_array[$post_type])) {
-				foreach ($fields_array[$post_type] as $field) {
-					if (isset($field['status']) && $field['status'] == 1) {
-						if ($field['label']) {
-							$label = $field['label'];
-						} else {
-							$label = $field['name'];
-						}
-						$content = get_post_meta( $post_id, $field['name'], true );
-						switch ($field['name']) {
-							case 'Title':
-								$content = $post_title;
-								break;
-							case 'Content':
-								$content = $post_content;
-								break;
-							case 'Author':
-								$content = $post_author;
-								break;
-							default:
-								break;
-						}
-						$post_data .= <<<EOD
-
-						{$label}: {$content}
-
-						EOD;
-					}
-				}
-				
-			}
-			
-			$post_data .= <<<EOD
-			url: {$post_url}
-
-			EOD;
-			$chain_item = array(
-				"chain" => "basic-informer",
-				"payload" => array(
-					"indexName" => $project_id,
-					"no-wait" => true,
-					"json" => array(
-						"informer" => array(
-							"type" => "text",
-							"family" => "informer",
-							"settings" => array(
-								"content" => $post_data,
-								"metadata" => array(
-									"title" => $post_title,
-									"url" => $post_url,
-									"id" => $post_id
-								)
-							)
-						)
-					)
-				)
-			);
-			array_push($chains, $chain_item);
-		}
+	foreach ($types_to_delete as $type => $fields) {
+		delete_posts_of_type($type, $project_id, $chains);
 	}
-	$json_data = array(
-		"chains" => $chains
+
+	foreach ($types_to_add as $type => $fields) {
+		add_posts_of_type($type, $project_id, $chains, $fields_array[$type]);
+	}
+
+    // Отправка запросов
+    send_requests($chains, $omni_api_key, $project_id, $fields_array);
+	omni_error_log(print_r($chains, true));
+}
+
+function delete_posts_of_type($post_type, $project_id, &$chains) {
+	$args = array(
+		'post_type' => $post_type,
+		'post_status' => 'publish',
+		'posts_per_page' => -1,
 	);
+	$posts = get_posts($args);
+
+	foreach ($posts as $post) {
+		$chain_item = array(
+			"chain" => "basic-delete",
+			"payload" => array(
+				"indexName" => $project_id,
+				"where" => json_encode(array(
+					"operator" => "Equal",
+					"path" => array("eid"),
+					"valueNumber" => $post->ID
+				))
+			)
+		);
+		array_push($chains, $chain_item);
+	}
+}
+
+function add_posts_of_type($post_type, $project_id, &$chains, $fields) {
+    if (!isset($fields)) {
+        return;
+    }
+
+    $args = array(
+        'post_type' => $post_type,
+        'post_status' => 'publish',
+        'posts_per_page' => -1,
+    );
+    $posts = get_posts($args);
+
+    foreach ($posts as $post) {
+        $post_id = $post->ID;
+        $post_title = $post->post_title;
+        $post_content = wp_strip_all_tags($post->post_content, false);
+        $post_url = get_permalink($post->ID);
+        $post_author = get_the_author_meta('display_name', $post->post_author);
+        $post_title = $post_title ?: $post_url;
+        $post_data = '';
+
+        foreach ($fields as $field) {
+            if (isset($field['status']) && $field['status'] == 1) {
+                $label = $field['label'] ?: $field['name'];
+                $content = get_post_meta($post_id, $field['name'], true);
+
+                switch ($field['name']) {
+                    case 'Title':
+                        $content = $post_title;
+                        break;
+                    case 'Content':
+                        $content = $post_content;
+                        break;
+                    case 'Author':
+                        $content = $post_author;
+                        break;
+                }
+
+                $post_data .= "{$label}: {$content}\n";
+            }
+        }
+
+        $post_data .= "url: {$post_url}\n";
+
+        $chain_item = array(
+            "chain" => "basic-informer",
+            "payload" => array(
+                "indexName" => $project_id,
+                "no-wait" => true,
+                "json" => array(
+                    "informer" => array(
+                        "type" => "text",
+                        "family" => "informer",
+                        "settings" => array(
+                            "content" => $post_data,
+                            "metadata" => array(
+                                "title" => $post_title,
+                                "url" => $post_url,
+                                "eid" => $post_id
+                            )
+                        )
+                    )
+                )
+            )
+        );
+
+        array_push($chains, $chain_item);
+    }
+}
+
+
+function send_requests($chains, $omni_api_key, $project_id, $fields_array) {
+	$json_data = array("chains" => $chains);
 	$json_body = json_encode($json_data);
-	$response = wp_safe_remote_post('https://dev-api.omnimind.ai/v1/functions/chain/template/run-multiple', array(
+	$endpoint = ENV_URL . '/v1/functions/chain/template/run-multiple';
+
+	$response = wp_safe_remote_post($endpoint, array(
 		'headers' => array(
 			'Content-Type' => 'application/json',
 			'Authorization' => 'Bearer ' . $omni_api_key,
@@ -266,36 +408,304 @@ function send_data($post_types) {
 		'body' => $json_body, 
 		'method'     => 'POST'
 	));
+
 	if (is_wp_error($response)) {
-		omni_error_log('An error occurred when sending data to a remote server: ' . $error_message);
-		return false;
+		omni_error_log('An error occurred when sending data to a remote server: ' . wp_remote_retrieve_response_code($response));
 	} else {
-		$response_code = wp_remote_retrieve_response_code($response);
-		if ($response_code === 200) {
-			$body = wp_remote_retrieve_body($response);
-			$data = json_decode($body);
-			if ($data && isset($data->id)) {
-				$id = $data->id;
-				update_option('_omni_chain_id', $id);
-			}
-			// echo '<pre>',print_r($json_body,1),'</pre>';
-			return true;
-		} else {
-			omni_error_log('Error when sending data: server response with code: ' . $response_code);
-			return false;
-		}
+		omni_error_log('SYNCed!');
+		update_option('_omni_uploaded_fields_option', $fields_array);
 	}
 }
 
-function send_post($post_id) {
+// sync_data();
 
+// function sync_data($post_types) {
+// 	$omni_api_key = get_option('_omni_api_key');
+// 	$project_id = get_option('_omni_project_id');
+// 	$fields_array = get_option('_omni_selected_fields_option');
+// 	$uploaded_fields_array = get_option('_omni_uploaded_fields_option');
+
+// 	$chains = array();
+// 	$types_to_delete = array_diff_key($uploaded_fields_array, $fields_array);
+// 	$types_to_add = array_diff_key($fields_array, $uploaded_fields_array);
+
+// 	foreach ($post_types as $post_type) {
+// 		if (!isset($types_to_delete[$post_type]) && !isset($types_to_add[$post_type])) {
+// 			$args = array(
+// 				'post_type' => $post_type,
+// 				'post_status' => 'publish',
+// 				'posts_per_page' => -1,
+// 			);
+// 			$posts = get_posts($args);
+
+// 			foreach ($posts as $post) {
+// 				$post_id = $post->ID;
+// 				$post_title = $post->post_title;
+// 				$post_content = wp_strip_all_tags($post->post_content, false);
+// 				$post_url = get_permalink($post->ID);
+// 				$post_author = get_the_author_meta('display_name', $post->post_author);
+// 				$post_data = '';
+
+// 				foreach ($types_to_delete as $type => $fields) {
+// 					$chain_item = array(
+// 						"chain" => "basic-delete",
+// 						"payload" => array(
+// 							"indexName" => $project_id,
+// 							"where" => json_encode(array(
+// 								"operator" => "Equal",
+// 								"path" => array("eid"),
+// 								"valueNumber" => $post_id
+// 							))
+// 						)
+// 					);
+// 					array_push($chains, $chain_item);
+// 				}
+
+// 				foreach ($types_to_add as $type => $fields) {
+// 					foreach ($fields_array[$post_type] as $field) {
+// 						if (isset($field['status']) && $field['status'] == 1) {
+// 							$label = $field['label'] ?: $field['name'];
+// 							$content = get_post_meta($post_id, $field['name'], true);
+
+// 							switch ($field['name']) {
+// 								case 'Title':
+// 								$content = $post_title;
+// 								break;
+// 								case 'Content':
+// 								$content = $post_content;
+// 								break;
+// 								case 'Author':
+// 								$content = $post_author;
+// 								break;
+// 							}
+
+// 							$post_data .= "{$label}: {$content}\n";
+// 						}
+// 					}
+
+// 					$post_data .= "url: {$post_url}\n";
+
+// 					$chain_item = array(
+// 						"chain" => "basic-informer",
+// 						"payload" => array(
+// 							"indexName" => $project_id,
+// 							"no-wait" => true,
+// 							"json" => array(
+// 								"informer" => array(
+// 									"type" => "text",
+// 									"family" => "informer",
+// 									"settings" => array(
+// 										"content" => $post_data,
+// 										"metadata" => array(
+// 											"title" => $post_title,
+// 											"url" => $post_url,
+// 											"eid" => $post_id
+// 										)
+// 									)
+// 								)
+// 							)
+// 						)
+// 					);
+// 					array_push($chains, $chain_item);
+// 				}
+// 			}
+// 		}
+// 	}
+
+
+// 	$json_data = array("chains" => $chains);
+// 	$json_body = json_encode($json_data);
+// 	$endpoint = ENV_URL . '/v1/functions/chain/template/run-multiple';
+// 	omni_error_log(print_r($chains, true));
+// 	// $response = wp_safe_remote_post($endpoint, array(
+// 	// 	'headers' => array(
+// 	// 		'Content-Type' => 'application/json',
+// 	// 		'Authorization' => 'Bearer ' . $omni_api_key,
+// 	// 	),
+// 	// 	'body' => $json_body, 
+// 	// 	'method' => 'POST'
+// 	// ));
+
+// 	// if (is_wp_error($response)) {
+// 	// 	omni_error_log('An error occurred when sending data to a remote server: ' . wp_remote_retrieve_response_code($response));
+// 	// 	return false;
+// 	// } else {
+// 	// 	$response_code = wp_remote_retrieve_response_code($response);
+// 	// 	if ($response_code === 200) {
+// 	// 		$body = wp_remote_retrieve_body($response);
+// 	// 		$data = json_decode($body);
+// 	// 		if ($data && isset($data->id)) {
+// 	// 			$id = $data->id;
+// 	// 			update_option('_omni_chain_id', $id);
+// 	// 		}
+// 	// 		omni_error_log('SYNCed!');
+// 	// 		update_option('_omni_uploaded_fields_option', $fields_array);
+// 	// 		return true;
+// 	// 	} else {
+// 	// 		omni_error_log('Error when sending data: server response with code: ' . $response_code);
+// 	// 		return false;
+// 	// 	}
+// 	// }
+// }
+
+
+// function sync_data_old($post_types){
+// 	$omni_api_key = get_option('_omni_api_key');
+// 	$project_id = get_option('_omni_project_id');
+// 	$fields_array = get_option('_omni_selected_fields_option');
+// 	$uploaded_fields_array = get_option('_omni_uploaded_fields_option');
+
+// 	$chains = array();
+// 	foreach ($post_types as $post_type) {
+// 		$args = array(
+// 			'post_type' => $post_type,
+// 			'post_status' => 'publish',
+// 			'posts_per_page' => -1,
+// 		);
+// 		$posts = get_posts($args);
+// 		foreach ($posts as $post) {
+// 			$post_id = $post->ID;
+// 			$post_title = $post->post_title;
+// 			$post_content = $post->post_content;
+// 			// remove all tags and br from content
+// 			$post_content = wp_strip_all_tags($post_content, false);
+// 			$post_url = get_permalink($post->ID);
+// 			$post_author = get_the_author_meta('display_name', $post->post_author);
+// 			if ($post_title == '') {
+// 				$post_title = $post_url;
+// 			}
+// 			$post_data = '';
+
+// 			if (isset($fields_array[$post_type]) && !isset($uploaded_fields_array[$post_type])) {
+
+// 				$types_to_delete = array_diff_key($uploaded_fields_array, $fields_array);
+// 				$types_to_add = array_diff_key($fields_array, $uploaded_fields_array);
+
+// 				foreach ($types_to_delete as $type => $fields) {
+// 					$chain_item = array(
+// 						"chain" => "basic-delete",
+// 						"payload" => array(
+// 							"indexName" => $project_id,
+// 							"where" => json_encode(array(
+// 								"operator" => "Equal",
+// 								"path" => array("eid"),
+// 								"valueNumber" => $post_id
+// 							))
+// 						)
+// 					);
+// 					array_push($chains, $chain_item);
+// 				}
+// 				foreach ($types_to_add as $type => $fields) {
+// 					foreach ($fields_array[$post_type] as $field) {
+// 						if (isset($field['status']) && $field['status'] == 1) {
+// 							if ($field['label']) {
+// 								$label = $field['label'];
+// 							} else {
+// 								$label = $field['name'];
+// 							}
+// 							$content = get_post_meta( $post_id, $field['name'], true );
+// 							switch ($field['name']) {
+// 								case 'Title':
+// 									$content = $post_title;
+// 									break;
+// 								case 'Content':
+// 									$content = $post_content;
+// 									break;
+// 								case 'Author':
+// 									$content = $post_author;
+// 									break;
+// 								default:
+// 									break;
+// 							}
+// 							$post_data .= <<<EOD
+
+// 							{$label}: {$content}
+
+// 							EOD;
+// 						}
+// 					}
+// 					$post_data .= <<<EOD
+// 					url: {$post_url}
+
+// 					EOD;
+// 					$chain_item = array(
+// 						"chain" => "basic-informer",
+// 						"payload" => array(
+// 							"indexName" => $project_id,
+// 							"no-wait" => true,
+// 							"json" => array(
+// 								"informer" => array(
+// 									"type" => "text",
+// 									"family" => "informer",
+// 									"settings" => array(
+// 										"content" => $post_data,
+// 										"metadata" => array(
+// 											"title" => $post_title,
+// 											"url" => $post_url,
+// 											"eid" => $post_id
+// 										)
+// 									)
+// 								)
+// 							)
+// 						)
+// 					);
+// 					array_push($chains, $chain_item);
+// 				}
+// 			}
+			
+// 		}
+// 	}
+// 	$json_data = array(
+// 		"chains" => $chains
+// 	);
+// 	$json_body = json_encode($json_data);
+// 	$endpoint = ENV_URL . '/v1/functions/chain/template/run-multiple';
+// 	omni_error_log(print_r($chains, true));
+// 	// omni_error_log(print_r($fields_array, true));
+// 	// omni_error_log('UPLOADED: ');
+// 	// omni_error_log(print_r($uploaded_fields_array, true));
+// 	// update_option('_omni_uploaded_fields_option', $fields_array);
+// 	$response = wp_safe_remote_post( $endpoint, array(
+// 		'headers' => array(
+// 			'Content-Type' => 'application/json',
+// 			'Authorization' => 'Bearer ' . $omni_api_key,
+// 		),
+// 		'body' => $json_body, 
+// 		'method'     => 'POST'
+// 	));
+// 	if (is_wp_error($response)) {
+// 		omni_error_log('An error occurred when sending data to a remote server: ' . wp_remote_retrieve_response_code($response));
+// 		return false;
+// 	} else {
+// 		$response_code = wp_remote_retrieve_response_code($response);
+// 		if ($response_code === 200) {
+// 			$body = wp_remote_retrieve_body($response);
+// 			$data = json_decode($body);
+// 			if ($data && isset($data->id)) {
+// 				$id = $data->id;
+// 				update_option('_omni_chain_id', $id);
+// 			}
+// 			omni_error_log('SYNCed!');
+// 			update_option('_omni_uploaded_fields_option', $fields_array);
+// 			return true;
+// 		} else {
+// 			omni_error_log('Error when sending data: server response with code: ' . $response_code);
+// 			return false;
+// 		}
+// 	}
+
+	
+// }
+
+function send_post($post_id) {
 	// fix multiple sending request
 	if (wp_doing_ajax() || !is_admin()) return;
-
 	$omni_api_key = get_option('_omni_api_key');
 	$project_id = get_option('_omni_project_id');
 	$fields_array = get_option('_omni_selected_fields_option');
-	$all_post_data = '';
+	// $all_post_data = '';
+
+	$chains = array();
 
 	$post_title = get_the_title($post_id);
 	$post_content = get_post_field('post_content', $post_id);
@@ -303,11 +713,13 @@ function send_post($post_id) {
 	$author_id = get_post_field ('post_author', $post_id);
 	$post_author = get_the_author_meta('display_name', $author_id);
 	$post_type = get_post_type($post_id);
-			// start
-	$all_post_data .= <<<EOD
-	ID: {$post_id}
-
-	EOD;
+	
+	// remove all tags and br from content
+	$post_content = wp_strip_all_tags($post_content, false);
+	if ($post_title == '') {
+		$post_title = $post_url;
+	}
+	$post_data = '';
 	if (isset($fields_array[$post_type])) {
 		foreach ($fields_array[$post_type] as $field) {
 			if (isset($field['status']) && $field['status'] == 1) {
@@ -330,41 +742,60 @@ function send_post($post_id) {
 					default:
 					break;
 				}
-				$all_post_data .= <<<EOD
+				$post_data .= <<<EOD
 
 				{$label}: {$content}
 
 				EOD;
 			}
 		}
-	} else {
-		return;
 	}
-			// end
 
-	$all_post_data .= <<<EOD
+	$post_data .= <<<EOD
 	url: {$post_url}
 
 	EOD;
+	$chain_item = array(
+		"chain" => "basic-informer",
+		"payload" => array(
+			"indexName" => $project_id,
+			"no-wait" => true,
+			"json" => array(
+				"informer" => array(
+					"type" => "text",
+					"family" => "informer",
+					"settings" => array(
+						"content" => $post_data,
+						"metadata" => array(
+							"title" => $post_title,
+							"url" => $post_url,
+							"eid" => $post_id
+						)
+					)
+				)
+			)
+		)
+	);
+	array_push($chains, $chain_item);
 
 	$json_data = array(
-		'omni_key' => $omni_api_key, 
-		'nowait' => true,
-		'title' => get_site_url(), 
-		'content' => $all_post_data, 
-		'metadata' => array('title' => get_bloginfo('name')),
+		"chains" => $chains
 	);
+	
 	$json_body = json_encode($json_data);
-	$response = wp_safe_remote_post('https://dev-api.omnimind.ai/rest/v1/projects/'. $project_id .'/training/text', array(
-		'body' => $json_body, 
+	$endpoint = ENV_URL . '/v1/functions/chain/template/run-multiple';
+	$response = wp_safe_remote_post( $endpoint, array(
 		'headers' => array(
-			'Content-Type' => 'application/json', 
+			'Content-Type' => 'application/json',
+			'Authorization' => 'Bearer ' . $omni_api_key,
 		),
+		'body' => $json_body, 
+		'method'     => 'POST'
 	));
 
 	if (is_wp_error($response)) {
 		$error_message = $response->get_error_message();
-		omni_error_log('An error occurred when sending data to a remote server: ' . $error_message);
+		omni_error_log('An error occurred when sending post to a remote server: ' . $error_message);
 		return false;
 	} else {
 		$response_code = wp_remote_retrieve_response_code($response);
@@ -378,16 +809,95 @@ function send_post($post_id) {
 			omni_error_log('Post updated: ' . $post_title . ' - Post type: ' .$post_type);
 			return true;
 		} else {
-			omni_error_log('Error when sending data: server response with code: ' . $response_code);
+			omni_error_log('Error when sending post: server response with code: ' . $response_code);
 			return false;
 		}
 	}
 }
+function delete_post($post_id) {
+	$omni_api_key = get_option('_omni_api_key');
+	$project_id = get_option('_omni_project_id');
+	$fields_array = get_option('_omni_selected_fields_option');
+	$post_type = get_post_type($post_id);
+	if (isset($fields_array[$post_type])) {
+		$chains = array();
 
-function omni_error_log($message) {
-    $log_file = plugin_dir_path(dirname(__FILE__)) . 'omni-logs.log';
+		$chain_item = array(
+			"chain" => "basic-delete",
+			"payload" => array(
+				"indexName" => $project_id,
+				"where" => json_encode(array(
+					"operator" => "Equal",
+					"path" => array("eid"),
+					"valueNumber" => $post_id
+				))
+			)
+		);
+		array_push($chains, $chain_item);
+		$json_data = array(
+			"chains" => $chains
+		);
+		$json_body = json_encode($json_data);
+		$endpoint = ENV_URL . '/v1/functions/chain/template/run-multiple';
+		$response = wp_safe_remote_post( $endpoint, array(
+			'headers' => array(
+				'Content-Type' => 'application/json',
+				'Authorization' => 'Bearer ' . $omni_api_key,
+			),
+			'body' => $json_body, 
+			'method'     => 'POST'
+		));
+		omni_error_log('body: ' .  print_r($json_body, true));
+		if (is_wp_error($response)) {
+			omni_error_log('An error occurred when deleting post: ' . wp_remote_retrieve_response_code($response));
+			return false;
+		} else {
+			$response_code = wp_remote_retrieve_response_code($response);
+			if ($response_code === 200) {
+				
+				// omni_error_log('post: ' .  print_r($response, true) . ' deleted');
+				return true;
+			} else {
+				omni_error_log('Error when sending post deleting: server response with code: ' . $response_code);
+				return false;
+			}
+		}
+	}
 
-    $message = date("Y-m-d H:i:s") . " - " . $message . "\n";
 
-    file_put_contents($log_file, $message, FILE_APPEND | LOCK_EX);
 }
+function omni_error_log($message) {
+	$log_file = plugin_dir_path(dirname(__FILE__)) . 'omni-logs.log';
+
+	$message = date("Y-m-d H:i:s") . " - " . $message . "\n";
+
+	file_put_contents($log_file, $message, FILE_APPEND | LOCK_EX);
+}
+
+
+// add_action('wp_trash_post', 'delete_post', 15, 3);
+
+// add_action('save_post', 'send_post', 10, 3);
+function update_post_status($new_status, $old_status, $post){
+	// fix multiple sending request
+	if (wp_doing_ajax() || !is_admin()) return;
+
+	$post_id = $post->ID;
+	$fields_array = get_option('_omni_selected_fields_option');
+	$post_type = get_post_type($post_id);
+	if (isset($fields_array[$post_type])) {
+		
+		if ( $new_status == 'publish') {
+			delete_post($post_id);
+			send_post($post_id);
+		}
+		if ( $new_status == 'draft' || $new_status == 'trash') {
+			delete_post($post_id);
+		}
+	}
+
+	
+	
+}
+
+add_action('transition_post_status', 'update_post_status', 10, 3);

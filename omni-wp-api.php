@@ -12,6 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
 
+define('ENV_URL', 'https://dev-api.omnimind.ai');
+
+
 require_once plugin_dir_path( __FILE__ ) . 'inc/class-api-keys.php';
 require_once plugin_dir_path( __FILE__ ) . 'inc/search.php';
 require_once plugin_dir_path( __FILE__ ) . 'admin/admin-menu.php';
@@ -33,4 +36,4 @@ add_action('admin_enqueue_scripts', 'omni_wp_api_enqueue_scripts');
 
 
 
-add_action('save_post','send_post');
+

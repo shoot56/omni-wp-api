@@ -6,6 +6,18 @@ $project_id = get_option('_omni_project_id');
  ?>
 
 <div class="omni-config wrap">
+
+<table class="table">
+	<tr>
+		<th>selected</th>
+		<th>synced</th>
+	</tr>
+	<tr>
+		<td style="vertical-align: top;"><?php echo '<pre>',print_r(get_option('_omni_selected_fields_option'),1),'</pre>'; ?></td>
+		<td style="vertical-align: top;"><?php echo '<pre>',print_r(get_option('_omni_uploaded_fields_option'),1),'</pre>'; ?></td>
+	</tr>
+</table>
+
 	<div class="omni-config__container">
 		<h2>Omnimind Configuration</h2>
 		<div class="tabset">
@@ -197,7 +209,14 @@ $project_id = get_option('_omni_project_id');
 										<?php 
 										$post_count = wp_count_posts($post_type->name);
 										$label_with_count = $post_type->label . ' (' . $post_count->publish . ')';
-										$checked = in_array($post_type->name, $selected_post_types) ? 'checked' : '';
+										if (is_array($selected_post_types)) {
+											$checked = in_array($post_type->name, $selected_post_types) ? 'checked' : '';
+										} else {
+											$checked = '';
+										}
+										// $selected_post_types_array = explode(',', $selected_post_types);
+
+										// $checked = in_array($post_type->name, $selected_post_types_array) ? 'checked' : '';
 										?>
 										<label class="checkbox-holder content-type-head">
 											<input name="post_types[]" value="<?php echo esc_attr($post_type->name); ?>" type="checkbox" class="checkbox" <?php echo esc_attr($checked); ?> />
