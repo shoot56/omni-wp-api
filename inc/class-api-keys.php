@@ -177,6 +177,8 @@ function sync_data() {
 	$types_to_delete = array_diff_key($uploaded_fields_array, $fields_array);
 	$types_to_add = array_diff_key($fields_array, $uploaded_fields_array);
 
+
+
 	foreach ($fields_array as $type => $fields) {
 		if (isset($uploaded_fields_array[$type])) {
 			if (compare_second_level($fields, $uploaded_fields_array[$type])) {
@@ -192,13 +194,15 @@ function sync_data() {
 			delete_posts_of_type($type, $project_id, $chains);
 		}
 	}
-
+	if (!count($chains)) {
+		return true;
+	}
 	$status = send_requests($chains, $omni_api_key, $project_id, $fields_array);
 	if ($status) {
 		update_option('_omni_last_sync_date', current_time('mysql'));
 	}
 	// update_option('_omni_uploaded_fields_option', $fields_array);
-	omni_error_log(print_r($chains, true));
+	// omni_error_log(print_r($chains, true));
 	return $status;
 }
 
@@ -490,7 +494,7 @@ function delete_post($post_id) {
 			'body' => $json_body, 
 			'method'     => 'POST'
 		));
-		omni_error_log('body: ' .  print_r($json_body, true));
+		// omni_error_log('body: ' .  print_r($json_body, true));
 		if (is_wp_error($response)) {
 			omni_error_log('An error occurred when deleting post: ' . wp_remote_retrieve_response_code($response));
 			return false;
@@ -506,30 +510,21 @@ function delete_post($post_id) {
 			}
 		}
 	}
-
-
 }
+
 function omni_error_log($message) {
 	$log_file = plugin_dir_path(dirname(__FILE__)) . 'omni-logs.log';
-
 	$message = date("Y-m-d H:i:s") . " - " . $message . "\n";
-
 	file_put_contents($log_file, $message, FILE_APPEND | LOCK_EX);
 }
 
-
-// add_action('wp_trash_post', 'delete_post', 15, 3);
-
-// add_action('save_post', 'send_post', 10, 3);
 function update_post_status($new_status, $old_status, $post){
 	// fix multiple sending request
 	if (wp_doing_ajax() || !is_admin()) return;
-
 	$post_id = $post->ID;
 	$fields_array = get_option('_omni_selected_fields_option');
 	$post_type = get_post_type($post_id);
 	if (isset($fields_array[$post_type])) {
-		
 		if ( $new_status == 'publish') {
 			delete_post($post_id);
 			send_post($post_id);
@@ -538,16 +533,12 @@ function update_post_status($new_status, $old_status, $post){
 			delete_post($post_id);
 		}
 	}
-
-	
-	
 }
 
 add_action('transition_post_status', 'update_post_status', 10, 3);
 
-
-// add_action('wp_ajax_sync_data_action', 'sync_data_ajax_handler');
-// function sync_data_ajax_handler() {
-// 	$result = sync_data();
-// 	wp_send_json_success(array('synced' => $result));
-// }
+add_action('wp_ajax_sync_data_action', 'sync_data_ajax_handler');
+function sync_data_ajax_handler() {
+	$result = sync_data();
+	wp_send_json_success(array('synced' => $result));
+}

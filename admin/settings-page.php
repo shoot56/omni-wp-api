@@ -7,17 +7,6 @@ $project_id = get_option('_omni_project_id');
 
 <div class="omni-config wrap">
 
-<table class="table">
-	<tr>
-		<th>selected</th>
-		<th>synced</th>
-	</tr>
-	<tr>
-		<td style="vertical-align: top;"><?php echo '<pre>',print_r(get_option('_omni_selected_fields_option'),1),'</pre>'; ?></td>
-		<td style="vertical-align: top;"><?php echo '<pre>',print_r(get_option('_omni_uploaded_fields_option'),1),'</pre>'; ?></td>
-	</tr>
-</table>
-
 	<div class="omni-config__container">
 		<h2>Omnimind Configuration</h2>
 		<div class="tabset">
@@ -389,7 +378,7 @@ $project_id = get_option('_omni_project_id');
 					$selected_post_types = get_option('_omni_selected_post_types');
 					 ?>
 					
-					<form method="post">
+					<form method="post" id="syncForm">
 						<div class="form-block">
 							<div class="form-block__title"><span>Sync Settings</span></div>
 							<div class="form-block__frame">
@@ -415,6 +404,7 @@ $project_id = get_option('_omni_project_id');
 							</div>
 						</div>
 					</form>
+					
 					<form method="post">
 						<div class="form-block">
 							<div class="form-block__title"><span>Clear and Reinitialize</span></div>

@@ -5,7 +5,7 @@ function custom_post_type_settings_page() {
 	if (!current_user_can('manage_options')) {
 		return;
 	}
-
+	
 	if (isset($_POST['check_api_key'])) {
 		$user_api_key = sanitize_text_field($_POST['verify_api_key']);
 		$api_key_status = verify_api_key($user_api_key);
@@ -21,15 +21,11 @@ function custom_post_type_settings_page() {
 	$project_name = get_option('_omni_project_name');
 	$project_id = get_option('_omni_project_id');
 
-	
 	if (isset($_POST['save_post_types'])) {
 		$selected_post_types = isset($_POST['post_types']) ? $_POST['post_types'] : array();
-
 		update_option('_omni_selected_post_types', $selected_post_types);
-
 		if (isset($_POST['post_type_fields'])) {
 			$selected_fields = $_POST['post_type_fields'];
-
 			$filtered_selected_fields = array();
 			foreach ($selected_fields as $post_type => $fields) {
 				if (in_array($post_type, $selected_post_types)) {
@@ -50,41 +46,16 @@ function custom_post_type_settings_page() {
 					}
 				}
 			}
-
 			update_option('_omni_selected_fields_option', $filtered_selected_fields);
 		}
 	}
 
-
-
-
 	if (isset($_POST['send_post_types'])) {
 		$selected_post_types = get_option('_omni_selected_post_types');
-
-		// $data_sended = send_data($selected_post_types);
 		$data_sended = sync_data($selected_post_types);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		
 		if ($data_sended === true) {
-			// echo 'Data successfully sent to remote server in CSV format.';
 			omni_error_log('Data successfully sent to remote server in CSV format.');
 		} else {
-			// echo 'An error occurred when sending data to a remote server.';
 			omni_error_log('data not sended.');
 		}
 		

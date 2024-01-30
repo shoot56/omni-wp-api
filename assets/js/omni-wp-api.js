@@ -148,37 +148,27 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 });
 
-// function callSyncDataAjax() {
-//     fetch(ajaxurl, {
-//         method: 'POST',
-//         credentials: 'same-origin',
-//         headers: {
-//             'Content-Type': 'application/x-www-form-urlencoded'
-//         },
-//         body: 'action=sync_data_action'
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.success) {
-//             // Отобразить модальное окно с сообщением об успехе
-//             showModal("Синхронизация выполнена успешно");
-//         } else {
-//             // Отобразить модальное окно с сообщением об ошибке
-//             showModal("Ошибка синхронизации");
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Ошибка AJAX:', error);
-//         // Отобразить модальное окно с сообщением об ошибке
-//         showModal("Ошибка AJAX: " + error);
-//     });
-// }
 
-// // Функция для отображения модального окна
-// function showModal(message) {
-//     // Здесь ваш код для отображения модального окна
-//     alert(message); // Простое уведомление для примера
-// }
+document.getElementById('syncForm').addEventListener('submit', function(event) {
+	event.preventDefault();
+	let formData = new FormData();
+	formData.append('action', 'sync_data_action');
 
-// // Пример вызова функции AJAX
-// callSyncDataAjax(); // Раскомментируйте эту строку для вызова функции
+	fetch(ajaxurl, { 
+		method: 'POST',
+		body: formData
+	})
+	.then(response => response.json())
+	.then(data => {
+		if(data.success) {
+			alert('Success:', data);
+			console.log('Success:', data);
+		} else {
+			alert('Error:', data);
+			console.log('Error:', data);
+		}
+	})
+	.catch(error => {
+		console.error('Error:', error);
+	});
+});
