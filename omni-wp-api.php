@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Omni WP API
  * Description: Customizable REST API endpoints with API Key authentication.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: Procoders
  * GitHub Plugin URI: shoot56/omni-wp-api
  * Primary Branch: main
@@ -12,7 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
 
-define('ENV_URL', 'https://dev-api.omnimind.ai');
+// define('ENV_URL', 'https://dev-api.omnimind.ai');
+define('ENV_URL', 'https://app-api.omnimind.ai');
 
 
 require_once plugin_dir_path( __FILE__ ) . 'inc/class-api-keys.php';
