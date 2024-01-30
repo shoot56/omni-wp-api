@@ -357,3 +357,15 @@
 .omni-config .autocomplete-items__item:hover {
 	background-color: #eee;
 }
+
+.omni-modal {
+    display: none; 
+}
+
+.omni-modal-content {
+    
+}
+
+.omni-close {
+    
+}

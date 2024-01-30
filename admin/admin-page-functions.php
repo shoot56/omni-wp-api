@@ -85,7 +85,7 @@ function custom_post_type_settings_page() {
 			omni_error_log('Data successfully sent to remote server in CSV format.');
 		} else {
 			// echo 'An error occurred when sending data to a remote server.';
-			omni_error_log('An error occurred when sending data to a remote server.');
+			omni_error_log('data not sended.');
 		}
 		
 	}

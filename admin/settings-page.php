@@ -396,10 +396,15 @@ $project_id = get_option('_omni_project_id');
 								<div class="form-block__wrap">
 									<div class="form-block__content">
 										<p>If you notice missing information in your search outcomes or if you've recently incorporated new custom content categories to your platform, it's advisable to initiate a synchronization to update these modifications.</p>
-										<p>Last sync status: <span style="color: green;">Success in Mon, March 07, 2022 14:41</span></p>
+										<?php 
+											$sync_date = get_option('_omni_last_sync_date')
+										 ?>
+										<?php if ($sync_date): ?>
+											<p>Last sync status: <span style="color: green;"><?php echo $sync_date; ?></span></p>
+										<?php endif ?>
 									</div>
 									<div class="form-block__button">
-										<button <?php echo ($api_key_status) ? '' : 'disabled'; ?> name="send_post_types" type="submit" class="btn-omni btn-omni--primary btn-omni--block">
+										<button <?php echo ($api_key_status) ? '' : 'disabled'; ?> name="send_post_types" type="submit" id="sync-button" class="btn-omni btn-omni--primary btn-omni--block">
 											<svg class="svg-icon" width="16" height="16" >
 												<use xlink:href="<?php echo plugins_url('assets/images/icons.svg#icon-sync', dirname(__FILE__)); ?>"></use>
 											</svg>
@@ -463,114 +468,9 @@ $project_id = get_option('_omni_project_id');
 
 </div>
 
-<script>
-	// checkbox expand post type
-	var checkboxes = document.querySelectorAll('.content-type-head input[type="checkbox"]');
-	function handleCheckboxChange(event) {
-		var parentItem = event.target.closest('.content-types__item');
-		if (!parentItem) {
-			return; 
-		}
-		var attributesWrap = parentItem.querySelector('.attributes-wrap');
-		if (event.target.checked) {
-			attributesWrap.style.display = 'block'; 
-		} else {
-			attributesWrap.style.display = 'none'; 
-		}
-	}
-	checkboxes.forEach(function(checkbox) {
-		checkbox.addEventListener('change', handleCheckboxChange);
-	});
-	checkboxes.forEach(function(checkbox) {
-		handleCheckboxChange({ target: checkbox });
-	});
-	// add new field
-	document.addEventListener('DOMContentLoaded', function() {
-		document.querySelectorAll('.add-field').forEach(button => {
-			button.addEventListener('click', function() {
-				var tableName = this.getAttribute('data-post-type');
-				var fieldNameInput = this.parentNode.querySelector('.new-field-name');
-				var fieldName = fieldNameInput.value;
-
-				if (fieldName.trim() !== '') {
-					var formattedFieldName = formatFieldName(fieldName);
-
-					var parentItem = this.closest('.content-types__item');
-					var table = parentItem.querySelector('.attributes-table');
-					var newRow = table.insertRow();
-
-					newRow.innerHTML = `
-					<td>${fieldName}</td>
-					<td>
-					<input type="hidden" name="post_type_fields[${tableName}][${fieldName}][name]" value="${fieldName}">
-					<input type="checkbox" name="post_type_fields[${tableName}][${fieldName}][status]" value="1" class="checkbox">
-					</td>
-					<td>
-					<input type="text" class="form-input" name="post_type_fields[${tableName}][${fieldName}][label]" value="${formattedFieldName}">
-					</td>
-					`;
-				}
-				fieldNameInput.value = '';
-			});
-		});
-	});
-
-	function formatFieldName(fieldName) {
-		if (fieldName[0] === '_') {
-			fieldName = fieldName.substring(1);
-		}
-
-		return fieldName.replace(/^[a-z]/, function(match) {
-			return match.toUpperCase();
-		}).replace(/_/g, ' ');
-	}
-
-	// autocomplete
-	document.addEventListener('DOMContentLoaded', function() {
-		document.querySelectorAll('.new-field-name').forEach(input => {
-			input.addEventListener('input', function() {
-				var postType = this.getAttribute('data-post-type');
-				var autocompleteData = JSON.parse(document.querySelector('.autocomplete-data[data-post-type="' + postType + '"]').textContent);
-				var value = this.value.toLowerCase();
-
-				closeAllLists(input);
-
-				if (!value) return false;
-				var list = document.createElement("DIV");
-				list.setAttribute("class", "autocomplete-items");
-				this.parentNode.appendChild(list);
-
-				autocompleteData.forEach(function(item) {
-					if (item.toLowerCase().includes(value)) {
-						var itemDiv = document.createElement("DIV");
-						itemDiv.setAttribute("class", "autocomplete-items__item");
-						itemDiv.innerHTML = item; 
-						itemDiv.innerHTML += "<input type='hidden' value='" + item + "'>";
-						itemDiv.addEventListener("click", function() {
-							input.value = this.getElementsByTagName("input")[0].value;
-							closeAllLists(input);
-						});
-						list.appendChild(itemDiv);
-					}
-				});
-			});
-		});
-
-		function closeAllLists(el, inputElement) {
-			var items = document.getElementsByClassName("autocomplete-items");
-			for (var i = 0; i < items.length; i++) {
-				if (el != items[i] && el != inputElement) {
-					items[i].parentNode.removeChild(items[i]);
-				}
-			}
-		}
-
-		document.addEventListener("click", function (e) {
-			closeAllLists(e.target);
-		});
-	});
-
-
-
-
-</script>
+<div id="myModal" class="omni-modal">
+    <div class="omni-modal-content">
+        <span class="omni-close">&times;</span>
+        <p id="omni-modal-text"></p>
+    </div>
+</div>
