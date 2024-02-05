@@ -12,12 +12,12 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
 
-// define('ENV_URL', 'https://dev-api.omnimind.ai');
-define('ENV_URL', 'https://app-api.omnimind.ai');
+define('ENV_URL', 'https://dev-api.omnimind.ai');
+// define('ENV_URL', 'https://app-api.omnimind.ai');
 
 
 require_once plugin_dir_path( __FILE__ ) . 'inc/class-api-keys.php';
-require_once plugin_dir_path( __FILE__ ) . 'inc/search.php';
+// require_once plugin_dir_path( __FILE__ ) . 'inc/search.php';
 require_once plugin_dir_path( __FILE__ ) . 'admin/admin-menu.php';
 require_once plugin_dir_path( __FILE__ ) . 'admin/admin-page-functions.php';
 
@@ -34,7 +34,5 @@ function omni_wp_api_enqueue_scripts() {
     wp_enqueue_script('omni-wp-api-script');
 }
 add_action('admin_enqueue_scripts', 'omni_wp_api_enqueue_scripts');
-
-
 
 

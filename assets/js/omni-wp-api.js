@@ -148,27 +148,29 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 });
 
+const syncForm = document.getElementById('syncForm');
+if (syncForm) {
+	syncForm.addEventListener('submit', function(event) {
+		event.preventDefault();
+		let formData = new FormData();
+		formData.append('action', 'sync_data_action');
 
-document.getElementById('syncForm').addEventListener('submit', function(event) {
-	event.preventDefault();
-	let formData = new FormData();
-	formData.append('action', 'sync_data_action');
-
-	fetch(ajaxurl, { 
-		method: 'POST',
-		body: formData
-	})
-	.then(response => response.json())
-	.then(data => {
-		if(data.success) {
-			alert('Success:', data);
-			console.log('Success:', data);
-		} else {
-			alert('Error:', data);
-			console.log('Error:', data);
-		}
-	})
-	.catch(error => {
-		console.error('Error:', error);
+		fetch(ajaxurl, { 
+			method: 'POST',
+			body: formData
+		})
+		.then(response => response.json())
+		.then(data => {
+			if(data.success) {
+				alert('Success:', data);
+				console.log('Success:', data);
+			} else {
+				alert('Error:', data);
+				console.log('Error:', data);
+			}
+		})
+		.catch(error => {
+			console.error('Error:', error);
+		});
 	});
-});
+}

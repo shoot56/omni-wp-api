@@ -194,6 +194,7 @@ function sync_data() {
 			delete_posts_of_type($type, $project_id, $chains);
 		}
 	}
+	omni_error_log('sync_data chains:' . print_r($chains, true));
 	if (!count($chains)) {
 		return true;
 	}
@@ -253,6 +254,18 @@ function add_posts_of_type($post_type, $project_id, &$chains, $fields) {
 		'post_type' => $post_type,
 		'post_status' => 'publish',
 		'posts_per_page' => -1,
+		'meta_query' => array(
+			'relation' => 'OR',
+			array(
+				'key'     => '_exclude_from_omni',
+				'value'   => '1',
+				'compare' => '!=',
+			),
+			array(
+				'key'     => '_exclude_from_omni',
+				'compare' => 'NOT EXISTS',
+			),
+		),
 	);
 	$posts = get_posts($args);
 
@@ -264,7 +277,7 @@ function add_posts_of_type($post_type, $project_id, &$chains, $fields) {
 		$post_author = get_the_author_meta('display_name', $post->post_author);
 		$post_title = $post_title ?: $post_url;
 		$post_data = '';
-
+		omni_error_log( 'post type: ' . $post_type . ', Post title: ' . print_r($post_title, true));
 		foreach ($fields as $field) {
 			if (isset($field['status']) && $field['status'] == 1) {
 				$label = $field['label'] ?: $field['name'];
@@ -334,7 +347,7 @@ function send_requests($chains, $omni_api_key, $project_id, $fields_array) {
 	} else {
 		$response_code = wp_remote_retrieve_response_code($response);
 		if ($response_code === 200) {
-			omni_error_log('SYNCed!');
+			
 			update_option('_omni_uploaded_fields_option', $fields_array);
 			return true;
 		} else {
@@ -352,6 +365,11 @@ function send_post($post_id) {
 	$fields_array = get_option('_omni_selected_fields_option');
 	// $all_post_data = '';
 
+	$post_exclude = get_post_meta($post_id, '_exclude_from_omni', true);
+	if ($post_exclude == '1') {
+		return false;
+	}
+	omni_error_log('send_post exclude status: ' . $post_exclude);
 	$chains = array();
 
 	$post_title = get_the_title($post_id);
@@ -502,7 +520,7 @@ function delete_post($post_id) {
 			$response_code = wp_remote_retrieve_response_code($response);
 			if ($response_code === 200) {
 				
-				// omni_error_log('post: ' .  print_r($response, true) . ' deleted');
+				omni_error_log('post: ' . $post_id . ' deleted');
 				return true;
 			} else {
 				omni_error_log('Error when sending post deleting: server response with code: ' . $response_code);
@@ -525,9 +543,16 @@ function update_post_status($new_status, $old_status, $post){
 	$fields_array = get_option('_omni_selected_fields_option');
 	$post_type = get_post_type($post_id);
 	if (isset($fields_array[$post_type])) {
+
+		$exclude_from_omni = get_post_meta($post_id, '_exclude_from_omni', true);
+		omni_error_log('update_post_status exclude status: ' . $exclude_from_omni . '; POST_ID: ' . $post_id);
 		if ( $new_status == 'publish') {
-			delete_post($post_id);
-			send_post($post_id);
+			if ('1' === $exclude_from_omni) {
+				delete_post($post_id); 
+			} else {
+				delete_post($post_id); 
+				send_post($post_id);
+			}
 		}
 		if ( $new_status == 'draft' || $new_status == 'trash') {
 			delete_post($post_id);
@@ -535,10 +560,137 @@ function update_post_status($new_status, $old_status, $post){
 	}
 }
 
-add_action('transition_post_status', 'update_post_status', 10, 3);
+add_action('transition_post_status', 'update_post_status', 999, 3);
 
 add_action('wp_ajax_sync_data_action', 'sync_data_ajax_handler');
 function sync_data_ajax_handler() {
 	$result = sync_data();
 	wp_send_json_success(array('synced' => $result));
 }
+
+
+add_action('add_meta_boxes', function() {
+	$post_types = get_post_types(array('public' => true));
+	foreach ($post_types as $post_type) {
+		add_meta_box(
+			'exclude_omni', // ID
+			'Exclude from Omnimind', // Title
+			'exclude_omni_meta_box_callback', // Callback function
+			$post_type, // Screen (post type)
+			'side', // Context
+			'default' // Priority
+		);
+	}
+});
+
+function exclude_omni_meta_box_callback($post) {
+	$value = get_post_meta($post->ID, '_exclude_from_omni', true);
+	echo '<label><input type="checkbox" name="exclude_from_omni" value="1"'.checked($value, 1, false).'/> Exclude from Omnimind</label>';
+}
+
+// add_action('save_post', function($post_id) {
+// 	if (isset($_POST['exclude_from_omni'])) {
+// 		update_post_meta($post_id, '_exclude_from_omni', '1');
+// 	} else {
+// 		delete_post_meta($post_id, '_exclude_from_omni');
+// 	}
+// });
+
+
+
+
+function add_omni_columns_to_post_types() {
+	$selected_post_types = get_option('_omni_selected_post_types');
+
+	if (is_array($selected_post_types) && !empty($selected_post_types)) {
+		foreach ($selected_post_types as $post_type) {
+			add_filter("manage_{$post_type}_posts_columns", 'add_omni_column');
+			add_action("manage_{$post_type}_posts_custom_column", 'my_column_content', 10, 2);
+		}
+	}
+}
+add_action('admin_init', 'add_omni_columns_to_post_types');
+
+function add_omni_column($columns) {
+	$columns['omni_column'] = 'Omni sync status';
+	return $columns;
+}
+
+function my_column_content($column_name, $post_id) {
+	if ($column_name == 'omni_column') {
+		$post_exclude = get_post_meta($post_id, '_exclude_from_omni', true);
+		if ($post_exclude) {
+			echo '<span style="color:#d03030;" class="dashicons dashicons-no"></span>';
+		} else {
+			echo '<span  style="color:#2baf3a;" class="dashicons dashicons-yes"></span>';
+		}
+	}
+}
+
+function add_quick_and_bulk_edit_to_post_types() {
+	$selected_post_types = get_option('_omni_selected_post_types');
+
+	if (is_array($selected_post_types) && !empty($selected_post_types)) {
+		foreach ($selected_post_types as $post_type) {
+			add_action("bulk_edit_custom_box", 'omni_edit_exclude_function', 10, 2);
+			add_action("quick_edit_custom_box", 'omni_edit_exclude_function', 10, 2);
+		}
+	}
+}
+add_action('admin_init', 'add_quick_and_bulk_edit_to_post_types');
+
+function omni_edit_exclude_function($column_name, $post_type) {
+	if ($column_name == 'omni_column') {
+		wp_nonce_field('save_exclude_from_omni', 'exclude_from_omni_nonce');
+		?>
+		<fieldset class="inline-edit-col-right">
+			<div class="inline-edit-col">
+				<label class="alignleft">
+					<input type="checkbox" name="exclude_from_omni_bulk" value="1" />
+					<span class="checkbox-title">Exclude from Omnimind</span>
+				</label>
+			</div>
+		</fieldset>
+		<?php
+	}
+}
+
+function bulk_quick_save_post($post_id) {
+	omni_error_log('bulk_quick_save_post INIT');
+	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+	if (!current_user_can('edit_post', $post_id)) return;
+	// if (!isset($_POST['exclude_from_omni_nonce']) || !wp_verify_nonce($_POST['exclude_from_omni_nonce'], 'save_exclude_from_omni')) {
+	// 	return;
+	// }
+	if (isset($_POST['exclude_from_omni_bulk'])) {
+		update_post_meta($post_id, '_exclude_from_omni', $_POST['exclude_from_omni_bulk']);
+	} elseif (isset($_POST['exclude_from_omni'])) {
+		update_post_meta($post_id, '_exclude_from_omni', $_POST['exclude_from_omni']);
+	} else {
+		delete_post_meta($post_id, '_exclude_from_omni');
+	}
+	$post_exclude = get_post_meta($post_id, '_exclude_from_omni', true);
+	omni_error_log('bulk_quick_save_post: post_id ' . $post_id . ' saved, status: ' . $post_exclude);
+}
+add_action('save_post', 'bulk_quick_save_post');
+
+
+// add_action('pre_post_update', function($post_id) {
+// 	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+// 	if (!current_user_can('edit_post', $post_id)) return;
+// 	if (wp_doing_ajax() || !is_admin()) return;
+
+// 	$exclude_from_omni = isset($_POST['exclude_from_omni']) ? '1' : '0'; 
+// 	update_post_meta($post_id, '_exclude_from_omni', $exclude_from_omni);
+// 	$post_exclude = get_post_meta($post_id, '_exclude_from_omni', true);
+// 	omni_error_log('pre_post_update: post_id ' . $post_id . ' saved, status: ' . $post_exclude);
+// });
+
+function my_admin_column_width() {
+	$css = '
+	.wp-list-table .column-omni_column { width: 130px; }
+	';
+
+	wp_add_inline_style('wp-admin', $css);
+}
+add_action('admin_enqueue_scripts', 'my_admin_column_width');
