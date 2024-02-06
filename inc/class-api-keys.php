@@ -430,8 +430,7 @@ function send_post( $post_id, bool $deactivateAjax = true ) {
 
 	// fix multiple sending request
 	if ( $deactivateAjax && ( wp_doing_ajax() || ! is_admin() ) ) {
-		// return;
-		exit;
+		return;
 	}
 
 	$omni_api_key = get_option( '_omni_api_key' );
@@ -866,7 +865,7 @@ function handle_post( mixed $fields_array, bool|string $post_type, $post_id, boo
 // 	if (!current_user_can('edit_post', $post_id)) return;
 // 	if (wp_doing_ajax() || !is_admin()) return;
 
-// 	$exclude_from_omni = isset($_POST['exclude_from_omni']) ? '1' : '0'; 
+// 	$exclude_from_omni = isset($_POST['exclude_from_omni']) ? '1' : '0';
 // 	update_post_meta($post_id, '_exclude_from_omni', $exclude_from_omni);
 // 	$post_exclude = get_post_meta($post_id, '_exclude_from_omni', true);
 // 	omni_error_log('pre_post_update: post_id ' . $post_id . ' saved, status: ' . $post_exclude);
