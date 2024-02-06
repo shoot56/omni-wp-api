@@ -429,9 +429,12 @@ function send_requests( $chains, $omni_api_key, $project_id, $fields_array ) {
 function send_post( $post_id, bool $deactivateAjax = true ) {
 
 	// fix multiple sending request
-	if ( $deactivateAjax && ( wp_doing_ajax() || ! is_admin() ) ) {
-		return;
-	}
+    if( $deactivateAjax ) {
+	    if ( wp_doing_ajax() || ! is_admin() ) {
+		    return;
+	    }
+    }
+
 
 	$omni_api_key = get_option( '_omni_api_key' );
 	$project_id   = get_option( '_omni_project_id' );
@@ -585,9 +588,9 @@ function delete_post( $post_id ) {
 			)
 		);
 
-		$chains[]   = $chain_item;
+		$chains[] = $chain_item;
 
-		$json_data  = array(
+		$json_data = array(
 			"chains" => $chains
 		);
 		$json_body = json_encode( $json_data );
@@ -644,13 +647,15 @@ function omni_error_log( $message ): void {
 function update_post_status( $new_status, $old_status, $post ): void {
 
 	// fix multiple sending request => check transferred to send_post()
-	// if (wp_doing_ajax() || !is_admin()) return;
+	if ( wp_doing_ajax() || ! is_admin() ) {
+		return;
+	}
 
 	$post_id      = $post->ID;
 	$fields_array = get_option( '_omni_selected_fields_option' );
 	$post_type    = get_post_type( $post_id );
 
-	handle_post( $fields_array, $post_type, $post_id, $new_status );
+	handle_post( $fields_array, $post_type, $post_id, $new_status, true );
 }
 
 add_action( 'transition_post_status', 'update_post_status', 999, 3 );
@@ -828,7 +833,7 @@ function bulk_quick_save_post( $post_id ): void {
 	$post_type    = get_post_type( $post_id );
 	$status       = get_post_status( $post_id );
 
-	handle_post( $fields_array, $post_type, $post_id, $status );
+	handle_post( $fields_array, $post_type, $post_id, $status, false );
 }
 
 add_action( 'save_post', 'bulk_quick_save_post' );
@@ -839,10 +844,11 @@ add_action( 'save_post', 'bulk_quick_save_post' );
  * @param bool|string $post_type
  * @param $post_id
  * @param bool|string $status
+ * @param bool $deactivateAjax
  *
  * @return void
  */
-function handle_post( mixed $fields_array, bool|string $post_type, $post_id, bool|string $status ): void {
+function handle_post( mixed $fields_array, bool|string $post_type, $post_id, bool|string $status, bool $deactivateAjax = true ): void {
 	if ( isset( $fields_array[ $post_type ] ) ) {
 		$exclude_from_omni = get_post_meta( $post_id, '_exclude_from_omni', true );
 		omni_error_log( 'update_post_status exclude status: ' . $exclude_from_omni . '; POST_ID: ' . $post_id );
@@ -850,7 +856,7 @@ function handle_post( mixed $fields_array, bool|string $post_type, $post_id, boo
 			delete_post( $post_id );
 
 			if ( '1' !== $exclude_from_omni ) {
-				send_post( $post_id );
+				send_post( $post_id, $deactivateAjax );
 			}
 		}
 		if ( $status == 'draft' || $status == 'trash' ) {
