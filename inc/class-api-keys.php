@@ -422,18 +422,17 @@ function send_requests( $chains, $omni_api_key, $project_id, $fields_array ) {
 
 /**
  * @param $post_id
- * @param bool $deactivateAjax
  *
- * @return bool|void
+ * @return bool
  */
-function send_post( $post_id, bool $deactivateAjax = true ) {
+function send_post( $post_id ) {
 
-	// fix multiple sending request
-    if( $deactivateAjax ) {
-	    if ( wp_doing_ajax() || ! is_admin() ) {
-		    return;
-	    }
-    }
+//	// fix multiple sending request
+//    if( $deactivateAjax ) {
+//	    if ( wp_doing_ajax() || ! is_admin() ) {
+//		    return;
+//	    }
+//    }
 
 
 	$omni_api_key = get_option( '_omni_api_key' );
@@ -644,21 +643,24 @@ function omni_error_log( $message ): void {
  *
  * @return void
  */
-function update_post_status( $new_status, $old_status, $post ): void {
-
-	// fix multiple sending request => check transferred to send_post()
-	if ( wp_doing_ajax() || ! is_admin() ) {
-		return;
-	}
-
-	$post_id      = $post->ID;
-	$fields_array = get_option( '_omni_selected_fields_option' );
-	$post_type    = get_post_type( $post_id );
-
-	handle_post( $fields_array, $post_type, $post_id, $new_status, true );
-}
-
-add_action( 'transition_post_status', 'update_post_status', 999, 3 );
+//function update_post_status( $new_status, $old_status, $post ): void {
+//
+//	// fix multiple sending request => check transferred to send_post()
+//	if ( wp_doing_ajax() || ! is_admin() ) {
+//		return;
+//	}
+//
+//	omni_error_log( 'update_post_status function called' );
+//
+//
+//	$post_id      = $post->ID;
+//	$fields_array = get_option( '_omni_selected_fields_option' );
+//	$post_type    = get_post_type( $post_id );
+//
+//	handle_post( $fields_array, $post_type, $post_id, $new_status, true );
+//}
+//
+//add_action( 'transition_post_status', 'update_post_status', 999, 3 );
 
 
 /**
@@ -802,7 +804,39 @@ function omni_edit_exclude_function( $column_name, $post_type ): void {
  */
 function bulk_quick_save_post( $post_id ): void {
 
+	// Check if this function has already been executed in the current request
+	if (defined('OMNI_CUSTOM_FUNCTION_EXECUTED') && OMNI_CUSTOM_FUNCTION_EXECUTED) {
+		return;
+	}
+
+    // Do not execute on DOING_AUTOSAVE
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	// Do not execute on post revision
+	if (wp_is_post_revision($post_id)) {
+		return;
+	}
+
+	// check inlint edit nonce if _inline_edit nonce is set and verify it
+	if (isset($_POST['_inline_edit']) && !wp_verify_nonce($_POST['_inline_edit'], 'inlineeditnonce')) {
+		return;
+	}
+
+	// not inline - fix multiple sending request
+    if( !isset($_POST['_inline_edit']) ) {
+	    if ( wp_doing_ajax() || ! is_admin() ) {
+		    return;
+	    }
+    }
+
 	omni_error_log( 'bulk_quick_save_post INIT' );
+
+
+
+
+
 
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 		return;
@@ -833,7 +867,16 @@ function bulk_quick_save_post( $post_id ): void {
 	$post_type    = get_post_type( $post_id );
 	$status       = get_post_status( $post_id );
 
-	handle_post( $fields_array, $post_type, $post_id, $status, false );
+
+    // Send post to Omnimind
+	handle_post( $fields_array, $post_type, $post_id, $status );
+
+	omni_error_log( '==========' );
+
+
+
+	// Mark that the function has been executed to prevent further executions
+	define('OMNI_CUSTOM_FUNCTION_EXECUTED', true);
 }
 
 add_action( 'save_post', 'bulk_quick_save_post' );
