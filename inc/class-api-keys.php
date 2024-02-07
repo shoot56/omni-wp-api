@@ -728,7 +728,7 @@ add_action( 'admin_init', 'add_omni_columns_to_post_types' );
  *
  * @return mixed
  */
-function add_omni_column( $columns ): mixed {
+function add_omni_column( $columns ) {
 	$columns['omni_column'] = 'Omni sync status';
 
 	return $columns;
@@ -848,7 +848,7 @@ add_action( 'save_post', 'bulk_quick_save_post' );
  *
  * @return void
  */
-function handle_post( mixed $fields_array, bool|string $post_type, $post_id, bool|string $status, bool $deactivateAjax = true ): void {
+function handle_post( $fields_array, $post_type, $post_id, $status, bool $deactivateAjax = true ): void {
 	if ( isset( $fields_array[ $post_type ] ) ) {
 		$exclude_from_omni = get_post_meta( $post_id, '_exclude_from_omni', true );
 		omni_error_log( 'update_post_status exclude status: ' . $exclude_from_omni . '; POST_ID: ' . $post_id );
