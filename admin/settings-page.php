@@ -11,14 +11,13 @@ $project_id = get_option('_omni_project_id');
 $fields_array = get_option('_omni_selected_fields_option');
 $uploaded_fields_array = get_option('_omni_uploaded_fields_option');
  ?>
-<table class="table">
-	<tr>
-		<td><?php echo '<pre>',print_r($fields_array,1),'</pre>'; ?></td>
-		<td><?php echo '<pre>',print_r($uploaded_fields_array,1),'</pre>'; ?></td>
-	</tr>
-</table>
 
-	<div class="omni-config__container">
+    <div class="debug-info">
+		<?php dumper( $fields_array, '$fields_array' ) ?>
+		<?php dumper( $uploaded_fields_array, '$uploaded_fields_array' ) ?>
+    </div>
+
+    <div class="omni-config__container">
 		<h2>Omnimind Configuration</h2>
 		<div class="tabset">
 			<ul class="tab-control">
