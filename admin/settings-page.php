@@ -468,9 +468,14 @@ $uploaded_fields_array = get_option('_omni_uploaded_fields_option');
 
 </div>
 
-<div id="myModal" class="omni-modal">
+<div id="omniAlertModal" class="omni-modal">
+    <span class="omni-modal__close">
+        <svg class="svg-icon" width="16" height="16">
+            <use xlink:href="<?= plugins_url( 'assets/images/icons.svg#icon-close', dirname( __FILE__ ) ); ?>"></use>
+        </svg>
+    </span>
+
     <div class="omni-modal-content">
-        <span class="omni-close">&times;</span>
-        <p id="omni-modal-text"></p>
+        <p class="omni-modal__text"></p>
     </div>
 </div>

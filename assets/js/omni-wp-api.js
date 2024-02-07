@@ -150,27 +150,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
 const syncForm = document.getElementById('syncForm');
 if (syncForm) {
-	syncForm.addEventListener('submit', function(event) {
+
+	// Alert Modal
+	const omniAlertModal = document.getElementById('omniAlertModal');
+
+	// Alert Close Btn
+	const closeButton = omniAlertModal.querySelector('.omni-modal__close');
+	closeButton.addEventListener('click', function () {
+		omniAlertModal.classList.remove('omni-modal--show');
+	});
+
+	syncForm.addEventListener('submit', function (event) {
 		event.preventDefault();
 		let formData = new FormData();
 		formData.append('action', 'sync_data_action');
 
-		fetch(ajaxurl, { 
+		fetch(ajaxurl, {
 			method: 'POST',
 			body: formData
 		})
-		.then(response => response.json())
-		.then(data => {
-			if(data.success) {
-				alert('Success:', data);
-				console.log('Success:', data);
-			} else {
-				alert('Error:', data);
-				console.log('Error:', data);
-			}
-		})
-		.catch(error => {
-			console.error('Error:', error);
-		});
+			.then(response => response.json())
+			.then(data => {
+
+				// Show Alert Modal
+				omniAlertModal.classList.add('omni-modal--show');
+				const omniModalText = omniAlertModal.querySelector('.omni-modal__text');
+
+				if (data.success) {
+					// Add success class
+					omniAlertModal.classList.add('omni-modal--success');
+					omniModalText.innerHTML = "Posts Synchronized successfully!";
+				} else {
+					// Add warning class
+					omniAlertModal.classList.add('omni-modal--warning');
+					omniModalText.innerHTML = "There was an error! Please try again later.";
+				}
+
+				// Remove the class after 5 seconds
+				setTimeout(function () {
+					omniAlertModal.classList.remove('omni-modal--show');
+				}, 5000);
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
 	});
 }

@@ -358,14 +358,57 @@
 	background-color: #eee;
 }
 
+
 .omni-modal {
-    display: none; 
+	position: fixed;
+	bottom: 25px;
+	right: 25px;
+
+	min-width: 120px;
+	max-width: 320px;
+
+	padding: 15px;
+	color: #fff;
+
+	display: flex;
+	opacity: 0;
+	visibility: hidden;
+
+	transition: all ease .3s;
+}
+
+.omni-modal--show {
+	opacity: 1;
+	visibility: visible;
+}
+
+.omni-modal--success {
+	background-color: rgb(25, 135, 84);
+
+}
+
+.omni-modal--warning {
+	background-color: rgb(33, 37, 41);
 }
 
 .omni-modal-content {
-    
+    display: flex;
 }
 
-.omni-close {
-    
+.omni-modal__close {
+	cursor: pointer;
+
+	position: absolute;
+	top: 5px;
+	right: 5px;
+
+	display: flex;
+}
+
+.omni-modal__close svg {
+	fill: #fff;
+}
+
+.omni-modal__text {
+	margin: 0;
 }
