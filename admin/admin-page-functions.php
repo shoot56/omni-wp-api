@@ -5,16 +5,35 @@ function custom_post_type_settings_page() {
 	if (!current_user_can('manage_options')) {
 		return;
 	}
-	
-	if (isset($_POST['check_api_key'])) {
-		$user_api_key = sanitize_text_field($_POST['verify_api_key']);
-		$api_key_status = verify_api_key($user_api_key);
-		if ($api_key_status === true) {
-			update_option('_omni_api_key_status', true);
-		} else {
-			update_option('_omni_api_key_status', false);
-		}
-		update_option('_omni_api_key', $user_api_key);
+
+	if ( isset( $_POST['check_api_key'] ) ) {
+		$user_api_key   = sanitize_text_field( $_POST['verify_api_key'] );
+		$api_key_status = verify_api_key( $user_api_key );
+		if ( $api_key_status === true ) {
+			update_option( '_omni_api_key_status', true ); ?>
+            <script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function () {
+                    omniAlertHandler(
+                        'success',
+                        'API Key stored successfully!'
+                    );
+                });
+            </script>
+		<?php
+        } else {
+			update_option( '_omni_api_key_status', false ); ?>
+            <script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function () {
+                    omniAlertHandler(
+                        'success',
+                        'Something went wrong!' +
+                        '<br/>Please check your API key or try again later.'
+                    );
+                });
+            </script>
+		<?php
+        }
+		update_option( '_omni_api_key', $user_api_key );
 	}
 	$api_key_status = get_option('_omni_api_key_status');
 	$omni_api_key = get_option('_omni_api_key');
@@ -52,41 +71,98 @@ function custom_post_type_settings_page() {
 
 	if (isset($_POST['send_post_types'])) {
 		$selected_post_types = get_option('_omni_selected_post_types');
-		$data_sended = sync_data($selected_post_types);
-		if ($data_sended === true) {
+
+        // ToDo: sync_data() does not expect parameters
+		$data_sent = sync_data($selected_post_types);
+		if ($data_sent === true) {
 			omni_error_log('Data successfully sent to remote server in CSV format.');
 		} else {
 			omni_error_log('data not sended.');
 		}
-		
 	}
 
-	if (isset($_POST['send_project_name'])) {
-		$project_name = sanitize_text_field($_POST['project_name']);
-		$project_created = create_project($project_name);
-		if ($project_created === true) {
-			// echo 'Project created';
-		} else {
-			// echo 'Failed to create project';
-		}
+	// Submit Create new Project
+	if ( isset( $_POST['send_project_name'] ) ) {
+		$project_name    = sanitize_text_field( $_POST['project_name'] );
+		$project_created = create_project( $project_name );
+		if ( $project_created === true ) : ?>
+			<script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function () {
+                    omniAlertHandler(
+                        'success',
+                        'Project Created successfully!'
+                    );
+                });
+			</script>
+		<?php
+		else : ?>
+			<script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function () {
+                    omniAlertHandler(
+                        'warning',
+                        'Failed to create project!' +
+	                    '<br/>Please try again later'
+                    );
+                });
+			</script>
+		<?php
+		endif;
 	}
 
-	if (isset($_POST['delete_project'])) {
+	// Submit Deletion of Project and Clear API Key
+	if ( isset( $_POST['delete_project'] ) ) {
 		$project_deleted = delete_project();
-		if ($project_deleted === true) {
-			// echo 'Project deleted';
-		} else {
-			// echo 'Failed to delete project';
-		}
+		if ( $project_deleted === true ) : ?>
+			<script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function () {
+                    omniAlertHandler(
+                        'success',
+                        'Project Deleted successfully!' +
+	                    '<br/> API Key has been cleared'
+                    );
+                });
+			</script>
+		<?php
+		else : ?>
+			<script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function () {
+                    omniAlertHandler(
+                        'warning',
+                        'Failed to delete project!' +
+	                    '<br/>Please try again later.'
+                    );
+                });
+			</script>
+		<?php
+		endif;
 	}
 
-	if (isset($_POST['reindex_project'])) {
+	// Submit Re-indexing of Project
+	if ( isset( $_POST['reindex_project'] ) ) {
 		$project_reindexed = reindex_project();
-		if ($project_reindexed === true) {
-			// echo 'Project updated';
-		} else {
-			// echo 'Failed to update project';
-		}
+
+		if ( $project_reindexed === true ) : ?>
+			<script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function () {
+                    omniAlertHandler(
+                        'success',
+                        'Project Re-indexed successfully!'
+                    );
+                });
+			</script>
+		<?php
+		else : ?>
+			<script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function () {
+                    omniAlertHandler(
+                        'success',
+                        'Failed to update project!' +
+	                    '<br/>Please try again later.'
+                    );
+                });
+			</script>
+		<?php
+		endif;
 	}
 
 

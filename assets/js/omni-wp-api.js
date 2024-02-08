@@ -165,6 +165,13 @@ if (syncForm) {
 		let formData = new FormData();
 		formData.append('action', 'sync_data_action');
 
+		// Disable Button && add loader class
+		let syncFormSubmitButton = event.submitter;
+		console.log(syncFormSubmitButton);
+
+		syncFormSubmitButton.disabled = true;
+		syncFormSubmitButton.classList.add('btn-omni--loading');
+
 		fetch(ajaxurl, {
 			method: 'POST',
 			body: formData
@@ -179,20 +186,23 @@ if (syncForm) {
 
 				if (data.success) {
 					// Add success class
+					omniAlertModal.classList.remove('omni-modal--warning');
+
 					omniAlertModal.classList.add('omni-modal--success');
 					omniModalText.innerHTML = "Posts Synchronized successfully!";
 					// set current date
 					const now = new Date();
-					const formattedDateTime = now.getFullYear() + '-' +
+					lastSyncDateSpan.innerHTML = now.getFullYear() + '-' +
 						('0' + (now.getMonth() + 1)).slice(-2) + '-' +
 						('0' + now.getDate()).slice(-2) + ' ' +
 						('0' + now.getHours()).slice(-2) + ':' +
 						('0' + now.getMinutes()).slice(-2) + ':' +
 						('0' + now.getSeconds()).slice(-2);
-					lastSyncDateSpan.innerHTML = formattedDateTime;
 					lastSyncDateSpan.style.color = "green";
 				} else {
 					// Add warning class
+					omniAlertModal.classList.remove('omni-modal--success');
+
 					omniAlertModal.classList.add('omni-modal--warning');
 					omniModalText.innerHTML = "There was an error! Please try again later.";
 				}
@@ -201,9 +211,64 @@ if (syncForm) {
 				setTimeout(function () {
 					omniAlertModal.classList.remove('omni-modal--show');
 				}, 5000);
+
+				setTimeout(function () {
+					// Enable Button && remove loader class
+					syncFormSubmitButton.disabled = false;
+					syncFormSubmitButton.classList.remove('btn-omni--loading');
+				}, 200);
 			})
 			.catch(error => {
+				// ToDo: Alert Modal "--danger"
 				console.error('Error:', error);
 			});
 	});
 }
+
+
+/**
+ * Omnimind Settings
+ * Dashboard Alert Handler
+ */
+function omniAlertHandler(alertStatus, alertMessage) {
+
+	// Alert Modal
+	const omniAlertModal = document.getElementById('omniAlertModal');
+
+	// Alert Modal Close Btn
+	const closeButton = omniAlertModal.querySelector('.omni-modal__close');
+	closeButton.addEventListener('click', function () {
+		omniAlertModal.classList.remove('omni-modal--show');
+	});
+
+	// Alert Modal Message container
+	const omniModalText = omniAlertModal.querySelector('.omni-modal__text');
+
+	// Show Alert Modal
+	omniAlertModal.classList.add('omni-modal--show');
+
+	// Handle Success
+	if (alertStatus === "success") {
+		omniAlertModal.classList.add('omni-modal--success');
+		omniModalText.innerHTML = alertMessage;
+	}
+
+	// Handle Warning
+	if (alertStatus === "warning") {
+		omniAlertModal.classList.add('omni-modal--warning');
+		omniModalText.innerHTML = alertMessage;
+	}
+
+	// Hide modal after 5 seconds
+	setTimeout(function () {
+		omniAlertModal.classList.remove('omni-modal--show');
+	}, 5000);
+}
+
+
+/**
+ * Load functions on page loaded
+ */
+document.addEventListener('DOMContentLoaded', function() {
+	omniAlertHandler();
+});

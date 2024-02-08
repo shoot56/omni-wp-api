@@ -213,6 +213,13 @@
 .omni-config .btn-omni svg {
 	fill: currentColor;
 }
+.omni-config .btn-omni.btn-omni--loading svg {
+	animation: spin-loader 2s linear infinite;
+}
+@keyframes spin-loader {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
 .omni-config .btn-omni:hover {
 	background: #f0f0f1;
 	border-color: #0a4b78;
