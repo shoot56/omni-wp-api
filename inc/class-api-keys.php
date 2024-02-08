@@ -1,5 +1,4 @@
 <?php
-// Function to generate a new API key
 
 /**
  * @param $api_key
@@ -156,7 +155,6 @@ function delete_project(): bool {
 
 	$args     = array(
 		'headers' => array(
-			// 'Content-Type' => 'application/json',
 			'Authorization' => 'Bearer ' . $omni_api_key,
 		),
 		'method'  => 'DELETE'
@@ -199,11 +197,6 @@ function sync_data(): ?bool {
 	if ( ! is_array( $uploaded_fields_array ) ) {
 		$uploaded_fields_array = array();
 	}
-
-	// ToDo: remove $types_to_delete | $types_to_add => unused
-	$types_to_delete = array_diff_key( $uploaded_fields_array, $fields_array );
-	$types_to_add    = array_diff_key( $fields_array, $uploaded_fields_array );
-
 	foreach ( $fields_array as $type => $fields ) {
 		if ( isset( $uploaded_fields_array[ $type ] ) ) {
 			if ( compare_second_level( $fields, $uploaded_fields_array[ $type ] ) ) {
@@ -219,16 +212,16 @@ function sync_data(): ?bool {
 			delete_posts_of_type( $type, $project_id, $chains );
 		}
 	}
-	omni_error_log( 'sync_data chains:' . print_r( $chains, true ) );
+
 	if ( ! count( $chains ) ) {
+		update_option( '_omni_last_sync_date', current_time( 'mysql' ) );
 		return true;
 	}
 	$status = send_requests( $chains, $omni_api_key, $project_id, $fields_array );
 	if ( $status ) {
+
 		update_option( '_omni_last_sync_date', current_time( 'mysql' ) );
 	}
-	// update_option('_omni_uploaded_fields_option', $fields_array);
-	// omni_error_log(print_r($chains, true));
 	return $status;
 }
 
@@ -327,7 +320,6 @@ function add_posts_of_type( $post_type, $project_id, &$chains, $fields ): void {
 		$post_author  = get_the_author_meta( 'display_name', $post->post_author );
 		$post_title   = $post_title ?: $post_url;
 		$post_data    = '';
-		omni_error_log( 'post type: ' . $post_type . ', Post title: ' . print_r( $post_title, true ) );
 		foreach ( $fields as $field ) {
 			if ( isset( $field['status'] ) && $field['status'] == 1 ) {
 				$label   = $field['label'] ?: $field['name'];
@@ -407,9 +399,8 @@ function send_requests( $chains, $omni_api_key, $project_id, $fields_array ) {
 	} else {
 		$response_code = wp_remote_retrieve_response_code( $response );
 		if ( $response_code === 200 ) {
-
 			update_option( '_omni_uploaded_fields_option', $fields_array );
-
+			omni_error_log( 'Data synced');
 			return true;
 		} else {
 			omni_error_log( 'Error when sending data: server response with code: ' . $response_code );
@@ -426,27 +417,14 @@ function send_requests( $chains, $omni_api_key, $project_id, $fields_array ) {
  * @return bool
  */
 function send_post( $post_id ) {
-
-//	// fix multiple sending request
-//    if( $deactivateAjax ) {
-//	    if ( wp_doing_ajax() || ! is_admin() ) {
-//		    return;
-//	    }
-//    }
-
-
 	$omni_api_key = get_option( '_omni_api_key' );
 	$project_id   = get_option( '_omni_project_id' );
 	$fields_array = get_option( '_omni_selected_fields_option' );
-	// $all_post_data = '';
-
 	$post_exclude = get_post_meta( $post_id, '_exclude_from_omni', true );
 
 	if ( $post_exclude == '1' ) {
 		return false;
 	}
-
-	omni_error_log( 'send_post exclude status: ' . $post_exclude );
 	$chains = array();
 
 	$post_title   = get_the_title( $post_id );
@@ -602,7 +580,7 @@ function delete_post( $post_id ) {
 			'body'    => $json_body,
 			'method'  => 'POST'
 		) );
-		// omni_error_log('body: ' .  print_r($json_body, true));
+
 		if ( is_wp_error( $response ) ) {
 			omni_error_log( 'An error occurred when deleting post: ' . wp_remote_retrieve_response_code( $response ) );
 
@@ -634,34 +612,6 @@ function omni_error_log( $message ): void {
 	$message  = date( "Y-m-d H:i:s" ) . " - " . $message . "\n";
 	file_put_contents( $log_file, $message, FILE_APPEND | LOCK_EX );
 }
-
-
-/**
- * @param $new_status
- * @param $old_status
- * @param $post
- *
- * @return void
- */
-//function update_post_status( $new_status, $old_status, $post ): void {
-//
-//	// fix multiple sending request => check transferred to send_post()
-//	if ( wp_doing_ajax() || ! is_admin() ) {
-//		return;
-//	}
-//
-//	omni_error_log( 'update_post_status function called' );
-//
-//
-//	$post_id      = $post->ID;
-//	$fields_array = get_option( '_omni_selected_fields_option' );
-//	$post_type    = get_post_type( $post_id );
-//
-//	handle_post( $fields_array, $post_type, $post_id, $new_status, true );
-//}
-//
-//add_action( 'transition_post_status', 'update_post_status', 999, 3 );
-
 
 /**
  * @return void
@@ -698,14 +648,6 @@ function exclude_omni_meta_box_callback( $post ): void {
 	$value = get_post_meta( $post->ID, '_exclude_from_omni', true );
 	echo '<label><input type="checkbox" name="exclude_from_omni" value="1"' . checked( $value, 1, false ) . '/> Exclude from Omnimind</label>';
 }
-
-// add_action('save_post', function($post_id) {
-// 	if (isset($_POST['exclude_from_omni'])) {
-// 		update_post_meta($post_id, '_exclude_from_omni', '1');
-// 	} else {
-// 		delete_post_meta($post_id, '_exclude_from_omni');
-// 	}
-// });
 
 
 /**
@@ -784,14 +726,14 @@ function omni_edit_exclude_function( $column_name, $post_type ): void {
 	if ( $column_name == 'omni_column' ) {
 		wp_nonce_field( 'save_exclude_from_omni', 'exclude_from_omni_nonce' );
 		?>
-        <fieldset class="inline-edit-col-right">
-            <div class="inline-edit-col">
-                <label class="alignleft">
-                    <input type="checkbox" name="exclude_from_omni_bulk" value="1"/>
-                    <span class="checkbox-title">Exclude from Omnimind</span>
-                </label>
-            </div>
-        </fieldset>
+		<fieldset class="inline-edit-col-right">
+			<div class="inline-edit-col">
+				<label class="alignleft">
+					<input type="checkbox" name="exclude_from_omni_bulk" value="1"/>
+					<span class="checkbox-title">Exclude from Omnimind</span>
+				</label>
+			</div>
+		</fieldset>
 		<?php
 	}
 }
@@ -803,53 +745,31 @@ function omni_edit_exclude_function( $column_name, $post_type ): void {
  * @return void
  */
 function bulk_quick_save_post( $post_id ): void {
-
 	// Check if this function has already been executed in the current request
 	if (defined('OMNI_CUSTOM_FUNCTION_EXECUTED') && OMNI_CUSTOM_FUNCTION_EXECUTED) {
 		return;
 	}
-
-    // Do not execute on DOING_AUTOSAVE
+	// Do not execute on DOING_AUTOSAVE
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 		return;
 	}
-
 	// Do not execute on post revision
 	if (wp_is_post_revision($post_id)) {
 		return;
 	}
-
 	// check inlint edit nonce if _inline_edit nonce is set and verify it
 	if (isset($_POST['_inline_edit']) && !wp_verify_nonce($_POST['_inline_edit'], 'inlineeditnonce')) {
 		return;
 	}
-
 	// not inline - fix multiple sending request
-    if( !isset($_POST['_inline_edit']) ) {
-	    if ( wp_doing_ajax() || ! is_admin() ) {
-		    return;
-	    }
-    }
-
-	omni_error_log( 'bulk_quick_save_post INIT' );
-
-
-
-
-
-
-	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-		return;
+	if( !isset($_POST['_inline_edit']) ) {
+		if ( wp_doing_ajax() || ! is_admin() ) {
+			return;
+		}
 	}
-
 	if ( ! current_user_can( 'edit_post', $post_id ) ) {
 		return;
 	}
-
-	// if (!isset($_POST['exclude_from_omni_nonce']) || !wp_verify_nonce($_POST['exclude_from_omni_nonce'], 'save_exclude_from_omni')) {
-	// 	return;
-	// }
-
 	if ( isset( $_POST['exclude_from_omni_bulk'] ) ) {
 		update_post_meta( $post_id, '_exclude_from_omni', $_POST['exclude_from_omni_bulk'] );
 	} elseif ( isset( $_POST['exclude_from_omni'] ) ) {
@@ -859,21 +779,15 @@ function bulk_quick_save_post( $post_id ): void {
 	}
 	$post_exclude = get_post_meta( $post_id, '_exclude_from_omni', true );
 
-	omni_error_log( 'bulk_quick_save_post: post_id ' . $post_id . ' saved, status: ' . $post_exclude );
-
-
 	// Send updates
 	$fields_array = get_option( '_omni_selected_fields_option' );
 	$post_type    = get_post_type( $post_id );
 	$status       = get_post_status( $post_id );
 
-
-    // Send post to Omnimind
+	// Send post to Omnimind
 	handle_post( $fields_array, $post_type, $post_id, $status );
 
 	omni_error_log( '==========' );
-
-
 
 	// Mark that the function has been executed to prevent further executions
 	define('OMNI_CUSTOM_FUNCTION_EXECUTED', true);
@@ -894,10 +808,8 @@ add_action( 'save_post', 'bulk_quick_save_post' );
 function handle_post( $fields_array, $post_type, $post_id, $status, bool $deactivateAjax = true ): void {
 	if ( isset( $fields_array[ $post_type ] ) ) {
 		$exclude_from_omni = get_post_meta( $post_id, '_exclude_from_omni', true );
-		omni_error_log( 'update_post_status exclude status: ' . $exclude_from_omni . '; POST_ID: ' . $post_id );
 		if ( $status == 'publish' ) {
 			delete_post( $post_id );
-
 			if ( '1' !== $exclude_from_omni ) {
 				send_post( $post_id, $deactivateAjax );
 			}
@@ -907,18 +819,6 @@ function handle_post( $fields_array, $post_type, $post_id, $status, bool $deacti
 		}
 	}
 }
-
-
-// add_action('pre_post_update', function($post_id) {
-// 	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-// 	if (!current_user_can('edit_post', $post_id)) return;
-// 	if (wp_doing_ajax() || !is_admin()) return;
-
-// 	$exclude_from_omni = isset($_POST['exclude_from_omni']) ? '1' : '0';
-// 	update_post_meta($post_id, '_exclude_from_omni', $exclude_from_omni);
-// 	$post_exclude = get_post_meta($post_id, '_exclude_from_omni', true);
-// 	omni_error_log('pre_post_update: post_id ' . $post_id . ' saved, status: ' . $post_exclude);
-// });
 
 /**
  * @return void

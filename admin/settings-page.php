@@ -7,16 +7,6 @@ $project_id = get_option('_omni_project_id');
 
 <div class="omni-config wrap">
 
-<?php 
-$fields_array = get_option('_omni_selected_fields_option');
-$uploaded_fields_array = get_option('_omni_uploaded_fields_option');
- ?>
-
-    <div class="debug-info">
-		<?php dumper( $fields_array, '$fields_array' ) ?>
-		<?php dumper( $uploaded_fields_array, '$uploaded_fields_array' ) ?>
-    </div>
-
     <div class="omni-config__container">
 		<h2>Omnimind Configuration</h2>
 		<div class="tabset">
@@ -399,7 +389,7 @@ $uploaded_fields_array = get_option('_omni_uploaded_fields_option');
 											$sync_date = get_option('_omni_last_sync_date')
 										 ?>
 										<?php if ($sync_date): ?>
-											<p>Last sync status: <span style="color: green;"><?php echo $sync_date; ?></span></p>
+											<p>Last sync status: <span id="last-sync-date" style="color: green;"><?php echo $sync_date; ?></span></p>
 										<?php endif ?>
 									</div>
 									<div class="form-block__button">
