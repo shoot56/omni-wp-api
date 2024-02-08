@@ -131,8 +131,10 @@ function reindex_project(): bool {
 			$data_sent = sync_data();
 			if ( $data_sent === true ) {
 				omni_error_log( 'Data successfully updated in reindex_project.' );
+				omni_error_log( '==========' ); // Separator
 			} else {
 				omni_error_log( 'Error sending data in reindex_project.' );
+				omni_error_log( '==========' ); // Separator
 			}
 
 			return true;
@@ -786,8 +788,7 @@ function bulk_quick_save_post( $post_id ): void {
 
 	// Send post to Omnimind
 	handle_post( $fields_array, $post_type, $post_id, $status );
-
-	omni_error_log( '==========' );
+	omni_error_log( '==========' ); // Separator
 
 	// Mark that the function has been executed to prevent further executions
 	define('OMNI_CUSTOM_FUNCTION_EXECUTED', true);

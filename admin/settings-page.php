@@ -377,33 +377,43 @@ $project_id = get_option('_omni_project_id');
 					$selected_fields = get_option('_omni_selected_fields_option');
 					$selected_post_types = get_option('_omni_selected_post_types');
 					 ?>
-					
-					<form method="post" id="syncForm">
-						<div class="form-block">
-							<div class="form-block__title"><span>Sync Settings</span></div>
-							<div class="form-block__frame">
-								<div class="form-block__wrap">
-									<div class="form-block__content">
-										<p>If you notice missing information in your search outcomes or if you've recently incorporated new custom content categories to your platform, it's advisable to initiate a synchronization to update these modifications.</p>
-										<?php 
-											$sync_date = get_option('_omni_last_sync_date')
-										 ?>
-										<?php if ($sync_date): ?>
-											<p>Last sync status: <span id="last-sync-date" style="color: green;"><?php echo $sync_date; ?></span></p>
-										<?php endif ?>
-									</div>
-									<div class="form-block__button">
-										<button <?php echo ($api_key_status) ? '' : 'disabled'; ?> name="send_post_types" type="submit" id="sync-button" class="btn-omni btn-omni--primary btn-omni--block">
-											<svg class="svg-icon" width="16" height="16" >
-												<use xlink:href="<?php echo plugins_url('assets/images/icons.svg#icon-sync', dirname(__FILE__)); ?>"></use>
-											</svg>
-											<span>Sync Now</span>
-										</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</form>
+
+                    <form method="post" id="syncForm">
+                        <div class="form-block">
+                            <div class="form-block__title">
+                                <span>Sync Settings</span>
+                            </div>
+
+                            <div class="form-block__frame">
+                                <div class="form-block__wrap">
+                                    <div class="form-block__content">
+                                        <p>If you notice missing information in your search outcomes or if you've recently incorporated new custom content categories to your platform, it's advisable to initiate a synchronization to update these modifications.</p>
+
+										<?php // Get last Sync Date
+										$sync_date = get_option( '_omni_last_sync_date' ); ?>
+
+                                        <p>Last sync status:
+                                            <span id="last-sync-date"
+                                                  style="<?= ! empty( $sync_date ) ? 'color: green;' : '' ?>">
+                                                <?= ! empty( $sync_date ) ? $sync_date : 'N/A'; ?>
+                                            </span>
+                                        </p>
+                                    </div>
+
+                                    <div class="form-block__button">
+                                        <button <?php echo ( $api_key_status ) ? '' : 'disabled'; ?>
+                                                name="send_post_types" type="submit" id="sync-button"
+                                                class="btn-omni btn-omni--primary btn-omni--block">
+                                            <svg class="svg-icon" width="16" height="16">
+                                                <use xlink:href="<?= plugins_url( 'assets/images/icons.svg#icon-sync', dirname( __FILE__ ) ); ?>"></use>
+                                            </svg>
+                                            <span>Sync Now</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
 
 					<form method="post">
 						<div class="form-block">
