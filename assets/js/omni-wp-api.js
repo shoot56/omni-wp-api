@@ -171,6 +171,7 @@ if (syncForm) {
 		})
 			.then(response => response.json())
 			.then(data => {
+				const lastSyncDateSpan = document.getElementById('last-sync-date');
 
 				// Show Alert Modal
 				omniAlertModal.classList.add('omni-modal--show');
@@ -180,6 +181,16 @@ if (syncForm) {
 					// Add success class
 					omniAlertModal.classList.add('omni-modal--success');
 					omniModalText.innerHTML = "Posts Synchronized successfully!";
+					// set current date
+					const now = new Date();
+					const formattedDateTime = now.getFullYear() + '-' +
+						('0' + (now.getMonth() + 1)).slice(-2) + '-' +
+						('0' + now.getDate()).slice(-2) + ' ' +
+						('0' + now.getHours()).slice(-2) + ':' +
+						('0' + now.getMinutes()).slice(-2) + ':' +
+						('0' + now.getSeconds()).slice(-2);
+					lastSyncDateSpan.innerHTML = formattedDateTime;
+					lastSyncDateSpan.style.color = "green";
 				} else {
 					// Add warning class
 					omniAlertModal.classList.add('omni-modal--warning');
