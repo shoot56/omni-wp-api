@@ -68,14 +68,14 @@ function create_project($project_name): bool
 }
 
 /**
- * Makes a search request to the API.
+ * Makes a search request to the Omni API.
  *
- * @param string $api_key The API key for authorization.
+ * @param string $query The search query.
+ * @param int $offset The offset for pagination of search results.
  *
- * @return bool|array Returns the response body as an array if the request is successful,
- *                   otherwise returns false.
+ * @return bool|array Returns either false if there was an error or an array of search results.
  */
-function make_search_req(string $query, int $offset): array
+function make_search_req(string $query, int $offset): bool|array
 {
     $omni_api_key = get_option('_omni_api_key');
     $project_id = get_option('_omni_project_id');
@@ -99,6 +99,7 @@ function make_search_req(string $query, int $offset): array
 
     $response = wp_safe_remote_post($url, $args);
     if (is_wp_error($response)) {
+        omni_error_log('Search req error: ' . $response);
         return false;
     } else {
         return json_decode(wp_remote_retrieve_body($response), true);
