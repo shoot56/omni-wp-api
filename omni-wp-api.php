@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Omni WP API
  * Description: Customizable REST API endpoints with API Key authentication.
- * Version: 1.0.4
+ * Version: 1.0.5
  * Author: Procoders
  * GitHub Plugin URI: shoot56/omni-wp-api
  * Primary Branch: main
@@ -40,14 +40,6 @@ function omni_wp_api_enqueue_scripts()
 
 add_action('admin_enqueue_scripts', 'omni_wp_api_enqueue_scripts');
 
-/**
- * Sets up and registers the frontend scripts for the Omni plugin.
- *
- * This function registers the necessary JavaScript file(s) and localizes the script by passing
- * the admin-ajax URL and query nonce to be used in the client-side scripts.
- *
- * @return void
- */
 function omni_frontend_scripts(): void
 {
     wp_register_script('omni-wp-search-script', plugins_url('assets/js/omni-wp-search.js', __FILE__), array(), null, true);
@@ -59,18 +51,15 @@ function omni_frontend_scripts(): void
         )
     );
 }
-
 add_action('wp_enqueue_scripts', 'omni_frontend_scripts', 99);
+
 function omniwp_search_enqueue_styles()
 {
     wp_enqueue_style('omni-wp-search-style', plugins_url('assets/css/omni-wp-search.css', __FILE__));
 }
-
-// Hook into the 'wp_enqueue_scripts' action to ensure our script is loaded whenever necessary
 add_action('wp_enqueue_scripts', 'omniwp_search_enqueue_styles');
-/**
- * Register ajax cals for search.
- */
+
+// Register ajax cals for search.
 add_action('wp_ajax_nopriv_omni_search_handle_query', 'omni_search_handle_query');
 add_action('wp_ajax_omni_search_handle_query', 'omni_search_handle_query');
 

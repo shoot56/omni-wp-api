@@ -75,7 +75,7 @@ function create_project($project_name): bool
  * @return bool|array Returns the response body as an array if the request is successful,
  *                   otherwise returns false.
  */
-function make_search_req($query, $offset): array
+function make_search_req(string $query, int $offset): array
 {
     $omni_api_key = get_option('_omni_api_key');
     $project_id = get_option('_omni_project_id');
@@ -84,7 +84,7 @@ function make_search_req($query, $offset): array
     $data = array(
         'query' => $query,
         'hybrid' => 0,
-        'offset' => (int)$offset,
+        'offset' => $offset,
         'limit' => 6,
         'language' => get_locale()
     );
@@ -96,6 +96,7 @@ function make_search_req($query, $offset): array
         'body' => wp_json_encode($data),
         'headers' => $headers,
     );
+
     $response = wp_safe_remote_post($url, $args);
     if (is_wp_error($response)) {
         return false;
