@@ -397,7 +397,7 @@ function add_posts_of_type($post_type, $project_id, &$chains, $fields): void
             "payload" => array(
                 "indexName" => $project_id,
                 "no-wait" => true,
-                "widgetTypeId" => 12,
+                "widgetTypeId" => WIDGET_TYPE_ID,
                 "json" => array(
                     "informer" => array(
                         "type" => "text",
@@ -532,6 +532,7 @@ function send_post($post_id)
         "payload" => array(
             "indexName" => $project_id,
             "no-wait" => true,
+            "widgetTypeId" => WIDGET_TYPE_ID,
             "json" => array(
                 "informer" => array(
                     "type" => "text",
@@ -656,15 +657,37 @@ function delete_post($post_id)
 
 
 /**
- * @param $message
+ * @param string $message The error message to be logged
  *
  * @return void
  */
-function omni_error_log($message): void
+function omni_error_log(string $message): void
 {
-    $log_file = plugin_dir_path(dirname(__FILE__)) . 'omni-logs.log';
-    $message = date("Y-m-d H:i:s") . " - " . $message . "\n";
-    file_put_contents($log_file, $message, FILE_APPEND | LOCK_EX);
+    global $wp_filesystem;
+
+    // Include the WP_Filesystem class.
+    require_once(ABSPATH . 'wp-admin/includes/file.php');
+
+    // Initialize the WP_Filesystem.
+    WP_Filesystem();
+
+    // Check if directory and file exist, if not create them
+    $log_path = plugin_dir_path(dirname(__FILE__)) . 'logs';
+    $log_file = $log_path . '/omni.log';
+
+    if (!$wp_filesystem->is_dir($log_path)) {
+        $wp_filesystem->mkdir($log_path);
+    }
+
+    if (!$wp_filesystem->exists($log_file)) {
+        $wp_filesystem->put_contents($log_file, '', FS_CHMOD_FILE); // empty file
+    }
+
+    $log = $wp_filesystem->get_contents($log_file);
+    $log .= 'Message: ' . $message . "\n";
+    $log .= 'Date: ' . gmdate('Y-m-d H:i:s') . "\n\n";
+
+    $wp_filesystem->put_contents(plugin_dir_path(dirname(__FILE__)) . 'Logs/debug.log', $log, FS_CHMOD_FILE);
 }
 
 /**

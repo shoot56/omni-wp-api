@@ -15,6 +15,8 @@ if (!defined('ABSPATH')) {
 define('ENV_URL', 'https://dev-api.omnimind.ai');
 //define('ENV_URL', 'https://app-api.omnimind.ai');
 
+// Temporary id set
+define('WIDGET_TYPE_ID', 12);
 
 require_once plugin_dir_path(__FILE__) . 'inc/debugger.php';
 require_once plugin_dir_path(__FILE__) . 'inc/class-api-keys.php';
