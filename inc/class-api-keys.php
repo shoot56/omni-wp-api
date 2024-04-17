@@ -687,7 +687,7 @@ function omni_error_log(string $message): void
     $log .= 'Message: ' . $message . "\n";
     $log .= 'Date: ' . gmdate('Y-m-d H:i:s') . "\n\n";
 
-    $wp_filesystem->put_contents(plugin_dir_path(dirname(__FILE__)) . 'Logs/debug.log', $log, FS_CHMOD_FILE);
+    $wp_filesystem->put_contents(plugin_dir_path(dirname(__FILE__)) . 'Logs/omni.log', $log, FS_CHMOD_FILE);
 }
 
 /**
