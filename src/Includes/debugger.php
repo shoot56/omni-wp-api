@@ -1,64 +1,69 @@
 <?php
+
 namespace Procoders\Omni\Includes;
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-/**
- * Beautify var_dump()
- *
- * Optionally choose to kill operation
- */
-function dumper( $data, $label = '', $return = false, $kill = false ) {
-	$debug           = debug_backtrace();
-	$callingFile     = $debug[0]['file'];
-	$callingFileLine = $debug[0]['line'];
+class debugger
+{
 
-	ob_start();
-	var_dump( $data );
-	$c = ob_get_contents();
-	ob_end_clean();
+    /**
+     * Beautify var_dump()
+     *
+     * Optionally choose to kill operation
+     */
+    public function dumper($data, $label = '', $return = false, $kill = false)
+    {
+        $debug = debug_backtrace();
+        $callingFile = $debug[0]['file'];
+        $callingFileLine = $debug[0]['line'];
 
-	$c = preg_replace( "/\r\n|\r/", "\n", $c );
-	$c = str_replace( "]=>\n", '] = ', $c );
-	$c = preg_replace( '/= {2,}/', '= ', $c );
-	$c = preg_replace( "/\[\"(.*?)\"\] = /i", "[$1] = ", $c );
-	$c = preg_replace( '/  /', "    ", $c );
-	$c = preg_replace( "/\"\"(.*?)\"/i", "\"$1\"", $c );
-	$c = preg_replace( "/(int|float)\(([0-9\.]+)\)/i", "$1() <span class=\"number\">$2</span>", $c );
+        ob_start();
+        var_dump($data);
+        $c = ob_get_contents();
+        ob_end_clean();
 
-	// Syntax Highlighting of Strings. This seems cryptic, but it will also allow non-terminated strings to get parsed.
-	$c = preg_replace( "/(\[[\w ]+\] = string\([0-9]+\) )\"(.*?)/sim", "$1<span class=\"string\">\"", $c );
-	$c = preg_replace( "/(\"\n{1,})( {0,}\})/sim", "$1</span>$2", $c );
-	$c = preg_replace( "/(\"\n{1,})( {0,}\[)/sim", "$1</span>$2", $c );
-	$c = preg_replace( "/(string\([0-9]+\) )\"(.*?)\"\n/sim", "$1<span class=\"string\">\"$2\"</span>\n", $c );
+        $c = preg_replace("/\r\n|\r/", "\n", $c);
+        $c = str_replace("]=>\n", '] = ', $c);
+        $c = preg_replace('/= {2,}/', '= ', $c);
+        $c = preg_replace("/\[\"(.*?)\"\] = /i", "[$1] = ", $c);
+        $c = preg_replace('/  /', "    ", $c);
+        $c = preg_replace("/\"\"(.*?)\"/i", "\"$1\"", $c);
+        $c = preg_replace("/(int|float)\(([0-9\.]+)\)/i", "$1() <span class=\"number\">$2</span>", $c);
 
-	$regex = array(
-		// Numbers
-		'numbers'  => array(
-			'/(^|] = )(array|float|int|string|resource|object\(.*\)|\&amp;object\(.*\))\(([0-9\.]+)\)/i',
-			'$1$2(<span class="number">$3</span>)'
-		),
-		// Keywords
-		'null'     => array( '/(^|] = )(null)/i', '$1<span class="keyword">$2</span>' ),
-		'bool'     => array( '/(bool)\((true|false)\)/i', '$1(<span class="keyword">$2</span>)' ),
-		// Types
-		'types'    => array( '/(of type )\((.*)\)/i', '$1(<span class="type">$2</span>)' ),
-		// Objects
-		'object'   => array( '/(object|\&amp;object)\(([\w]+)\)/i', '$1(<span class="object">$2</span>)' ),
-		// Function
-		'function' => array(
-			'/(^|] = )(array|string|int|float|bool|resource|object|\&amp;object)\(/i',
-			'$1<span class="function">$2</span>('
-		),
-	);
+        // Syntax Highlighting of Strings. This seems cryptic, but it will also allow non-terminated strings to get parsed.
+        $c = preg_replace("/(\[[\w ]+\] = string\([0-9]+\) )\"(.*?)/sim", "$1<span class=\"string\">\"", $c);
+        $c = preg_replace("/(\"\n{1,})( {0,}\})/sim", "$1</span>$2", $c);
+        $c = preg_replace("/(\"\n{1,})( {0,}\[)/sim", "$1</span>$2", $c);
+        $c = preg_replace("/(string\([0-9]+\) )\"(.*?)\"\n/sim", "$1<span class=\"string\">\"$2\"</span>\n", $c);
 
-	foreach ( $regex as $x ) {
-		$c = preg_replace( $x[0], $x[1], $c );
-	}
+        $regex = array(
+            // Numbers
+            'numbers' => array(
+                '/(^|] = )(array|float|int|string|resource|object\(.*\)|\&amp;object\(.*\))\(([0-9\.]+)\)/i',
+                '$1$2(<span class="number">$3</span>)'
+            ),
+            // Keywords
+            'null' => array('/(^|] = )(null)/i', '$1<span class="keyword">$2</span>'),
+            'bool' => array('/(bool)\((true|false)\)/i', '$1(<span class="keyword">$2</span>)'),
+            // Types
+            'types' => array('/(of type )\((.*)\)/i', '$1(<span class="type">$2</span>)'),
+            // Objects
+            'object' => array('/(object|\&amp;object)\(([\w]+)\)/i', '$1(<span class="object">$2</span>)'),
+            // Function
+            'function' => array(
+                '/(^|] = )(array|string|int|float|bool|resource|object|\&amp;object)\(/i',
+                '$1<span class="function">$2</span>('
+            ),
+        );
 
-	$style = '
+        foreach ($regex as $x) {
+            $c = preg_replace($x[0], $x[1], $c);
+        }
+
+        $style = '
     /* outside div - it will float and match the screen */
     .dumpr {
         margin: 2px;
@@ -94,46 +99,68 @@ function dumper( $data, $label = '', $return = false, $kill = false ) {
     .dumpr span.type {color: #0072c4;}
     ';
 
-	$style = preg_replace( "/ {2,}/", "", $style );
-	$style = preg_replace( "/\t|\r\n|\r|\n/", "", $style );
-	$style = preg_replace( "/\/\*.*?\*\//i", '', $style );
-	$style = str_replace( '}', '} ', $style );
-	$style = str_replace( ' {', '{', $style );
-	$style = trim( $style );
+        $style = preg_replace("/ {2,}/", "", $style);
+        $style = preg_replace("/\t|\r\n|\r|\n/", "", $style);
+        $style = preg_replace("/\/\*.*?\*\//i", '', $style);
+        $style = str_replace('}', '} ', $style);
+        $style = str_replace(' {', '{', $style);
+        $style = trim($style);
 
-	$c = trim( $c );
-	$c = preg_replace( "/\n<\/span>/", "</span>\n", $c );
+        $c = trim($c);
+        $c = preg_replace("/\n<\/span>/", "</span>\n", $c);
 
-	if ( $label == '' ) {
-		$line1 = '';
-	} else {
-		$line1 = "<strong>$label</strong> \n";
-	}
+        if ($label == '') {
+            $line1 = '';
+        } else {
+            $line1 = "<strong>$label</strong> \n";
+        }
 
-	$out = "\n<!-- Dumpr Begin -->\n" .
-	       "<style type=\"text/css\">" . $style . "</style>\n" .
-	       "<div class=\"dumpr\">
+        $out = "\n<!-- Dumpr Begin -->\n" .
+            "<style type=\"text/css\">" . $style . "</style>\n" .
+            "<div class=\"dumpr\">
         <div><pre>$line1 $callingFile : $callingFileLine \n$c\n</pre></div></div><div style=\"clear:both;\">&nbsp;</div>" .
-	       "\n<!-- Dumpr End -->\n";
+            "\n<!-- Dumpr End -->\n";
 
-	if ( $return ) {
-		return $out;
+        if ($return) {
+            return $out;
 
-	} else {
-		echo $out;
-	}
+        } else {
+            echo $out;
+        }
+    }
 
-//	if ( !$return ) {
-//		return $out;
-//	} else {
-//		echo $out;
-//
-//		die('tester');
-//
-//		if($kill) {
-//			die();
-//		}
-//	}
-//
-//	return;
+
+    /**
+     * @param string $message The error message to be logged
+     *
+     * @return void
+     */
+    public function omni_error_log(string $message): void
+    {
+        global $wp_filesystem;
+
+        // Include the WP_Filesystem class.
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+
+        // Initialize the WP_Filesystem.
+        WP_Filesystem();
+
+        // Check if directory and file exist, if not create them
+        $log_path = plugin_dir_path(dirname(__FILE__)) . 'logs';
+        $log_file = $log_path . '/omni.log';
+
+        if (!$wp_filesystem->is_dir($log_path)) {
+            $wp_filesystem->mkdir($log_path);
+        }
+
+        if (!$wp_filesystem->exists($log_file)) {
+            $wp_filesystem->put_contents($log_file, '', FS_CHMOD_FILE); // empty file
+        }
+
+        $log = $wp_filesystem->get_contents($log_file);
+        $log .= 'Message: ' . $message . "\n";
+        $log .= 'Date: ' . gmdate('Y-m-d H:i:s') . "\n\n";
+
+        $wp_filesystem->put_contents(plugin_dir_path(dirname(__FILE__)) . 'Logs/omni.log', $log, FS_CHMOD_FILE);
+    }
 }

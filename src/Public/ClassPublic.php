@@ -10,19 +10,24 @@ use Procoders\Omni\Includes\api as Api;
 
 class ClassPublic
 {
+    private $template;
+    private $api;
     /**
      * Creates a shortcode for displaying the Omni Search form.
      *
      * @return string The output of the shortcode.
      */
+    public function __construct()
+    {
+        $this->template = new Loader();
+        $this->api = new Api();
+    }
     public function omni_search_shortcode()
     {
-        $template = new Loader();
-
         ob_start();
-        $template->set_template_data(
+        $this->template->set_template_data(
             array(
-                'template' => $template,
+                'template' => $this->template,
             )
         )->get_template_part('public/search-form');
         return ob_get_clean();
@@ -35,32 +40,34 @@ class ClassPublic
      */
     public function omni_search_handle_query(): void
     {
-        $api = new Api();
-        // Capture input values, if they exist
-        $nonce = sanitize_text_field($_POST['nonce']) ?? null;
-        $query = $_POST['query'] ?? null;
-        $offset = filter_var($_POST['offset'], FILTER_VALIDATE_INT, array('options' => array('min_range' => 0))) ?? null;
-
-        // If not all necessary data has been posted or the nonce doesn't verify, return an error
-        if (!$nonce || !$query || !wp_verify_nonce($nonce, 'omni_search_handle_query')) {
+        // Check and sanitize input values
+        if (!isset($_POST['nonce'], $_POST['query'], $_POST['offset']) || !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'omni_search_handle_query')) {
             wp_send_json_error(['message' => 'Permission denied...']);
             return;
         }
 
+        // Assign sanitized form values to variables
+        $nonce = sanitize_text_field($_POST['nonce']);
+        $query = sanitize_text_field($_POST['query']);
+        $offset = filter_var($_POST['offset'], FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)));
+
+        $this->perform_search($nonce, $query, $offset);
+    }
+
+    private function perform_search($nonce, $query, $offset): void
+    {
         // Create a unique cache key for this query
         $cache_key = 'omni_search_results_' . md5($query);
-
         // Try to retrieve the result from the cache
         $cache = get_transient($cache_key);
 
-        // If a cached response exists, return it and stop there
         if ($cache !== false) {
             wp_send_json_success($cache);
             return;
         }
 
         // If no cached response exits, make the search request
-        $response = $api->make_search_req($query, $offset);
+        $response = $this->api->make_search_req($query, $offset);
 
         // If the search request fails, return an error
         if ($response === false) {
