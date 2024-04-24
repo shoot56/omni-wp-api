@@ -139,7 +139,7 @@ $ai_cache = $data->form['ai_cache'];
                                         <div class="form-block__button">
                                             <button class="btn-omni btn-omni--warning btn-omni--block">
                                                 <svg class="svg-icon" width="16" height="16">
-                                                    <use xlink:href="<?php echo plugins_url('assets/images/icons.svg#icon-purge', dirname(__FILE__)); ?>"></use>
+                                                    <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-purge', dirname(__FILE__)); ?>"></use>
                                                 </svg>
                                                 <span><?php _e('Purge cache') ?></span>
                                             </button>
@@ -149,7 +149,7 @@ $ai_cache = $data->form['ai_cache'];
                             </div>
                             <button name="save_general" type="submit" class="btn-omni btn-omni--primary">
                                 <svg class="svg-icon" width="16" height="16">
-                                    <use xlink:href="<?php echo plugins_url('assets/images/icons.svg#icon-save', dirname(__FILE__)); ?>"></use>
+                                    <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-save', dirname(__FILE__)); ?>"></use>
                                 </svg>
                                 <span><?php _e('Save') ?></span>
                             </button>
@@ -402,7 +402,7 @@ $ai_cache = $data->form['ai_cache'];
                         <button <?php echo ($api_key_status) ? '' : 'disabled'; ?> type="submit" name="save_post_types"
                                                                                    class="btn-omni btn-omni--primary">
                             <svg class="svg-icon" width="16" height="16">
-                                <use xlink:href="<?php echo plugins_url('assets/images/icons.svg#icon-save', dirname(__FILE__)); ?>"></use>
+                                <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-save', dirname(__FILE__)); ?>"></use>
                             </svg>
                             <span>Save Post Types</span>
                         </button>
@@ -443,7 +443,7 @@ $ai_cache = $data->form['ai_cache'];
                                                 name="send_post_types" type="submit" id="sync-button"
                                                 class="btn-omni btn-omni--primary btn-omni--block">
                                             <svg class="svg-icon" width="16" height="16">
-                                                <use xlink:href="<?= plugins_url('assets/images/icons.svg#icon-sync', dirname(__FILE__)); ?>"></use>
+                                                <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-sync', dirname(__FILE__)); ?>"></use>
                                             </svg>
                                             <span>Sync Now</span>
                                         </button>
@@ -470,7 +470,7 @@ $ai_cache = $data->form['ai_cache'];
                                                 type="submit"
                                                 class="btn-omni btn-omni--warning btn-omni--block">
                                             <svg class="svg-icon" width="16" height="16">
-                                                <use xlink:href="<?php echo plugins_url('assets/images/icons.svg#icon-purge', dirname(__FILE__)); ?>"></use>
+                                                <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-purge', dirname(__FILE__)); ?>"></use>
                                             </svg>
                                             <span>Re-Index</span>
                                         </button>
@@ -495,7 +495,7 @@ $ai_cache = $data->form['ai_cache'];
                                                                                                    type="submit"
                                                                                                    class="btn-omni btn-omni--danger btn-omni--block">
                                             <svg class="svg-icon" width="16" height="16">
-                                                <use xlink:href="<?php echo plugins_url('assets/images/icons.svg#icon-delete', dirname(__FILE__)); ?>"></use>
+                                                <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-delete', dirname(__FILE__)); ?>"></use>
                                             </svg>
                                             <span>Delete</span>
                                         </button>
@@ -518,7 +518,7 @@ $ai_cache = $data->form['ai_cache'];
 <div id="omniAlertModal" class="omni-modal">
     <span class="omni-modal__close">
         <svg class="svg-icon" width="16" height="16">
-            <use xlink:href="<?= plugins_url('assets/images/icons.svg#icon-close', dirname(__FILE__)); ?>"></use>
+            <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-close', dirname(__FILE__)); ?>"></use>
         </svg>
     </span>
 

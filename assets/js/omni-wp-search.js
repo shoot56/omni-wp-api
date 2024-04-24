@@ -30,7 +30,7 @@ window.addEventListener('DOMContentLoaded', event => {
       resultsDiv.innerHTML = '';
 
       if (data.success) {
-        buttonDisabledState(false, 'Search');
+        buttonDisabledState(false, omni_ajax._search);
         updateResultsDiv(data);
 
         // Update the visibility states for prev and next buttons
@@ -61,7 +61,7 @@ window.addEventListener('DOMContentLoaded', event => {
       div.append(createElement('h3', item.title));
       div.append(createElement('p', item.pageContent));
 
-      let link = createElement('a', 'Read More');
+      let link = createElement('a', omni_ajax._read_more);
       link.href = item.url;
       div.append(link);
 
@@ -72,7 +72,7 @@ window.addEventListener('DOMContentLoaded', event => {
       data.data.results.reverse().forEach(result =>
           resultsDiv.prepend(createElement('p', result.text))
       );
-      resultsDiv.prepend(createElement('h2', 'Results'));
+      resultsDiv.prepend(createElement('h2', omni_ajax._results));
     }
   }
 
