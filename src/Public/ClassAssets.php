@@ -40,6 +40,7 @@ class ClassAssets
             array(
                 'url' => admin_url('admin-ajax.php'),
                 'query_nonce' => wp_create_nonce('omni_search_handle_query'),
+                'search_answer' => get_option('_omni_ai_search_answer'),
                 '_read_more' => __('Read More', 'omni'),
                 '_search' => __('Search', 'omni'),
                 '_results' => __('Results', 'omni'),

@@ -44,11 +44,13 @@
 #results {
   width: 100%;
 }
-#results p:first-child {
-  border: 1px solid #00a32a;
+#results div {
+  border: 1px solid #e2e2e2;
+  padding: 1rem;
+  margin-bottom: 1rem;
 }
 #results blockquote {
-  border: 1px solid #e2e2e2;
+  border: 1px solid #00a32a;
   margin-left: 0;
   padding: 1rem;
 }

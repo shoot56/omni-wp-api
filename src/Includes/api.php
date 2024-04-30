@@ -97,12 +97,11 @@ class api
         $omni_api_key = get_option('_omni_api_key');
         $project_id = get_option('_omni_project_id');
         $url = ENV_URL . '/rest/v1/projects/' . $project_id . '/actions/search';
-
         $data = array(
             'query' => $query,
             'hybrid' => 0,
             'offset' => $offset,
-            'limit' => 6,
+            'limit' => (int) get_option('_omni_ai_search_results_limit'),
             'language' => get_locale()
         );
         $headers = array(
@@ -113,7 +112,6 @@ class api
             'body' => wp_json_encode($data),
             'headers' => $headers,
         );
-
         $response = wp_safe_remote_post($url, $args);
         if (is_wp_error($response)) {
             $this->debug->omni_error_log('Search req error: ' . $response);

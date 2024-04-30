@@ -8,9 +8,10 @@
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
+$search_answer = esc_attr($data->form['search_answer']);
 ?>
 
-<div class="omni-search">
+<div class="omni-search <?php $search_answer ?? 'search_answer' ?>">
     <form>
         <div class="omni-search__search-wrp">
             <input type="text" id="query" placeholder="<?php _e('Search..', 'omni') ?>">
