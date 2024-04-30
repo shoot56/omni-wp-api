@@ -70,7 +70,7 @@ window.addEventListener('DOMContentLoaded', event => {
 
     if (data.data.results.length > 0) {
       data.data.results.reverse().forEach(result =>
-          resultsDiv.prepend(createElement('p', result.text))
+          resultsDiv.prepend(createElement('blockquote', result.text))
       );
       resultsDiv.prepend(createElement('h2', omni_ajax._results));
     }

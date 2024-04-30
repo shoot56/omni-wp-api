@@ -17,7 +17,6 @@ $ai_search_results_limit = $data->form['ai_search_results_limit'];
 $ai_search_trust_level = $data->form['ai_search_trust_level'];
 $ai_cache = $data->form['ai_cache'];
 ?>
-
 <div class="omni-config wrap">
 
     <div class="omni-config__container">
@@ -30,7 +29,7 @@ $ai_cache = $data->form['ai_cache'];
                 <li><a class="tab-opener" href="#"><?php _e('Requests', 'omni'); ?></a></li>
             </ul>
             <div class="tabs-list">
-                <div class="tab-item ">
+                <div class="tab-item">
                     <?php if ($api_key_status): ?>
                         <div class="form-row">
                             <div class="form-row__label">
@@ -206,9 +205,6 @@ $ai_cache = $data->form['ai_cache'];
                         $selected_fields = esc_attr(get_option('_omni_selected_fields_option'));
 
                         if ($post_types) {
-                            ?>
-                            <?php
-                            // echo '<pre>',print_r($selected_fields,1),'</pre>';
                             ?>
                             <ul class="content-types">
                                 <?php foreach ($post_types as $post_type): ?>
@@ -408,7 +404,7 @@ $ai_cache = $data->form['ai_cache'];
                 </div>
                 <div class="tab-item">
                     <?php
-                    $selected_fields = esc_attr(et_option('_omni_selected_fields_option'));
+                    $selected_fields = esc_attr(get_option('_omni_selected_fields_option'));
                     $selected_post_types = esc_attr(get_option('_omni_selected_post_types'));
                     ?>
 
