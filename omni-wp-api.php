@@ -2,9 +2,11 @@
 /**
  * Plugin Name: Omni WP API
  * Description: Customizable REST API endpoints with API Key authentication.
- * Version: 1.0.5
+ * Version: 1.0.6
  * Author: Procoders
- * Requires PHP: 7.4
+ * Requires PHP: 8.0
+ * Text Domain: omni
+ * Domain Path: /languages
  * GitHub Plugin URI: shoot56/omni-wp-api
  * Primary Branch: main
  */

@@ -1,4 +1,5 @@
 <?php
+
 namespace Procoders\Omni\Public;
 
 if (!defined('ABSPATH')) {
@@ -12,6 +13,7 @@ class ClassPublic
 {
     private $template;
     private $api;
+
     /**
      * Creates a shortcode for displaying the Omni Search form.
      *
@@ -22,6 +24,7 @@ class ClassPublic
         $this->template = new Loader();
         $this->api = new Api();
     }
+
     public function omni_search_shortcode()
     {
         ob_start();
@@ -42,7 +45,7 @@ class ClassPublic
     {
         // Check and sanitize input values
         if (!isset($_POST['nonce'], $_POST['query'], $_POST['offset']) || !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'omni_search_handle_query')) {
-            wp_send_json_error(['message' => 'Permission denied...']);
+            wp_send_json_error(['message' => __('Permission denied...', 'omni')]);
             return;
         }
 
@@ -71,7 +74,7 @@ class ClassPublic
 
         // If the search request fails, return an error
         if ($response === false) {
-            wp_send_json_error(['message' => 'Unable to process request.']);
+            wp_send_json_error(['message' => __('Unable to process request.', 'omni')]);
             return;
         }
 

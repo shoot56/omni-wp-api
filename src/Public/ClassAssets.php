@@ -7,6 +7,10 @@
 
 namespace Procoders\Omni\Public;
 
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+}
+
 /**
  * Create the admin menu.
  */
@@ -36,11 +40,11 @@ class ClassAssets
             array(
                 'url' => admin_url('admin-ajax.php'),
                 'query_nonce' => wp_create_nonce('omni_search_handle_query'),
-                '_read_more' => __('Read More'),
-                '_search' => __('Search'),
-                '_results' => __('Results'),
-                '_prev' => __('Prev'),
-                '_next' => __('Next'),
+                '_read_more' => __('Read More', 'omni'),
+                '_search' => __('Search', 'omni'),
+                '_results' => __('Results', 'omni'),
+                '_prev' => __('Prev', 'omni'),
+                '_next' => __('Next', 'omni'),
             )
         );
     }

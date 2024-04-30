@@ -163,15 +163,10 @@ class api
     }
 
 
-    /**
-     * @return bool
-     */
-    public function reindex_project(): bool
+    public function get_resources(string $project_id): bool|array
     {
-        $omni_api_key = get_option('_omni_api_key');
-        $project_id = get_option('_omni_project_id');
         $url = ENV_URL . '/rest/v1/projects/' . $project_id . '/resources/urls/';
-
+        $omni_api_key = get_option('_omni_api_key');
         $args = array(
             'headers' => array(
                 'Content-Type' => 'application/json',
@@ -183,62 +178,46 @@ class api
 
         if (is_wp_error($response)) {
             $this->debug->omni_error_log('Reindex error code: ' . $response);
-
             return false;
         } else {
             $response_code = wp_remote_retrieve_response_code($response);
             if ($response_code === 200) {
-
                 $body = wp_remote_retrieve_body($response);
-                $data = json_decode($body);
-                if ($data && isset($data[0]->url)) {
-                    $data_url = $data[0]->url;
+                return json_decode($body);
+            } else {
+                return false;
+            }
+        }
+    }
 
+    public function del_resources(string $data_url, string $project_id): bool|array
+    {
+        $omni_api_key = get_option('_omni_api_key');
+        $new_url = ENV_URL . '/rest/v1/projects/' . $project_id . '/resources/urls/';
 
-                    $new_url = ENV_URL . '/rest/v1/projects/' . $project_id . '/resources/urls/';
+        $new_data = array(
+            'omni_key' => $omni_api_key,
+            'url' => $data_url,
+        );
 
-                    $new_data = array(
-                        'omni_key' => $omni_api_key,
-                        'url' => $data_url,
-                    );
-
-                    $new_args = array(
-                        'body' => json_encode($new_data),
-                        'headers' => array(
-                            'Content-Type' => 'application/json',
-                        ),
-                        'method' => 'DELETE'
-                    );
-                    $delete_response = wp_remote_request($new_url, $new_args);
-                    if (is_wp_error($delete_response)) {
-                        $this->debug->omni_error_log('Error in DELETE request in reindex_project: ' . $delete_response->get_error_message());
-
-                        return false;
-                    } else {
-                        $delete_response_code = wp_remote_retrieve_response_code($delete_response);
-                        if ($delete_response_code === 200) {
-                            $this->debug->omni_error_log('Successful deletion in reindex_project.');
-                        } else {
-                            $this->debug->omni_error_log('Error in DELETE request: Response code ' . $delete_response_code);
-
-                            return false;
-                        }
-                    }
-                }
-
-                $data_sent = sync_data();
-                if ($data_sent === true) {
-                    $this->debug->omni_error_log('Data successfully updated in reindex_project.');
-                    $this->debug->omni_error_log('=========='); // Separator
-                } else {
-                    $this->debug->omni_error_log('Error sending data in reindex_project.');
-                    $this->debug->omni_error_log('=========='); // Separator
-                }
-
+        $new_args = array(
+            'body' => json_encode($new_data),
+            'headers' => array(
+                'Content-Type' => 'application/json',
+            ),
+            'method' => 'DELETE'
+        );
+        $delete_response = wp_remote_request($new_url, $new_args);
+        if (is_wp_error($delete_response)) {
+            $this->debug->omni_error_log('Error in DELETE request in reindex_project: ' . $delete_response->get_error_message());
+            return false;
+        } else {
+            $delete_response_code = wp_remote_retrieve_response_code($delete_response);
+            if ($delete_response_code === 200) {
+                $this->debug->omni_error_log('Successful deletion in reindex_project.');
                 return true;
             } else {
-                $this->debug->omni_error_log('Error in GET request: Response code ' . $response_code);
-
+                $this->debug->omni_error_log('Error in DELETE request: Response code ' . $delete_response_code);
                 return false;
             }
         }

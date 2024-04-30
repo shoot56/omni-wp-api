@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 
 use Procoders\Omni\ClassLoader as Loader;
 use Procoders\Omni\Includes\api as Api;
-
+use Procoders\Omni\Includes\debugger as debugger;
 class ClassAdmin
 {
     private $template;
@@ -19,6 +19,7 @@ class ClassAdmin
     {
         $this->template = new Loader();
         $this->api = new Api();
+        $this->debug = new debugger();
     }
 
     private function check_user_permission(): bool
@@ -259,7 +260,7 @@ class ClassAdmin
 
     private function handle_reindex_project(): void
     {
-        $project_reindexed = $this->api->reindex_project();
+        $project_reindexed = $this->reindex_project();
         $this->message = [
             'status' => 'success',
             'message' => $project_reindexed === true
@@ -326,6 +327,38 @@ class ClassAdmin
             update_option('_omni_last_sync_date', current_time('mysql'));
         }
         return $status;
+    }
+
+    /**
+     * @return bool
+     */
+    public function reindex_project(): bool
+    {
+        $project_id = get_option('_omni_project_id');
+        $data = $this->api->get_resources($project_id);
+
+        if (!$data) {
+            $this->debug->omni_error_log('Reindex error code: ' . $data);
+            return false;
+        } else {
+            if ($data && isset($data[0]->url)) {
+                $data_url = $data[0]->url;
+                $this->api->del_resources($data_url, $project_id);
+
+                $data_sent = $this->sync_data();
+                if ($data_sent === true) {
+                    $this->debug->omni_error_log('Data successfully updated in reindex_project.');
+                    $this->debug->omni_error_log('=========='); // Separator
+                } else {
+                    $this->debug->omni_error_log('Error sending data in reindex_project.');
+                    $this->debug->omni_error_log('=========='); // Separator
+                }
+                return true;
+            } else {
+                return false;
+            }
+
+        }
     }
 
 
@@ -491,7 +524,7 @@ class ClassAdmin
         foreach ($post_types as $post_type) {
             add_meta_box(
                 'exclude_omni', // ID
-                __('Exclude from Omnimind'), // Title
+                __('Exclude from Omnimind', 'omni'), // Title
                 array($this, 'exclude_omni_meta_box_callback'), // Callback function
                 $post_type, // Screen (post type)
                 'side', // Context
@@ -503,7 +536,7 @@ class ClassAdmin
     public function exclude_omni_meta_box_callback($post): void
     {
         $value = get_post_meta($post->ID, '_exclude_from_omni', true);
-        echo '<label><input type="checkbox" name="exclude_from_omni" value="1"' . checked($value, 1, false) . '/> Exclude from Omnimind</label>';
+        echo '<label><input type="checkbox" name="exclude_from_omni" value="1"' . checked($value, 1, false) . '/> ' . __('Exclude from Omnimind', 'omni') . '</label>';
     }
 
     /**

@@ -34,8 +34,8 @@ class ClassNav
         $slug = dirname(plugin_basename(OMNI_FILE));
         $admin = new AdminInit();
         add_menu_page(
-            esc_html__('Omni WP API'),
-            esc_html__('Omni WP API'),
+            esc_html__('Omni WP API', 'omni'),
+            esc_html__('Omni WP API', 'omni'),
             'manage_options',
             $slug,
             array($admin, 'omni_settings_page'),

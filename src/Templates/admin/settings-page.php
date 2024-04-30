@@ -1,4 +1,9 @@
 <?php
+
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+}
+
 $api_key_status = $data->form['api_key_status'];
 $omni_api_key = $data->form['omni_api_key'];
 $project_name = $data->form['project_name'];
@@ -16,34 +21,34 @@ $ai_cache = $data->form['ai_cache'];
 <div class="omni-config wrap">
 
     <div class="omni-config__container">
-        <h2><?php _e('Omnimind Configuration'); ?></h2>
+        <h2><?php _e('Omnimind Configuration', 'omni'); ?></h2>
         <div class="tabset">
             <ul class="tab-control">
-                <li><a class="tab-opener" href="#"><?php _e('General'); ?></a></li>
-                <li><a class="tab-opener" href="#"><?php _e('Content types'); ?></a></li>
-                <li><a class="tab-opener" href="#"><?php _e('Indexing'); ?></a></li>
-                <li><a class="tab-opener" href="#"><?php _e('Requests'); ?></a></li>
+                <li><a class="tab-opener" href="#"><?php _e('General', 'omni'); ?></a></li>
+                <li><a class="tab-opener" href="#"><?php _e('Content types', 'omni'); ?></a></li>
+                <li><a class="tab-opener" href="#"><?php _e('Indexing', 'omni'); ?></a></li>
+                <li><a class="tab-opener" href="#"><?php _e('Requests', 'omni'); ?></a></li>
             </ul>
             <div class="tabs-list">
                 <div class="tab-item ">
                     <?php if ($api_key_status): ?>
                         <div class="form-row">
                             <div class="form-row__label">
-                                <div class="form-label"><?php _e('API Key'); ?></div>
+                                <div class="form-label"><?php _e('API Key', 'omni'); ?></div>
                             </div>
                             <div class="form-row__item">
                                 <div class="api-status">
                                     <input class="form-input" type="text" name="verify_api_key"
                                            value="<?php echo esc_html($omni_api_key); ?>">
-                                    <div class="status"><?php echo ($api_key_status) ? '<span class="dashicons dashicons-yes-alt"></span>' : '<span class="dashicons dashicons-dismiss"></span>'; ?></div>
+                                    <div class="status"><?php echo (esc_attr($api_key_status)) ? '<span class="dashicons dashicons-yes-alt"></span>' : '<span class="dashicons dashicons-dismiss"></span>'; ?></div>
                                 </div>
-                                <div class="form-info"><?php _e('Your Omnimind API key'); ?></div>
+                                <div class="form-info"><?php _e('Your Omnimind API key', 'omni'); ?></div>
                             </div>
                         </div>
                         <form method="post">
                             <div class="form-row">
                                 <div class="form-row__label">
-                                    <div class="form-label"><?php _e('Project'); ?></div>
+                                    <div class="form-label"><?php _e('Project', 'omni'); ?></div>
                                 </div>
                                 <div class="form-row__item">
                                     <div class="inputs-wrap">
@@ -52,46 +57,47 @@ $ai_cache = $data->form['ai_cache'];
                                         <?php if ($project_id): ?>
                                             <a href="https://google.com" target="_blank"
                                                class="btn-omni btn-omni--primary"><span
-                                                        class="dashicons dashicons-external"></span> <?php _e('Settings') ?></a>
+                                                        class="dashicons dashicons-external"></span> <?php _e('Settings', 'omni') ?>
+                                            </a>
                                         <?php else: ?>
                                             <button type="submit" name="send_project_name"
-                                                    class="btn-omni btn-omni--primary"><?php _e('Create') ?>
+                                                    class="btn-omni btn-omni--primary"><?php _e('Create', 'omni') ?>
                                             </button>
                                         <?php endif ?>
                                     </div>
-                                    <div class="form-info"><?php _e('Your Omnimind Project name') ?></div>
+                                    <div class="form-info"><?php _e('Your Omnimind Project name', 'omni') ?></div>
                                 </div>
                             </div>
                         </form>
                         <form method="post">
                             <div class="form-row">
                                 <div class="form-row__label">
-                                    <div class="form-label"><?php _e('Options') ?></div>
+                                    <div class="form-label"><?php _e('Options', 'omni') ?></div>
                                 </div>
                                 <div class="form-row__item">
                                     <ul class="checkbox-list">
                                         <li>
                                             <label class="checkbox-holder">
                                                 <input name="ai_search_answer" type="checkbox"
-                                                       class="checkbox" <?php checked(1, $ai_search_answer); ?> />
+                                                       class="checkbox" <?php checked(1, esc_html($ai_search_answer)); ?> />
                                                 <span class="checkbox-item">&nbsp;</span>
-                                                <span class="checkbox-label"><?php _e('AI answer') ?></span>
+                                                <span class="checkbox-label"><?php _e('AI answer', 'omni') ?></span>
                                             </label>
                                         </li>
                                         <li>
                                             <label class="checkbox-holder">
                                                 <input name="ai_search_content" type="checkbox"
-                                                       class="checkbox" <?php checked(1, $ai_search_content); ?> />
+                                                       class="checkbox" <?php checked(1, esc_html($ai_search_content)); ?> />
                                                 <span class="checkbox-item">&nbsp;</span>
-                                                <span class="checkbox-label"><?php _e('Content') ?></span>
+                                                <span class="checkbox-label"><?php _e('Content', 'omni') ?></span>
                                             </label>
                                         </li>
                                         <li>
                                             <label class="checkbox-holder">
                                                 <input name="ai_search_autocomplete" type="checkbox"
-                                                       class="checkbox" <?php checked(1, $ai_search_autocomplete); ?> />
+                                                       class="checkbox" <?php checked(1, esc_html($ai_search_autocomplete)); ?> />
                                                 <span class="checkbox-item">&nbsp;</span>
-                                                <span class="checkbox-label"><?php _e('Autocomplete') ?></span>
+                                                <span class="checkbox-label"><?php _e('Autocomplete', 'omni') ?></span>
                                             </label>
                                         </li>
                                     </ul>
@@ -101,7 +107,7 @@ $ai_cache = $data->form['ai_cache'];
                                 <div class="form-col">
                                     <div class="form-row">
                                         <div class="form-row__label">
-                                            <div class="form-label"><?php _e('Results limit') ?></div>
+                                            <div class="form-label"><?php _e('Results limit', 'omni') ?></div>
                                         </div>
                                         <div class="form-row__item">
                                             <input class="form-input" type="number" name="ai_search_results_limit"
@@ -112,7 +118,7 @@ $ai_cache = $data->form['ai_cache'];
                                 <div class="form-col">
                                     <div class="form-row">
                                         <div class="form-row__label">
-                                            <div class="form-label"><?php _e('Trust level') ?></div>
+                                            <div class="form-label"><?php _e('Trust level', 'omni') ?></div>
                                         </div>
                                         <div class="form-row__item">
                                             <input class="form-input" type="number" name="ai_search_trust_level"
@@ -123,17 +129,17 @@ $ai_cache = $data->form['ai_cache'];
                             </div>
 
                             <div class="form-block">
-                                <div class="form-block__title"><span><?php _e('Cache') ?></span></div>
+                                <div class="form-block__title"><span><?php _e('Cache', 'omni') ?></span></div>
                                 <div class="form-block__frame">
                                     <div class="form-block__wrap">
                                         <div class="form-block__content">
                                             <p><?php _e('Output results can be cached to prevent numerous requests to AI and save
-                                                the costs. If you set it to 0 no cache is going to be applied') ?></p>
+                                                the costs. If you set it to 0 no cache is going to be applied', 'omni') ?></p>
                                             <div class="cache-input">
-                                                <div class="form-label"><?php _e('Cache period') ?></div>
+                                                <div class="form-label"><?php _e('Cache period', 'omni') ?></div>
                                                 <input class="form-input" type="number" name="ai_cache"
                                                        value="<?php echo(esc_attr($ai_cache) ? esc_attr($ai_cache) : '24'); ?>">
-                                                <div class="cache-input__info"><?php _e('hours') ?></div>
+                                                <div class="cache-input__info"><?php _e('hours', 'omni') ?></div>
                                             </div>
                                         </div>
                                         <div class="form-block__button">
@@ -141,7 +147,7 @@ $ai_cache = $data->form['ai_cache'];
                                                 <svg class="svg-icon" width="16" height="16">
                                                     <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-purge', dirname(__FILE__)); ?>"></use>
                                                 </svg>
-                                                <span><?php _e('Purge cache') ?></span>
+                                                <span><?php _e('Purge cache', 'omni') ?></span>
                                             </button>
                                         </div>
                                     </div>
@@ -151,22 +157,22 @@ $ai_cache = $data->form['ai_cache'];
                                 <svg class="svg-icon" width="16" height="16">
                                     <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-save', dirname(__FILE__)); ?>"></use>
                                 </svg>
-                                <span><?php _e('Save') ?></span>
+                                <span><?php _e('Save', 'omni') ?></span>
                             </button>
                         </form>
                     <?php else: ?>
                         <form method="post">
                             <div class="form-row">
                                 <div class="form-row__label">
-                                    <div class="form-label"><?php _e('API Key') ?></div>
+                                    <div class="form-label"><?php _e('API Key', 'omni') ?></div>
                                 </div>
                                 <div class="form-row__item">
                                     <div class="api-verify">
                                         <input class="form-input" type="text" name="verify_api_key"
                                                value="<?php echo esc_html($omni_api_key); ?>">
-                                        <div class="status"><?php echo ($api_key_status) ? '<span class="dashicons dashicons-yes-alt"></span>' : '<span class="dashicons dashicons-dismiss"></span>'; ?></div>
+                                        <div class="status"><?php echo (esc_attr($api_key_status)) ? '<span class="dashicons dashicons-yes-alt"></span>' : '<span class="dashicons dashicons-dismiss"></span>'; ?></div>
                                         <button type="submit" name="check_api_key" class="btn-omni btn-omni--primary">
-                                            <?php _e('Verify') ?>
+                                            <?php _e('Verify', 'omni') ?>
                                         </button>
                                     </div>
                                     <div class="form-info">
@@ -186,7 +192,7 @@ $ai_cache = $data->form['ai_cache'];
                     <form method="post">
 
                         <p><?php _e('Select the content types in your project that will be included in the search results and be
-                            used to construct AI answers') ?></p>
+                            used to construct AI answers', 'omni') ?></p>
 
                         <?php
                         $args = array(
@@ -197,7 +203,7 @@ $ai_cache = $data->form['ai_cache'];
                         $operator = 'and';
                         $post_types = get_post_types($args, $output, $operator);
                         unset($post_types['attachment']);
-                        $selected_fields = get_option('_omni_selected_fields_option');
+                        $selected_fields = esc_attr(get_option('_omni_selected_fields_option'));
 
                         if ($post_types) {
                             ?>
@@ -261,13 +267,13 @@ $ai_cache = $data->form['ai_cache'];
                                             <div class="autocomplete-data"
                                                  data-post-type="<?php echo esc_attr($post_type->name); ?>"
                                                  style="display:none;">
-                                                <?php echo $jsonData; ?>
+                                                <?php echo esc_attr($jsonData); ?>
                                             </div>
                                             <table class="attributes-table">
                                                 <tr>
-                                                    <th><?php _e('Attribute'); ?></th>
-                                                    <th>Searchable</th>
-                                                    <th>Label</th>
+                                                    <th><?php _e('Attribute', 'omni'); ?></th>
+                                                    <th><?php _e('Searchable', 'omni'); ?></th>
+                                                    <th><?php _e('Label', 'omni'); ?></th>
                                                 </tr>
 
 
@@ -277,7 +283,7 @@ $ai_cache = $data->form['ai_cache'];
                                                         <td>
 
                                                             <input class="form-input" type="hidden"
-                                                                   name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][<?php echo $key; ?>][name]"
+                                                                   name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][<?php echo esc_attr($key); ?>][name]"
                                                                    value="<?php echo esc_attr($key); ?>">
 
                                                             <?php
@@ -290,7 +296,7 @@ $ai_cache = $data->form['ai_cache'];
 
                                                         </td>
                                                         <td><input class="form-input" type="text"
-                                                                   name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][<?php echo $key; ?>][label]"
+                                                                   name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][<?php echo esc_attr($key); ?>][label]"
                                                                    value="<?php echo isset($selected_fields[$post_type->name][$key]['label']) ? esc_attr($selected_fields[$post_type->name][$key]['label']) : ''; ?>">
                                                         </td>
 
@@ -301,6 +307,7 @@ $ai_cache = $data->form['ai_cache'];
                                                 // additional fields
                                                 if (isset($selected_fields[$post_type->name])) {
                                                     foreach ($selected_fields[$post_type->name] as $key => $values) {
+                                                        $key = esc_attr($key);
                                                         if ($key == 'advanced-title-columns' || $key == 'advanced-metadata-columns' || $key == 'Title' || $key == 'Content' || $key == 'Author') {
                                                             continue;
                                                         }
@@ -324,18 +331,18 @@ $ai_cache = $data->form['ai_cache'];
                                                        data-post-type="<?php echo esc_attr($post_type->name); ?>">
 
                                                 <button type="button" class="add-field btn-omni btn-omni--success"
-                                                        data-post-type="<?php echo esc_attr($post_type->name); ?>">add
-                                                    field
+                                                        data-post-type="<?php echo esc_attr($post_type->name); ?>"><?php _e('add
+                                                    field', 'omni'); ?>
                                                 </button>
                                             </div>
 
                                             <div class="advanced-settings">
                                                 <button class="advanced-settings__opener btn-omni btn-omni--primary">
-                                                    Advanced Settings
+                                                    <?php _e('Advanced Settings', 'omni'); ?>
                                                 </button>
                                                 <div class="advanced-settings__content">
                                                     <div class="advanced-settings__row">
-                                                        <div class="advanced-settings__label">Select Title Columns</div>
+                                                        <div class="advanced-settings__label"> <?php _e('Select Title Columns', 'omni'); ?></div>
                                                         <div class="advanced-settings__input">
                                                             <select class="js-example-basic-multiple"
                                                                     name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][advanced-title-columns][]"
@@ -355,14 +362,14 @@ $ai_cache = $data->form['ai_cache'];
                                                                         }
                                                                         $selected = in_array($key, $saved_title_columns) ? 'selected' : '';
                                                                         ?>
-                                                                        <option value="<?php echo esc_html($key); ?>" <?php echo $selected; ?>><?php echo esc_html($key); ?></option>
+                                                                        <option value="<?php echo esc_html($key); ?>" <?php echo esc_html($selected); ?>><?php echo esc_html($key); ?></option>
                                                                     <?php endforeach ?>
                                                                 <?php endif ?>
                                                             </select>
                                                         </div>
                                                     </div>
                                                     <div class="advanced-settings__row">
-                                                        <div class="advanced-settings__label">Select Metadata Columns
+                                                        <div class="advanced-settings__label"> <?php _e('Select Metadata Columns', 'omni'); ?>
                                                         </div>
                                                         <div class="advanced-settings__input">
                                                             <select class="js-example-basic-multiple"
@@ -373,7 +380,7 @@ $ai_cache = $data->form['ai_cache'];
                                                                 foreach ($additional_fields as $key => $values):
                                                                     $selected = in_array($key, $saved_title_columns) ? 'selected' : '';
                                                                     ?>
-                                                                    <option value="<?php echo esc_html($key); ?>" <?php echo $selected; ?>><?php echo esc_html($key); ?></option>
+                                                                    <option value="<?php echo esc_html($key); ?>" <?php echo esc_html($selected); ?>><?php echo esc_html($key); ?></option>
                                                                 <?php endforeach ?>
 
                                                             </select>
@@ -381,51 +388,42 @@ $ai_cache = $data->form['ai_cache'];
                                                     </div>
                                                 </div>
                                             </div>
-
-
                                         </div>
-
-
                                     </li>
                                 <?php endforeach ?>
                             </ul>
-                            <script>
-
-                            </script>
-
                             <?php
-
                         }
                         ?>
-                        <p>After making changes, it is highly advisable to run a re-synchronization at the <strong>Indexing</strong>
-                            tab.</p>
+                        <p><?php _e('After making changes, it is highly advisable to run a re-synchronization at the <strong>Indexing</strong>
+                            tab.', 'omni'); ?></p>
                         <button <?php echo ($api_key_status) ? '' : 'disabled'; ?> type="submit" name="save_post_types"
                                                                                    class="btn-omni btn-omni--primary">
                             <svg class="svg-icon" width="16" height="16">
                                 <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-save', dirname(__FILE__)); ?>"></use>
                             </svg>
-                            <span>Save Post Types</span>
+                            <span><?php _e('Save Post Types', 'omni'); ?></span>
                         </button>
                     </form>
                 </div>
                 <div class="tab-item">
                     <?php
-                    $selected_fields = get_option('_omni_selected_fields_option');
-                    $selected_post_types = get_option('_omni_selected_post_types');
+                    $selected_fields = esc_attr(et_option('_omni_selected_fields_option'));
+                    $selected_post_types = esc_attr(get_option('_omni_selected_post_types'));
                     ?>
 
                     <form method="post" id="syncForm">
                         <div class="form-block">
                             <div class="form-block__title">
-                                <span>Sync Settings</span>
+                                <span><?php _e('Sync Settings', 'omni'); ?></span>
                             </div>
 
                             <div class="form-block__frame">
                                 <div class="form-block__wrap">
                                     <div class="form-block__content">
-                                        <p>If you notice missing information in your search outcomes or if you've
-                                            recently incorporated new custom content categories to your platform, it's
-                                            advisable to initiate a synchronization to update these modifications.</p>
+                                        <p><?php _e('If you notice missing information in your search outcomes or if you\'ve
+                                            recently incorporated new custom content categories to your platform, it\'s
+                                            advisable to initiate a synchronization to update these modifications.', 'omni'); ?></p>
 
                                         <?php // Get last Sync Date
                                         $sync_date = get_option('_omni_last_sync_date'); ?>
@@ -445,7 +443,7 @@ $ai_cache = $data->form['ai_cache'];
                                             <svg class="svg-icon" width="16" height="16">
                                                 <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-sync', dirname(__FILE__)); ?>"></use>
                                             </svg>
-                                            <span>Sync Now</span>
+                                            <span><?php _e('Sync Now', 'omni'); ?></span>
                                         </button>
                                     </div>
                                 </div>
@@ -455,15 +453,17 @@ $ai_cache = $data->form['ai_cache'];
 
                     <form method="post">
                         <div class="form-block">
-                            <div class="form-block__title"><span>Clear and Reinitialize</span></div>
+                            <div class="form-block__title"><span><?php _e('Clear and Reinitialize', 'omni'); ?></span>
+                            </div>
                             <div class="form-block__frame">
                                 <div class="form-block__wrap">
                                     <div class="form-block__content">
-                                        <p>Should you continue to face discrepancies in your search outcomes, consider
-                                            starting a thorough re-synchronization.</p>
-                                        <p>Executing this will remove all indexed information from OmniMind, but your
+                                        <p><?php _e('Should you continue to face discrepancies in your search outcomes, consider
+                                            starting a thorough re-synchronization.', 'omni'); ?> </p>
+                                        <p>
+                                            <?php _e('Executing this will remove all indexed information from OmniMind, but your
                                             WordPress site remains unaffected. The entire process might span several
-                                            hours, contingent on the volume of content awaiting</p>
+                                            hours, contingent on the volume of content awaiting', 'omni'); ?></p>
                                     </div>
                                     <div class="form-block__button">
                                         <button <?php echo ($api_key_status) ? '' : 'disabled'; ?>name="reindex_project"
@@ -472,7 +472,7 @@ $ai_cache = $data->form['ai_cache'];
                                             <svg class="svg-icon" width="16" height="16">
                                                 <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-purge', dirname(__FILE__)); ?>"></use>
                                             </svg>
-                                            <span>Re-Index</span>
+                                            <span><?php _e('Re-Index', 'omni'); ?></span>
                                         </button>
                                     </div>
                                 </div>
@@ -481,14 +481,16 @@ $ai_cache = $data->form['ai_cache'];
                     </form>
                     <form method="post">
                         <div class="form-block">
-                            <div class="form-block__title"><span>Purge and change API key</span></div>
+                            <div class="form-block__title"><span><?php _e('Purge and change API key', 'omni'); ?></span>
+                            </div>
                             <div class="form-block__frame">
                                 <div class="form-block__wrap">
                                     <div class="form-block__content">
-                                        <p>Clicking it you <span style="color: red;">remove</span> your project and
-                                            purge all indexes at Omnimind. It doesn't affect you Wordpress data. This
-                                            action is not reversible.</p>
-                                        <p>You can setup a new API key and start from</p>
+                                        <p><?php _e('Clicking it you', 'omni'); ?> <span
+                                                    style="color: red;"><?php _e('remove', 'omni'); ?> </span> <?php _e('your project and
+                                            purge all indexes at Omnimind. It doesn\'t affect you Wordpress data. This
+                                            action is not reversible.', 'omni'); ?></p>
+                                        <p><?php _e('You can setup a new API key and start from', 'omni'); ?></p>
                                     </div>
                                     <div class="form-block__button">
                                         <button <?php echo ($api_key_status) ? '' : 'disabled'; ?> name="delete_project"
@@ -497,7 +499,7 @@ $ai_cache = $data->form['ai_cache'];
                                             <svg class="svg-icon" width="16" height="16">
                                                 <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-delete', dirname(__FILE__)); ?>"></use>
                                             </svg>
-                                            <span>Delete</span>
+                                            <span><?php _e('Delete', 'omni'); ?></span>
                                         </button>
                                     </div>
                                 </div>
@@ -506,13 +508,11 @@ $ai_cache = $data->form['ai_cache'];
                     </form>
                 </div>
                 <div class="tab-item">
-                    <p>Here you can see you users search requests</p>
+                    <p><?php _e('Here you can see you users search requests', 'omni'); ?></p>
                 </div>
             </div>
         </div>
-
     </div>
-
 </div>
 
 <div id="omniAlertModal" class="omni-modal">
