@@ -29,13 +29,8 @@ define('WIDGET_TYPE_ID', 12);
 define('OMNI_FILE', __FILE__);
 define('OMNI_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-
-
-use Procoders\Omni\Admin\ClassAdmin as AdminInit;
-use Procoders\Omni\Admin\ClassAssets as AdminAssets;
-use Procoders\Omni\Admin\ClassNav as AdminNav;
-use Procoders\Omni\Public\ClassAssets as PublicAssets;
-use Procoders\Omni\Public\ClassPublic as PublicInit;
+use Procoders\Omni\Admin\{ClassAdmin as AdminInit, ClassAssets as AdminAssets, ClassNav as AdminNav};
+use Procoders\Omni\Public\{ClassAssets as PublicAssets, ClassPublic as PublicInit};
 
 class Omni
 {
@@ -81,16 +76,6 @@ class Omni
 
         // Add shortcode and search query handler to WordPress hooks
         add_shortcode('omni_search', array($public_init, 'omni_search_shortcode'));
-
-        add_action('init', array($this, 'init'));
-    }
-
-    /**
-     * Init plugin.
-     */
-    public function init(): void
-    {
-        // Silent.
     }
 }
 
