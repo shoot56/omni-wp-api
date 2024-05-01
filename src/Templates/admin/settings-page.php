@@ -405,8 +405,8 @@ $settings = $data->form['ai_omni_setting'];
                 </div>
                 <div class="tab-item">
                     <?php
-                    $selected_fields = esc_attr(get_option('_omni_selected_fields_option'));
-                    $selected_post_types = esc_attr(get_option('_omni_selected_post_types'));
+                    $selected_fields = get_option('_omni_selected_fields_option');
+                    $selected_post_types = get_option('_omni_selected_post_types');
                     ?>
 
                     <form method="post" id="syncForm">
