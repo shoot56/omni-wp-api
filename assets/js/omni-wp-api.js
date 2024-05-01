@@ -4,6 +4,7 @@
 	if (activeTabIndex === null) {
 		activeTabIndex = 0;
 	}
+	console.log(activeTabIndex);
 
 	$('.tab-opener').eq(activeTabIndex).addClass('active');
 	$('.tab-item').eq(activeTabIndex).addClass('active');
