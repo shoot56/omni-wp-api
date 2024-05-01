@@ -17,6 +17,10 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+}
+
 define('ENV_URL', 'https://dev-api.omnimind.ai');
 //define('ENV_URL', 'https://app-api.omnimind.ai');
 
@@ -25,9 +29,7 @@ define('WIDGET_TYPE_ID', 12);
 define('OMNI_FILE', __FILE__);
 define('OMNI_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-if (file_exists(__DIR__ . '/vendor/autoload.php')) {
-    require_once __DIR__ . '/vendor/autoload.php';
-}
+
 
 use Procoders\Omni\Admin\ClassAdmin as AdminInit;
 use Procoders\Omni\Admin\ClassAssets as AdminAssets;
