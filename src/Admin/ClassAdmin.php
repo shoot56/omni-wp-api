@@ -9,6 +9,7 @@ if (!defined('ABSPATH')) {
 use Procoders\Omni\ClassLoader as Loader;
 use Procoders\Omni\Includes\api as Api;
 use Procoders\Omni\Includes\debugger as debugger;
+
 class ClassAdmin
 {
     private $template;
@@ -77,6 +78,7 @@ class ClassAdmin
 
     public function get_form()
     {
+        $setting = str_replace('-api', '', ENV_URL) . '/projects/' . get_option('_omni_project_id');
         return array(
             "selected_post_types" => get_option('_omni_selected_post_types', array()),
             'api_key_status' => get_option('_omni_api_key_status'),
@@ -89,6 +91,7 @@ class ClassAdmin
             'ai_search_results_limit' => get_option('_omni_ai_search_results_limit'),
             'ai_search_trust_level' => get_option('_omni_ai_search_trust_level'),
             'ai_cache' => get_option('_omni_ai_cache'),
+            'ai_omni_setting' => $setting,
             'popup' => $this->message,
         );
     }
@@ -194,7 +197,7 @@ class ClassAdmin
 
     private function handle_save_post_types(): void
     {
-        $selected_post_types = isset($_POST['post_types']) ? $_POST['post_types'] : array();
+        $selected_post_types = isset($_POST['post_types']) ? sanitize_text_field($_POST['post_types']) : array();
         update_option('_omni_selected_post_types', $selected_post_types);
         if (isset($_POST['post_type_fields'])) {
             $selected_fields = $_POST['post_type_fields'];

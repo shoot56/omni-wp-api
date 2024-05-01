@@ -16,6 +16,7 @@ $ai_search_autocomplete = $data->form['ai_search_autocomplete'];
 $ai_search_results_limit = $data->form['ai_search_results_limit'];
 $ai_search_trust_level = $data->form['ai_search_trust_level'];
 $ai_cache = $data->form['ai_cache'];
+$settings = $data->form['ai_omni_setting'];
 ?>
 <div class="omni-config wrap">
 
@@ -54,7 +55,7 @@ $ai_cache = $data->form['ai_cache'];
                                         <input class="form-input" type="text" name="project_name"
                                                value="<?php echo esc_html($project_name); ?>">
                                         <?php if ($project_id): ?>
-                                            <a href="https://google.com" target="_blank"
+                                            <a href="<?php echo esc_attr($settings ) ?>" target="_blank"
                                                class="btn-omni btn-omni--primary"><span
                                                         class="dashicons dashicons-external"></span> <?php _e('Settings', 'omni') ?>
                                             </a>
