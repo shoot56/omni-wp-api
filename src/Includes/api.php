@@ -221,7 +221,6 @@ class api
         }
     }
 
-
     /**
      * @param $chains
      * @param $omni_api_key
