@@ -1,13 +1,29 @@
 window.addEventListener('DOMContentLoaded', event => {
     const button = document.getElementById('get_results');
-    const prevButton = document.getElementById('prev');
-    const nextButton = document.getElementById('next');
     const resultsDiv = document.getElementById('results');
+    const loadMoreButton = document.getElementById('load_more');
+    loadMoreButton.style.display = 'none';
     let offset = 0;
-    const limit = 6;
+    const limit = parseInt(omni_ajax.answers_per_page);
+
+    // Helper function to debounce
+    const debounce = (func, wait) => {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        }
+    }
+
+    // Helper function to clear the result div
+    const clearResultsDiv = () => {
+        while (resultsDiv.firstChild) {
+            resultsDiv.removeChild(resultsDiv.firstChild);
+        }
+    }
 
     const searchFunc = async function () {
-        const query = document.getElementById('query').value;
+        const query = document.getElementById('query').value; // Let's assume your query is coming from some input field
         buttonDisabledState(true, '<span class="spin dashicons dashicons-update"></span>');
 
         const postData = new URLSearchParams({
@@ -21,20 +37,21 @@ window.addEventListener('DOMContentLoaded', event => {
         try {
             const response = await fetch(omni_ajax.url, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: postData
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: postData,
             });
+
             const data = await response.json();
 
-            // Clear existing results
-            resultsDiv.innerHTML = '';
+            // Clear existing results if offset is 0
+            if (offset === 0) clearResultsDiv();
 
             if (data.success) {
                 buttonDisabledState(false, omni_ajax._search);
                 updateResultsDiv(data);
-
-                // Update the visibility states for prev and next buttons
-                updateButtonVisibility(data);
+                loadMoreButton.style.display = 'block'
+                // Add offset for next page of results
+                offset = offset + limit;
             } else {
                 resultsDiv.textContent = 'An error occurred while fetching data.';
             }
@@ -43,15 +60,14 @@ window.addEventListener('DOMContentLoaded', event => {
         }
     }
 
-    const buttonDisabledState = function (state, text) {
+    const buttonDisabledState = function(state, text) {
         state ? button.setAttribute('disabled', true) : button.removeAttribute('disabled');
         button.innerHTML = text;
     }
 
-    const createElement = function (element, text) {
+    const createElement = function(element, text) {
         const newElement = document.createElement(element);
         newElement.textContent = text;
-
         return newElement;
     }
 
@@ -76,25 +92,13 @@ window.addEventListener('DOMContentLoaded', event => {
         }
     }
 
-    const updateButtonVisibility = function (data) {
-        const numOfResults = data.data.sources[0].length;
-        prevButton.style.display = offset <= 0 ? 'none' : 'inline';
-        nextButton.style.display = numOfResults < limit ? 'none' : 'inline';
-    }
-
-    button.addEventListener('click', searchFunc);
-
-    prevButton.addEventListener('click', function () {
-        offset = Math.max(0, offset - limit);
+    button.addEventListener('click', function() {
+        offset = 0; // Reset offset to 0 when new search is performed
         searchFunc();
     });
 
-    nextButton.addEventListener('click', function () {
-        offset = offset + limit;
+    // Click event for 'Load more' button
+    loadMoreButton.addEventListener('click', function () {
         searchFunc();
     });
-
-    // initialize button visibility
-    prevButton.style.display = 'none';
-    nextButton.style.display = 'none';
 });

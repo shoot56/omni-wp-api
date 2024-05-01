@@ -19,8 +19,7 @@ $search_answer = esc_attr($data->form['search_answer']);
         </div>
         <div class="omni-search__result-wrp" id="results"></div>
         <div class="omni-search__pagination_wrp">
-            <button id="prev" type="button"><?php _e('Prev', 'omni') ?></button>
-            <button id="next" type="button"><?php _e('Next', 'omni') ?></button>
+            <button id="load_more" type="button"><?php _e('Load more', 'omni') ?></button>
         </div>
     </form>
 </div>

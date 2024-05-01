@@ -142,7 +142,7 @@ class ClassAdmin
                 <div class="inline-edit-col">
                     <label class="alignleft">
                         <input type="checkbox" name="exclude_from_omni_bulk" value="1"/>
-                        <span class="checkbox-title">Exclude from Omnimind</span>
+                        <span class="checkbox-title"><?php _e('Exclude from Omnimind', 'omni'); ?></span>
                     </label>
                 </div>
             </fieldset>

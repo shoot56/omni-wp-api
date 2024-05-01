@@ -28,7 +28,7 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 define('WIDGET_TYPE_ID', 12);
 define('OMNI_FILE', __FILE__);
 define('OMNI_PLUGIN_DIR', plugin_dir_path(__FILE__));
-
+define('PLUGIN_VER', '1.0');
 use Procoders\Omni\Admin\{ClassAdmin as AdminInit, ClassAssets as AdminAssets, ClassNav as AdminNav};
 use Procoders\Omni\Public\{ClassAssets as PublicAssets, ClassPublic as PublicInit};
 
