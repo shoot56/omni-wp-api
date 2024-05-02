@@ -121,7 +121,6 @@ class api
         }
     }
 
-
     /**
      * @return bool
      */

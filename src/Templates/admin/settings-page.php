@@ -203,7 +203,7 @@ $settings = $data->form['ai_omni_setting'];
                         $operator = 'and';
                         $post_types = get_post_types($args, $output, $operator);
                         unset($post_types['attachment']);
-                        $selected_fields = esc_attr(get_option('_omni_selected_fields_option'));
+                        $selected_fields = get_option('_omni_selected_fields_option');
 
                         if ($post_types) {
                             ?>
