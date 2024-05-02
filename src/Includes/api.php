@@ -114,13 +114,12 @@ class api
         );
         $response = wp_safe_remote_post($url, $args);
         if (is_wp_error($response)) {
-            $this->debug->omni_error_log('Search req error: ' . $response);
+            $this->debug->omni_error_log('Search req error: ' . $response->get_error_message());
             return false;
         } else {
             return json_decode(wp_remote_retrieve_body($response), true);
         }
     }
-
 
     /**
      * @return bool
@@ -175,7 +174,7 @@ class api
         $response = wp_remote_request($url, $args);
 
         if (is_wp_error($response)) {
-            $this->debug->omni_error_log('Reindex error code: ' . $response);
+            $this->debug->omni_error_log('Reindex error code: ' . $response->get_error_message());
             return false;
         } else {
             $response_code = wp_remote_retrieve_response_code($response);
@@ -432,8 +431,7 @@ class api
         ));
 
         if (is_wp_error($response)) {
-            $error_message = $response->get_error_message();
-            $this->debug->omni_error_log('An error occurred when sending post to a remote server: ' . $error_message);
+            $this->debug->omni_error_log('An error occurred when sending post to a remote server: ' . $response->get_error_message());
 
             return false;
         } else {

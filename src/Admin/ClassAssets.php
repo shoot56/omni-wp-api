@@ -38,12 +38,12 @@ class ClassAssets
             $css = '.wp-list-table .column-omni_column { width: 130px; }';
             wp_add_inline_style('wp-admin', $css);
 
-            wp_register_style('omni-style', plugins_url('../../assets/css/omni-wp-api.css', __FILE__), array(), '1.0.0', 'all');
+            wp_register_style('omni-style', plugins_url('../../assets/css/omni-wp-api.css', __FILE__), array(), PLUGIN_VER, 'all');
             wp_enqueue_style('select2', plugins_url('../../assets/vendor/select2/select2.min.css', __FILE__));
             wp_enqueue_style('omni-style');
 
-            wp_register_script('omni-script', plugins_url('../../assets/js/omni-wp-api.js', __FILE__), array('jquery'), null, true);
-            wp_enqueue_script('select2', plugins_url('../../assets/vendor/select2/select2.min.js', __FILE__), array('jquery'), null, true);
+            wp_register_script('omni-script', plugins_url('../../assets/js/omni-wp-api.js', __FILE__), array('jquery'), PLUGIN_VER, true);
+            wp_enqueue_script('select2', plugins_url('../../assets/vendor/select2/select2.min.js', __FILE__), array('jquery'), PLUGIN_VER, true);
             wp_enqueue_script('omni-script');
         }
     }

@@ -65,12 +65,12 @@ class ClassPublic
         // Create a unique cache key for this query
         $cache_key = 'omni_search_results_' . md5($query);
         // Try to retrieve the result from the cache
-        //$cache = get_transient($cache_key);
+        $cache = get_transient($cache_key);
 
-//        if ($cache !== false) {
-//            wp_send_json_success($cache);
-//            return;
-//        }
+        if ($cache !== false) {
+            wp_send_json_success($cache);
+            return;
+        }
 
         // If no cached response exits, make the search request
         $response = $this->api->make_search_req($query, $offset);
