@@ -4,7 +4,7 @@ window.addEventListener('DOMContentLoaded', event => {
   const nextButton = document.getElementById('next');
   const resultsDiv = document.getElementById('results');
   let offset = 0;
-  const limit = parseInt(omni_ajax.answers_per_page);;
+  const limit = parseInt(omni_ajax.answers_per_page);
 
   const searchFunc = async function () {
     const query = document.getElementById('query').value;
@@ -68,7 +68,7 @@ window.addEventListener('DOMContentLoaded', event => {
       resultsDiv.appendChild(div);
     });
 
-      if (data.data.results.length > 0 && "0" !== omni_ajax.search_answer) {
+      if (data.data.results.length > 0 && '0' !== omni_ajax.search_answer) {
           data.data.results.reverse().forEach(result =>
               resultsDiv.prepend(createElement('blockquote', result.text))
           );

@@ -575,9 +575,9 @@ class ClassAdmin
             return;
         }
         if (isset($_POST['exclude_from_omni_bulk'])) {
-            update_post_meta($post_id, '_exclude_from_omni', $_POST['exclude_from_omni_bulk']);
+            update_post_meta($post_id, '_exclude_from_omni', sanitize_text_field($_POST['exclude_from_omni_bulk']));
         } elseif (isset($_POST['exclude_from_omni'])) {
-            update_post_meta($post_id, '_exclude_from_omni', $_POST['exclude_from_omni']);
+            update_post_meta($post_id, '_exclude_from_omni', sanitize_text_field($_POST['exclude_from_omni']));
         } else {
             delete_post_meta($post_id, '_exclude_from_omni');
         }
