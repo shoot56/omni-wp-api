@@ -10,6 +10,10 @@ window.addEventListener('DOMContentLoaded', event => {
     const searchFunc = async function () {
 
         const query = document.getElementById('query').value;
+
+        if(query.length === 0)
+            return false;
+
         buttonDisabledState(true, '<span class="spin dashicons dashicons-update"></span>');
 
         const postData = new URLSearchParams({
