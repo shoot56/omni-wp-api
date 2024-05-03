@@ -32,7 +32,7 @@ class ClassPublic
             array(
                 'template' => $this->template,
                 'form' => [
-                    'search_answer' => get_option('_omni_ai_search_answer')
+                    'search_answer' => get_option('_omni_ai_search_answer'),
                 ]
             )
         )->get_template_part('public/search-form');

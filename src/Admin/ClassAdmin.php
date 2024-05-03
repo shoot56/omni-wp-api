@@ -232,9 +232,9 @@ class ClassAdmin
         // ToDo: sync_data() does not expect parameters
         $data_sent = sync_data($selected_post_types);
         if ($data_sent === true) {
-            omni_error_log('Data successfully sent to remote server in CSV format.');
+            $this->debug->omni_error_log('Data successfully sent to remote server in CSV format.');
         } else {
-            omni_error_log('data not sended.');
+            $this->debug->omni_error_log('data not sended.');
         }
     }
 
@@ -575,9 +575,9 @@ class ClassAdmin
             return;
         }
         if (isset($_POST['exclude_from_omni_bulk'])) {
-            update_post_meta($post_id, '_exclude_from_omni', $_POST['exclude_from_omni_bulk']);
+            update_post_meta($post_id, '_exclude_from_omni', sanitize_text_field($_POST['exclude_from_omni_bulk']));
         } elseif (isset($_POST['exclude_from_omni'])) {
-            update_post_meta($post_id, '_exclude_from_omni', $_POST['exclude_from_omni']);
+            update_post_meta($post_id, '_exclude_from_omni', sanitize_text_field($_POST['exclude_from_omni']));
         } else {
             delete_post_meta($post_id, '_exclude_from_omni');
         }
@@ -590,7 +590,7 @@ class ClassAdmin
 
         // Send post to Omnimind
         $this->handle_post($fields_array, $post_type, $post_id, $status);
-        omni_error_log('=========='); // Separator
+        $this->debug->omni_error_log('=========='); // Separator
 
         // Mark that the function has been executed to prevent further executions
         define('OMNI_CUSTOM_FUNCTION_EXECUTED', true);

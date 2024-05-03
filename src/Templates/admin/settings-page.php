@@ -28,6 +28,7 @@ $settings = $data->form['ai_omni_setting'];
                 <li><a class="tab-opener" href="#"><?php _e('Content types', 'omni'); ?></a></li>
                 <li><a class="tab-opener" href="#"><?php _e('Indexing', 'omni'); ?></a></li>
                 <li><a class="tab-opener" href="#"><?php _e('Requests', 'omni'); ?></a></li>
+                <li><a class="tab-opener" href="#"><?php _e('Info', 'omni'); ?></a></li>
             </ul>
             <div class="tabs-list">
                 <div class="tab-item">
@@ -506,6 +507,9 @@ $settings = $data->form['ai_omni_setting'];
                 </div>
                 <div class="tab-item">
                     <p><?php _e('Here you can see you users search requests', 'omni'); ?></p>
+                </div>
+                <div class="tab-item">
+                    <p><?php _e('Use the shortcode [omni_search] to display the search field on the website page.', 'omni'); ?></p>
                 </div>
             </div>
         </div>

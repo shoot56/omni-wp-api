@@ -99,10 +99,10 @@ class api
         $url = ENV_URL . '/rest/v1/projects/' . $project_id . '/actions/search';
         $data = array(
             'query' => $query,
+            'language' => get_locale(),
             'hybrid' => 0,
-            'offset' => $offset,
             'limit' => (int) get_option('_omni_ai_search_results_limit'),
-            'language' => get_locale()
+            'offset' => $offset,
         );
         $headers = array(
             'Authorization' => 'Bearer ' . $omni_api_key,
