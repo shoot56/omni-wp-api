@@ -4,13 +4,11 @@ window.addEventListener('DOMContentLoaded', event => {
     const prevButton = document.getElementById('prev');
     const nextButton = document.getElementById('next');
     const resultsDiv = document.getElementById('results');
-    let offset = 0;
     const limit = parseInt(omni_ajax.answers_per_page);
-
+    let offset = 0;
     const searchFunc = async function () {
 
         const query = document.getElementById('query').value;
-
         if(query.length === 0)
             return false;
 
@@ -31,11 +29,11 @@ window.addEventListener('DOMContentLoaded', event => {
                 body: postData
             });
             const data = await response.json();
-
             // Clear existing results
             resultsDiv.innerHTML = '';
 
             if (data.success) {
+                console.log(data.data);
                 buttonDisabledState(false, omni_ajax._search);
                 updateResultsDiv(data);
 
@@ -51,7 +49,12 @@ window.addEventListener('DOMContentLoaded', event => {
 
     const buttonDisabledState = function (state, text) {
         state ? button.setAttribute('disabled', true) : button.removeAttribute('disabled');
+        state ? prevButton.setAttribute('disabled', true) : prevButton.removeAttribute('disabled');
+        state ? nextButton.setAttribute('disabled', true) : nextButton.removeAttribute('disabled');
         button.innerHTML = text;
+        prevButton.innerHTML = 'Prev';
+        nextButton.innerHTML = 'Next';
+
     }
 
     const createElement = function (element, text) {
@@ -62,10 +65,11 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 
     const updateResultsDiv = function (data) {
-        data.data.sources[0].forEach(item => {
+
+        data.data.forEach(item => {
             const div = document.createElement('div');
             div.append(createElement('h3', item.title));
-            div.append(createElement('p', item.pageContent));
+            div.append(createElement('p', item.short_description));
 
             let link = createElement('a', omni_ajax._read_more);
             link.href = item.url;
@@ -74,16 +78,16 @@ window.addEventListener('DOMContentLoaded', event => {
             resultsDiv.appendChild(div);
         });
 
-        if (data.data.results.length > 0 && '0' !== omni_ajax.search_answer) {
-            data.data.results.reverse().forEach(result =>
-                resultsDiv.prepend(createElement('blockquote', result.text))
-            );
-            resultsDiv.prepend(createElement('h2', omni_ajax._results));
-        }
+        // if (data.data.results.length > 0 && '0' !== omni_ajax.search_answer) {
+        //     data.data.reverse().forEach(result =>
+        //         resultsDiv.prepend(createElement('blockquote', result.text))
+        //     );
+        //     resultsDiv.prepend(createElement('h2', omni_ajax._results));
+        // }
     }
 
     const updateButtonVisibility = function (data) {
-        const numOfResults = data.data.sources[0].length;
+        const numOfResults = data.data.length;
         prevButton.style.display = offset <= 0 ? 'none' : 'inline';
         nextButton.style.display = numOfResults < limit ? 'none' : 'inline';
     }
