@@ -63,18 +63,18 @@ class ClassPublic
     private function perform_search($nonce, $query, $offset): void
     {
         // Create a unique cache key for this query
-        $cache_key = 'omni_search_results_' . md5($query);
+       // $cache_key = 'omni_search_results_' . md5($query);
         // Try to retrieve the result from the cache
-        $cache = get_transient($cache_key);
+       // $cache = get_transient($cache_key);
 
-        if ($cache !== false) {
-            wp_send_json_success($cache);
-            return;
-        }
+//        if ($cache !== false) {
+//            wp_send_json_success($cache);
+//            return;
+//        }
 
         // If no cached response exits, make the search request
         $response = $this->api->make_search_req($query, $offset);
-
+        $res = json_decode($response['results'][0]['results']);
         // If the search request fails, return an error
         if ($response === false) {
             wp_send_json_error(['message' => __('Unable to process request.', 'omni')]);
@@ -82,8 +82,8 @@ class ClassPublic
         }
 
         // If the search request succeeds, store response in cache and return response
-        set_transient($cache_key, $response, 60 * MINUTE_IN_SECONDS); // Cache for 5 minutes
-        wp_send_json_success($response);
+       // set_transient($cache_key, $res, 60 * MINUTE_IN_SECONDS); // Cache for 5 minutes
+        wp_send_json_success($res);
     }
 }
 
