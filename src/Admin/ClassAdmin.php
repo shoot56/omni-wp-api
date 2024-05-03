@@ -197,7 +197,7 @@ class ClassAdmin
 
     private function handle_save_post_types(): void
     {
-        $selected_post_types = isset($_POST['post_types']) ? sanitize_text_field($_POST['post_types']) : array();
+        $selected_post_types = isset($_POST['post_types']) ? $_POST['post_types'] : array();
         update_option('_omni_selected_post_types', $selected_post_types);
         if (isset($_POST['post_type_fields'])) {
             $selected_fields = $_POST['post_type_fields'];
