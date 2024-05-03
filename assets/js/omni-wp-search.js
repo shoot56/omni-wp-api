@@ -1,100 +1,105 @@
 window.addEventListener('DOMContentLoaded', event => {
-  const button = document.getElementById('get_results');
-  const prevButton = document.getElementById('prev');
-  const nextButton = document.getElementById('next');
-  const resultsDiv = document.getElementById('results');
-  let offset = 0;
-  const limit = parseInt(omni_ajax.answers_per_page);
+    const form = document.getElementById('omni_search_form');
+    const button = document.getElementById('get_results');
+    const prevButton = document.getElementById('prev');
+    const nextButton = document.getElementById('next');
+    const resultsDiv = document.getElementById('results');
+    let offset = 0;
+    const limit = parseInt(omni_ajax.answers_per_page);
 
-  const searchFunc = async function () {
-    const query = document.getElementById('query').value;
-    buttonDisabledState(true, '<span class="spin dashicons dashicons-update"></span>');
+    const searchFunc = async function () {
 
-    const postData = new URLSearchParams({
-      'action': 'omni_search_handle_query',
-      'query': query,
-      'offset': offset,
-      'limit': limit,
-      'nonce': omni_ajax.query_nonce,
-    });
+        const query = document.getElementById('query').value;
+        buttonDisabledState(true, '<span class="spin dashicons dashicons-update"></span>');
 
-    try {
-      const response = await fetch(omni_ajax.url, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: postData
-      });
-      const data = await response.json();
+        const postData = new URLSearchParams({
+            'action': 'omni_search_handle_query',
+            'query': query,
+            'offset': offset,
+            'limit': limit,
+            'nonce': omni_ajax.query_nonce,
+        });
 
-      // Clear existing results
-      resultsDiv.innerHTML = '';
+        try {
+            const response = await fetch(omni_ajax.url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: postData
+            });
+            const data = await response.json();
 
-      if (data.success) {
-        buttonDisabledState(false, omni_ajax._search);
-        updateResultsDiv(data);
+            // Clear existing results
+            resultsDiv.innerHTML = '';
 
-        // Update the visibility states for prev and next buttons
-        updateButtonVisibility(data);
-      } else {
-        resultsDiv.textContent = 'An error occurred while fetching data.';
-      }
-    } catch (error) {
-      console.error('Error:', error);
+            if (data.success) {
+                buttonDisabledState(false, omni_ajax._search);
+                updateResultsDiv(data);
+
+                // Update the visibility states for prev and next buttons
+                updateButtonVisibility(data);
+            } else {
+                resultsDiv.textContent = 'An error occurred while fetching data.';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
-  }
 
-  const buttonDisabledState = function(state, text) {
-    state ? button.setAttribute('disabled', true) : button.removeAttribute('disabled');
-    button.innerHTML = text;
-  }
+    const buttonDisabledState = function (state, text) {
+        state ? button.setAttribute('disabled', true) : button.removeAttribute('disabled');
+        button.innerHTML = text;
+    }
 
-  const createElement = function(element, text) {
-    const newElement = document.createElement(element);
-    newElement.textContent = text;
+    const createElement = function (element, text) {
+        const newElement = document.createElement(element);
+        newElement.textContent = text;
 
-    return newElement;
-  }
+        return newElement;
+    }
 
-  const updateResultsDiv = function(data) {
-    data.data.sources[0].forEach(item => {
-      const div = document.createElement('div');
-      div.append(createElement('h3', item.title));
-      div.append(createElement('p', item.pageContent));
+    const updateResultsDiv = function (data) {
+        data.data.sources[0].forEach(item => {
+            const div = document.createElement('div');
+            div.append(createElement('h3', item.title));
+            div.append(createElement('p', item.pageContent));
 
-      let link = createElement('a', omni_ajax._read_more);
-      link.href = item.url;
-      div.append(link);
+            let link = createElement('a', omni_ajax._read_more);
+            link.href = item.url;
+            div.append(link);
 
-      resultsDiv.appendChild(div);
+            resultsDiv.appendChild(div);
+        });
+
+        if (data.data.results.length > 0 && '0' !== omni_ajax.search_answer) {
+            data.data.results.reverse().forEach(result =>
+                resultsDiv.prepend(createElement('blockquote', result.text))
+            );
+            resultsDiv.prepend(createElement('h2', omni_ajax._results));
+        }
+    }
+
+    const updateButtonVisibility = function (data) {
+        const numOfResults = data.data.sources[0].length;
+        prevButton.style.display = offset <= 0 ? 'none' : 'inline';
+        nextButton.style.display = numOfResults < limit ? 'none' : 'inline';
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        searchFunc();
     });
 
-      if (data.data.results.length > 0 && '0' !== omni_ajax.search_answer) {
-          data.data.results.reverse().forEach(result =>
-              resultsDiv.prepend(createElement('blockquote', result.text))
-          );
-          resultsDiv.prepend(createElement('h2', omni_ajax._results));
-      }
-  }
+    prevButton.addEventListener('click', function () {
+        offset = Math.max(0, offset - limit);
+        searchFunc();
+    });
 
-  const updateButtonVisibility = function(data) {
-    const numOfResults = data.data.sources[0].length;
-    prevButton.style.display = offset <= 0 ? 'none' : 'inline';
-    nextButton.style.display = numOfResults < limit ? 'none' : 'inline';
-  }
+    nextButton.addEventListener('click', function () {
+        offset = offset + limit;
+        searchFunc();
+    });
 
-  button.addEventListener('click', searchFunc);
-
-  prevButton.addEventListener('click', function() {
-    offset = Math.max(0, offset - limit);
-    searchFunc();
-  });
-
-  nextButton.addEventListener('click', function() {
-    offset = offset + limit;
-    searchFunc();
-  });
-
-  // initialize button visibility
-  prevButton.style.display = 'none';
-  nextButton.style.display = 'none';
+    // initialize button visibility
+    prevButton.style.display = 'none';
+    nextButton.style.display = 'none';
 });
