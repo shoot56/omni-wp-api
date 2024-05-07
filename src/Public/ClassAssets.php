@@ -41,6 +41,7 @@ class ClassAssets
                 'url' => admin_url('admin-ajax.php'),
                 'query_nonce' => wp_create_nonce('omni_search_handle_query'),
                 'search_answer' => esc_attr(get_option('_omni_ai_search_answer')),
+                'show_content' => esc_attr(get_option('_omni_ai_search_content')),
                 'answers_per_page' => esc_attr(get_option('_omni_ai_search_results_limit')),
                 '_read_more' => __('Read More', 'omni'),
                 '_search' => __('Search', 'omni'),

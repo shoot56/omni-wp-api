@@ -74,10 +74,10 @@ window.addEventListener('DOMContentLoaded', event => {
             link.href = item.url;
             title.append(link);
             div.append(title);
-
-            div.append(createElement('p', item.short_description));
-
-
+            console.log(omni_ajax.show_content !== 0);
+            if(omni_ajax.show_content !== '0') {
+                div.append(createElement('p', item.short_description));
+            }
             resultsDiv.appendChild(div);
         });
     }

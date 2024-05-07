@@ -44,9 +44,11 @@
   width: 100%;
 }
 #results div {
-  border: 1px solid #e2e2e2;
   padding: 1rem;
   margin-bottom: 1rem;
+}
+#results div h3 {
+  margin-top: 0;
 }
 #results blockquote {
   border: 1px solid #00a32a;

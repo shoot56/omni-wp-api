@@ -55,9 +55,11 @@ $background-color_2: lightgrey;
   width: 100%;
 
   div {
-    border: 1px solid #e2e2e2;
     padding: 1rem;
     margin-bottom: 1rem;
+    h3{
+      margin-top:0;
+    }
   }
 
   blockquote {

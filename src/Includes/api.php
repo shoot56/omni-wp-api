@@ -104,7 +104,7 @@ class api
             'language' => get_locale(),
             'hybrid' => 0,
             'proofLevel' =>  $proof_level,
-            'customPrompt' => "You are a search engine. You must return suitable urls that regarding the user’s question. Generate in $lang language and search query '$query' with limit $limit, offset $offset sort by relevance in descending order, in a VALID JSON FORMAT. Use pattern [{\"url\": \"url 1\", \"short_description\": \"short_descript 1\", \"title\": \"title 1\"}, {\"url\": \"url 2\", \"short_description\": \"short_descript 2\", \"title\": \"title 2\"}] Answers should only contain the essential key terms or phrases directly relevant to the question, without elaborating."
+            'customPrompt' => "You are a search engine. You must return suitable urls that regarding the user’s question. Generate in $lang language and search query '$query' with limit $limit, sort by relevance in descending order, in a VALID JSON FORMAT. Use pattern [{\"url\": \"url 1\", \"short_description\": \"short_descript 1\", \"title\": \"title 1\"}, {\"url\": \"url 2\", \"short_description\": \"short_descript 2\", \"title\": \"title 2\"}] Answers should only contain the essential key terms or phrases directly relevant to the question, without elaborating."
         );
 
         $headers = array(
