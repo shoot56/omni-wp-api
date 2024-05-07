@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Omni WP API
  * Description: Customizable REST API endpoints with API Key authentication.
- * Version: 1.0.6
+ * Version: 1.1.2
  * Author: Procoders
  * Requires PHP: 8.0
  * Text Domain: omni
@@ -21,14 +21,16 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
 
-    define('ENV_URL', 'https://dev-api.omnimind.ai');
+define('ENV_URL', 'https://dev-api.omnimind.ai');
 //define('ENV_URL', 'https://app-api.omnimind.ai');
 
 // Temporary id set
 define('WIDGET_TYPE_ID', 12);
+
 define('OMNI_FILE', __FILE__);
 define('OMNI_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PLUGIN_VER', '1.0');
+
 use Procoders\Omni\Admin\{ClassAdmin as AdminInit, ClassAssets as AdminAssets, ClassNav as AdminNav};
 use Procoders\Omni\Public\{ClassAssets as PublicAssets, ClassPublic as PublicInit};
 

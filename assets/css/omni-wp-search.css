@@ -36,7 +36,6 @@
 .omni-search__search-wrp #query {
   flex-grow: 1;
   padding: 10px 15px;
-  border: 1px solid #ccc;
   border-radius: 4px;
   margin-right: 10px;
 }
@@ -45,14 +44,28 @@
   width: 100%;
 }
 #results div {
-  border: 1px solid #e2e2e2;
   padding: 1rem;
   margin-bottom: 1rem;
+}
+#results div h3 {
+  margin-top: 0;
 }
 #results blockquote {
   border: 1px solid #00a32a;
   margin-left: 0;
   padding: 1rem;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.spin {
+  animation: rotate 2s linear infinite;
 }
 
 /*# sourceMappingURL=omni-wp-search.css.map */

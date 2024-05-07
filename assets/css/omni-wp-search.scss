@@ -46,7 +46,6 @@ $background-color_2: lightgrey;
   #query {
     flex-grow: 1;
     padding: 10px 15px;
-    border: 1px solid #ccc;
     border-radius: 4px;
     margin-right: 10px;
   }
@@ -56,9 +55,11 @@ $background-color_2: lightgrey;
   width: 100%;
 
   div {
-    border: 1px solid #e2e2e2;
     padding: 1rem;
     margin-bottom: 1rem;
+    h3{
+      margin-top:0;
+    }
   }
 
   blockquote {
@@ -66,4 +67,18 @@ $background-color_2: lightgrey;
     margin-left: 0;
     padding: 1rem;
   }
+
+
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.spin {
+  animation: rotate 2s linear infinite;
 }
