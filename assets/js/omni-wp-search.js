@@ -68,22 +68,18 @@ window.addEventListener('DOMContentLoaded', event => {
 
         data.data.forEach(item => {
             const div = document.createElement('div');
-            div.append(createElement('h3', item.title));
+
+            let title = createElement('h3');
+            let link = createElement('a', item.title);
+            link.href = item.url;
+            title.append(link);
+            div.append(title);
+
             div.append(createElement('p', item.short_description));
 
-            let link = createElement('a', omni_ajax._read_more);
-            link.href = item.url;
-            div.append(link);
 
             resultsDiv.appendChild(div);
         });
-
-        // if (data.data.results.length > 0 && '0' !== omni_ajax.search_answer) {
-        //     data.data.reverse().forEach(result =>
-        //         resultsDiv.prepend(createElement('blockquote', result.text))
-        //     );
-        //     resultsDiv.prepend(createElement('h2', omni_ajax._results));
-        // }
     }
 
     const updateButtonVisibility = function (data) {

@@ -119,11 +119,11 @@ $settings = $data->form['ai_omni_setting'];
                                     <div class="form-col">
                                         <div class="form-row">
                                             <div class="form-row__label">
-                                                <div class="form-label"><?php _e('Trust level', 'omni') ?></div>
+                                                <div class="form-label"><?php _e('Proof level', 'omni') ?></div>
                                             </div>
                                             <div class="form-row__item">
-                                                <input class="form-input" type="number" name="ai_search_trust_level"
-                                                       value="<?php echo(esc_attr($ai_search_trust_level) ? esc_attr($ai_search_trust_level) : '5'); ?>">
+                                                <input class="form-input" type="number" step=".1"  max=".9" min= ".1" name="ai_search_trust_level"
+                                                       value="<?php echo(esc_attr($ai_search_trust_level) ? esc_attr($ai_search_trust_level) : '0.6'); ?>">
                                             </div>
                                         </div>
                                     </div>
