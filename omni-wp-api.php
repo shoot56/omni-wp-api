@@ -71,6 +71,11 @@ class Omni
         add_action('wp_ajax_nopriv_omni_search_handle_query', array($public_init, 'omni_search_handle_query'));
         add_action('wp_ajax_omni_search_handle_query', array($public_init, 'omni_search_handle_query'));
 
+        // Register ajax cals for autocomplete.
+        add_action('wp_ajax_nopriv_omni_handle_autocomplete', array($public_init, 'omni_search_handle_autocomplete'));
+        add_action('wp_ajax_omni_handle_autocomplete', array($public_init, 'omni_search_handle_autocomplete'));
+
+
         add_action('admin_init', array($admin_init, 'add_omni_columns_to_post_types'));
         add_action('admin_init', array($admin_init, 'add_quick_and_bulk_edit_to_post_types'));
         add_action('add_meta_boxes', array($admin_init, 'add_meta_box'));
