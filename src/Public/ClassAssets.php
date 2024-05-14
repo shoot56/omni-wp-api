@@ -34,12 +34,13 @@ class ClassAssets
     {
         wp_enqueue_style('omni-search-style', plugins_url('../../assets/css/omni-wp-search.css', __FILE__));
         //
-        wp_register_script('omni-search-script', plugins_url('../../assets/js/omni-wp-search.js', __FILE__), array(), '', true);
+        wp_register_script('omni-search-script', plugins_url('../../assets/js/omni-wp-search.js', __FILE__), array(), PLUGIN_VER, true);
         wp_enqueue_script('omni-search-script');
         wp_localize_script('omni-search-script', 'omni_ajax',
             array(
                 'url' => admin_url('admin-ajax.php'),
                 'query_nonce' => wp_create_nonce('omni_search_handle_query'),
+                'autocomplete_nonce' => wp_create_nonce('omni_search_handle_autocomplete'),
                 'search_answer' => esc_attr(get_option('_omni_ai_search_answer')),
                 'show_content' => esc_attr(get_option('_omni_ai_search_content')),
                 'answers_per_page' => esc_attr(get_option('_omni_ai_search_results_limit')),

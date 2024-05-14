@@ -60,17 +60,48 @@ class ClassPublic
         $this->perform_search($nonce, $query, $offset);
     }
 
+    public function omni_search_handle_autocomplete(): void
+    {
+
+        // Check and sanitize input values
+        if (!isset($_POST['nonce'], $_POST['query']) || !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'omni_search_handle_autocomplete')) {
+            wp_send_json_error(['message' => __('Permission denied...', 'omni')]);
+            return;
+        }
+
+        $args = array(
+            'post_type' => array('post', 'page'),
+            'posts_per_page' => 10,
+            's' => sanitize_text_field($_POST['query']),
+        );
+
+        $query = new \WP_Query($args);
+        $posts = $query->posts;
+
+        $data = [];
+
+        foreach ($posts as $post) {
+            $data[] = array(
+                'id' => $post->ID,
+                'text' => $post->post_title,
+            );
+        }
+
+        wp_send_json_success($data);
+
+    }
+
     private function perform_search($nonce, $query, $offset): void
     {
         // Create a unique cache key for this query
-       // $cache_key = 'omni_search_results_' . md5($query);
+        $cache_key = 'omni_search_results_' . md5($query);
         // Try to retrieve the result from the cache
-       // $cache = get_transient($cache_key);
+        $cache = get_transient($cache_key);
 
-//        if ($cache !== false) {
-//            wp_send_json_success($cache);
-//            return;
-//        }
+        if ($cache !== false) {
+            wp_send_json_success($cache);
+            return;
+        }
 
         // If no cached response exits, make the search request
         $response = $this->api->make_search_req($query, $offset);
@@ -82,8 +113,10 @@ class ClassPublic
         }
 
         // If the search request succeeds, store response in cache and return response
-       // set_transient($cache_key, $res, 60 * MINUTE_IN_SECONDS); // Cache for 5 minutes
+        set_transient($cache_key, $res, 60 * MINUTE_IN_SECONDS); // Cache for 5 minutes
         wp_send_json_success($res);
     }
+
+
 }
 
