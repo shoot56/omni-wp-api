@@ -5,12 +5,17 @@ window.addEventListener('DOMContentLoaded', event => {
 
     const autocompleteResultsDiv = document.getElementById('query_autocomplete');
     const autocompleteResultsList = document.createElement('ul'); // this should be your dropdown div
-    autocompleteResultsDiv.append(autocompleteResultsList);
+
     const limit = parseInt(omni_ajax.answers_per_page);
     let offset = 0;
 
+    autocompleteResultsDiv.append(autocompleteResultsList);
+
     document.getElementById('query').addEventListener('keyup', async function (e) {
         const inputVal = this.value;
+
+        if (omni_ajax.show_autocomplete === '0')
+            return false;
 
         if (inputVal.length === 0) {
             autocompleteResultsList.innerHTML = ''; // clear the dropdown
@@ -39,24 +44,23 @@ window.addEventListener('DOMContentLoaded', event => {
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: postData
             });
-            const data = await response.json();
+            const res = await response.json();
             autocompleteResultsList.innerHTML = '';  // clear the dropdown
-
             if (data.success) {
 
-                if (data.data.length === 0) {
+                if (res.data.length === 0) {
                     autocompleteResultsDiv.style.display = 'none';
                 } else {
                     autocompleteResultsDiv.style.display = 'block';
                 }
-                data.data.forEach(item => {
+
+                res.data.forEach(item => {
                     // assuming each item in the result has 'title' and 'url'
                     // create a new list item for each result
                     const li = document.createElement('li');
                     li.append(item.text);
                     autocompleteResultsList.appendChild(li);
                 });
-
             }
         } catch (error) {
             console.error('Error:', error);
@@ -93,15 +97,12 @@ window.addEventListener('DOMContentLoaded', event => {
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: postData
             });
-            const data = await response.json();
+            const res = await response.json();
             // Clear existing results
             resultsDiv.innerHTML = '';
-
-            if (data.success) {
-                console.log(data.data);
+            if (res.success) {
                 buttonDisabledState(false, omni_ajax._search);
-                updateResultsDiv(data);
-
+                updateResultsDiv(res);
             } else {
                 resultsDiv.textContent = 'An error occurred while fetching data.';
             }
@@ -116,16 +117,11 @@ window.addEventListener('DOMContentLoaded', event => {
 
     }
 
-    const createElement = function (element, text) {
-        const newElement = document.createElement(element);
-        newElement.textContent = text;
-
-        return newElement;
-    }
-
-    const updateResultsDiv = function (data) {
-
-        data.data.forEach(item => {
+    const updateResultsDiv = function (res) {
+        if(res.data.lenght === 0)
+            return false;
+        console.log(res);
+        res.data.forEach(item => {
             const div = document.createElement('div');
 
             let title = createElement('h3');
@@ -133,7 +129,6 @@ window.addEventListener('DOMContentLoaded', event => {
             link.href = item.url;
             title.append(link);
             div.append(title);
-            console.log(omni_ajax.show_content !== 0);
             if (omni_ajax.show_content !== '0') {
                 div.append(createElement('p', item.short_description));
             }
@@ -141,10 +136,10 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 
-    const updateButtonVisibility = function (data) {
-        const numOfResults = data.data.length;
-        prevButton.style.display = offset <= 0 ? 'none' : 'inline';
-        nextButton.style.display = numOfResults < limit ? 'none' : 'inline';
+    const createElement = function (element, text) {
+        const newElement = document.createElement(element);
+        newElement.textContent = text;
+        return newElement;
     }
 
     form.addEventListener('submit', function (e) {
