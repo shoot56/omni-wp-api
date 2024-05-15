@@ -12,7 +12,6 @@ window.addEventListener('DOMContentLoaded', event => {
     document.getElementById('query').addEventListener('keyup', async function (e) {
         const inputVal = this.value;
 
-        autocompleteResultsDiv.style.display = 'block'; // clear the dropdown
         if (inputVal.length === 0) {
             autocompleteResultsList.innerHTML = ''; // clear the dropdown
             return false;
@@ -24,15 +23,15 @@ window.addEventListener('DOMContentLoaded', event => {
             'nonce': omni_ajax.autocomplete_nonce
         });
 
-        if (e.key === 'Enter') {
-            const firstItem = autocompleteResultsList.querySelector('li');
-            if (firstItem) {
-                document.getElementById('query').value = firstItem.textContent;
-                firstItem.click();
-            }
-            autocompleteResultsList.innerHTML = ''; // clear the dropdown after selection
-            return false;
-        }
+        // if (e.key === 'Enter') {
+        //     const firstItem = autocompleteResultsList.querySelector('li');
+        //     if (firstItem) {
+        //         document.getElementById('query').value = firstItem.textContent;
+        //         firstItem.click();
+        //     }
+        //     autocompleteResultsList.innerHTML = ''; // clear the dropdown after selection
+        //     return false;
+        // }
 
         try {
             const response = await fetch(omni_ajax.url, {
@@ -44,8 +43,11 @@ window.addEventListener('DOMContentLoaded', event => {
             autocompleteResultsList.innerHTML = '';  // clear the dropdown
 
             if (data.success) {
+
                 if (data.data.length === 0) {
                     autocompleteResultsDiv.style.display = 'none';
+                } else {
+                    autocompleteResultsDiv.style.display = 'block';
                 }
                 data.data.forEach(item => {
                     // assuming each item in the result has 'title' and 'url'
