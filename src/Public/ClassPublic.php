@@ -97,8 +97,9 @@ class ClassPublic
         $cache_key = 'omni_search_results_' . md5($query);
         // Try to retrieve the result from the cache
         $cache = get_transient($cache_key);
+        $cache_lifetime = (int)get_options('_omni_ai_cache') ?? 1;
 
-        if ($cache !== false) {
+        if (!empty($cache)) {
             wp_send_json_success($cache);
             return;
         }
@@ -113,8 +114,13 @@ class ClassPublic
         }
 
         // If the search request succeeds, store response in cache and return response
-        set_transient($cache_key, $res, 60 * MINUTE_IN_SECONDS); // Cache for 5 minutes
-        wp_send_json_success($res);
+        $cached = set_transient($cache_key, $res, $cache_lifetime * 60 * MINUTE_IN_SECONDS); // Cache for 5 minutes
+        if ($cached) {
+            wp_send_json_success($res);
+        } else {
+            wp_send_json_error(['message' => __('Unable to cache request.', 'omni')]);
+            return;
+        }
     }
 
 
