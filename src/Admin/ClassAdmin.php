@@ -71,6 +71,10 @@ class ClassAdmin
             $this->handle_reindex_project();
         }
 
+        if (isset($_POST['purge_cache'])) {
+            $this->handle_purge_cache();
+        }
+
         if (isset($_POST['save_general'])) {
             $this->handle_save_general();
         }
@@ -272,6 +276,24 @@ class ClassAdmin
         ];
     }
 
+    private function handle_purge_cache(): void
+    {
+        if ($this->purge_cache()) {
+            $this->message = [
+                'status' => 'success',
+                'message' => __('Cache purged successfully!'),
+            ];
+        } else {
+            $this->message = [
+                'status' => 'warning',
+                'message' => __('Failed to purge cache! Please try again later.'),
+            ];
+
+        }
+
+
+    }
+
     private function handle_save_general(): void
     {
         $ai_search_answer = isset($_POST['ai_search_answer']) ? 1 : 0;
@@ -362,6 +384,36 @@ class ClassAdmin
             }
 
         }
+    }
+
+    public function purge_cache(): bool
+    {
+        global $wpdb;
+
+        $prefix = 'omni_search_results_';
+        $options = $wpdb->options;
+
+        $transients = $wpdb->get_col(
+            $wpdb->prepare(
+                "SELECT option_name 
+        FROM $options 
+        WHERE option_name LIKE %s",
+                $wpdb->esc_like('_transient_' . $prefix) . '%'
+            )
+        );
+
+        $res = [];
+        foreach ($transients as $transient) {
+            // Strip away the WordPress prefix in order to arrive at the transient key.
+            $key = str_replace('_transient_', '', $transient);
+
+            // Now that we have the key, so delete the transient.
+            $res[] = delete_transient($key);
+        }
+
+        if (count(array_unique($res)) === 1)
+            return current($res);
+        else return false;
     }
 
 

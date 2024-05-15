@@ -144,7 +144,7 @@ $settings = $data->form['ai_omni_setting'];
                                                 </div>
                                             </div>
                                             <div class="form-block__button">
-                                                <button class="btn-omni btn-omni--warning btn-omni--block">
+                                                <button name="purge_cache" id="purge_cache_button" class="btn-omni btn-omni--warning btn-omni--block">
                                                     <svg class="svg-icon" width="16" height="16">
                                                         <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-purge', dirname(__FILE__)); ?>"></use>
                                                     </svg>

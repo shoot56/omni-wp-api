@@ -119,7 +119,6 @@ class ClassPublic
             wp_send_json_success($res);
         } else {
             wp_send_json_error(['message' => __('Unable to cache request.', 'omni')]);
-            return;
         }
     }
 
