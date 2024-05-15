@@ -138,7 +138,7 @@ $settings = $data->form['ai_omni_setting'];
                                                 the costs. If you set it to 0 no cache is going to be applied', 'omni') ?></p>
                                                 <div class="cache-input">
                                                     <div class="form-label"><?php _e('Cache period', 'omni') ?></div>
-                                                    <input class="form-input" type="number" name="ai_cache"
+                                                    <input class="form-input" type="number" min="1" name="ai_cache"
                                                            value="<?php echo(esc_attr($ai_cache) ? esc_attr($ai_cache) : '24'); ?>">
                                                     <div class="cache-input__info"><?php _e('hours', 'omni') ?></div>
                                                 </div>
