@@ -120,8 +120,12 @@ window.addEventListener('DOMContentLoaded', event => {
     const updateResultsDiv = function (res) {
         if(res.data.lenght === 0)
             return false;
-        console.log(res);
-        res.data.forEach(item => {
+
+        if (res.data.answer.length > 0 && '0' !== omni_ajax.search_answer) {
+            resultsDiv.prepend(createElement('blockquote', res.data.answer))
+        }
+
+        res.data.results.forEach(item => {
             const div = document.createElement('div');
 
             let title = createElement('h3');

@@ -47,17 +47,13 @@ class ClassPublic
     public function omni_search_handle_query(): void
     {
         // Check and sanitize input values
-        if (!isset($_POST['nonce'], $_POST['query'], $_POST['offset']) || !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'omni_search_handle_query')) {
+        if (!isset($_POST['nonce'], $_POST['query']) || !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'omni_search_handle_query')) {
             wp_send_json_error(['message' => __('Permission denied...', 'omni')]);
             return;
         }
 
-        // Assign sanitized form values to variables
-        $nonce = sanitize_text_field($_POST['nonce']);
         $query = sanitize_text_field($_POST['query']);
-        $offset = filter_var($_POST['offset'], FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)));
-
-        $this->perform_search($nonce, $query, $offset);
+        $this->perform_search( $query );
     }
 
     public function omni_search_handle_autocomplete(): void
@@ -91,7 +87,7 @@ class ClassPublic
 
     }
 
-    private function perform_search($nonce, $query, $offset): void
+    private function perform_search($query): void
     {
         // Create a unique cache key for this query
         $cache_key = 'omni_search_results_' . md5($query);
@@ -103,10 +99,15 @@ class ClassPublic
             wp_send_json_success($cache);
             return;
         }
-
+        $answer = '';
         // If no cached response exits, make the search request
-        $response = $this->api->make_search_req($query, $offset);
-        $res = json_decode($response['results'][0]['results']);
+        $response = $this->api->make_search_req($query);
+        if(get_option('_omni_ai_search_answer') === '1'){
+                $response_ = $this->api->make_answer_req($query);
+                $answer = $response_['results'][0]['results'];
+        }
+        $res['results'] = json_decode($response['results'][0]['results']);
+        $res['answer'] = $answer;
         // If the search request fails, return an error
         if ($response === false) {
             wp_send_json_error(['message' => __('Unable to process request.', 'omni')]);

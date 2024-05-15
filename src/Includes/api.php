@@ -87,11 +87,9 @@ class api
      * Makes a search request to the Omni API.
      *
      * @param string $query The search query.
-     * @param int $offset The offset for pagination of search results.
-     *
-     * @return bool|array Returns either false if there was an error or an array of search results.
+     * @return bool|array Returns an array of search results if successful, false otherwise.
      */
-    public function make_search_req(string $query, int $offset): bool|array
+    public function make_search_req(string $query): bool|array
     {
         $omni_api_key = get_option('_omni_api_key');
         $project_id = get_option('_omni_project_id');
@@ -105,6 +103,40 @@ class api
             'hybrid' => 0,
             'proofLevel' =>  $proof_level,
             'customPrompt' => "You are a search engine. You must return suitable urls that regarding the user’s question. Generate in $lang language and search query '$query' with limit $limit, sort by relevance in descending order, in a VALID JSON FORMAT. Use pattern [{\"url\": \"url 1\", \"short_description\": \"short_descript 1\", \"title\": \"title 1\"}, {\"url\": \"url 2\", \"short_description\": \"short_descript 2\", \"title\": \"title 2\"}] Answers should only contain the essential key terms or phrases directly relevant to the question, without elaborating."
+        );
+
+        $headers = array(
+            'Authorization' => 'Bearer ' . $omni_api_key,
+            'Content-Type' => 'application/json',
+        );
+        $args = array(
+            'body' => wp_json_encode($data),
+            'headers' => $headers,
+            'timeout' => '10000',
+        );
+        $response = wp_safe_remote_post($url, $args);
+
+        if (is_wp_error($response)) {
+            $this->debug->omni_error_log('Search req error: ' . $response->get_error_message());
+            return false;
+        } else {
+            return json_decode(wp_remote_retrieve_body($response), true);
+        }
+    }
+
+    public function make_answer_req(string $query): bool|array
+    {
+        $omni_api_key = get_option('_omni_api_key');
+        $project_id = get_option('_omni_project_id');
+        $proof_level = (float) get_option('_omni_ai_search_trust_level') ?? 0.6;
+        $lang = get_locale();
+        $url = ENV_URL . '/rest/v1/projects/' . $project_id . '/actions/reduce';
+
+        $data = array(
+            'language' => get_locale(),
+            'hybrid' => 0,
+            'proofLevel' =>  $proof_level,
+            'customPrompt' => "You must return general answer on this question: '$query'. Generate in $lang language"
         );
 
         $headers = array(
