@@ -25,6 +25,11 @@ class ClassPublic
         $this->api = new Api();
     }
 
+    /**
+     * Generate and display the Omni search shortcode.
+     *
+     * @return string The rendered search form HTML.
+     */
     public function omni_search_shortcode()
     {
         ob_start();
@@ -56,6 +61,11 @@ class ClassPublic
         $this->perform_search( $query );
     }
 
+    /**
+     * Handle autocomplete search request.
+     *
+     * @return void
+     */
     public function omni_search_handle_autocomplete(): void
     {
 
@@ -87,6 +97,12 @@ class ClassPublic
 
     }
 
+    /**
+     * Perform a search with a given query.
+     *
+     * @param string $query The search query.
+     * @return void
+     */
     private function perform_search($query): void
     {
         // Create a unique cache key for this query
@@ -104,6 +120,10 @@ class ClassPublic
         $response = $this->api->make_search_req($query);
         if(get_option('_omni_ai_search_answer') === '1'){
                 $response_ = $this->api->make_answer_req($query);
+                if ($response_ === false) {
+                    wp_send_json_error(['message' => __('Unable to process request.', 'omni')]);
+                    return;
+                }
                 $answer = $response_['results'][0]['results'];
         }
         $res['results'] = json_decode($response['results'][0]['results']);
