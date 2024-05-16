@@ -49,9 +49,12 @@ $background-color_2: lightgrey;
     position: relative;
     flex-grow: 1;
     #query {
+      position: relative;
       padding: 10px 15px;
       border-radius: 4px;
       z-index: 20;
+      height: 18px;
+      top:0;
     }
 
     #query_autocomplete {
