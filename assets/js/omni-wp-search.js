@@ -4,7 +4,7 @@ window.addEventListener('DOMContentLoaded', event => {
     const resultsDiv = document.getElementById('results');
 
     const autocompleteResultsDiv = document.getElementById('query_autocomplete');
-    const autocompleteResultsList = document.createElement('ul'); // this should be your dropdown div
+    const autocompleteResultsList = document.createElement('ul');
 
     const limit = parseInt(omni_ajax.answers_per_page);
     let offset = 0;
@@ -46,14 +46,13 @@ window.addEventListener('DOMContentLoaded', event => {
             });
             const res = await response.json();
             autocompleteResultsList.innerHTML = '';  // clear the dropdown
-            if (data.success) {
-
+            if (res.success) {
                 if (res.data.length === 0) {
                     autocompleteResultsDiv.style.display = 'none';
                 } else {
                     autocompleteResultsDiv.style.display = 'block';
                 }
-
+                console.log(res.data);
                 res.data.forEach(item => {
                     // assuming each item in the result has 'title' and 'url'
                     // create a new list item for each result
@@ -118,7 +117,7 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 
     const updateResultsDiv = function (res) {
-        if(res.data.lenght === 0)
+        if (res.data.lenght === 0)
             return false;
 
         if (res.data.answer.length > 0 && '0' !== omni_ajax.search_answer) {
