@@ -23,37 +23,43 @@ $background-color_2: lightgrey;
   width: 100%;
 
 
-  button {
-    background-color: $background-color_1;
-    border: none;
-    color: $color_1;
-    padding: 9px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    transition-duration: 0.4s;
-    cursor: pointer;
-    border-radius: 4px;
-    margin-left: 1rem;
-
-    &:hover {
-      background-color: $background-color_2;
-      color: $color_2;
-    }
-  }
-
-  .query-wrp{
+  .query-wrp {
     display: flex;
     flex-direction: column;
     position: relative;
     flex-grow: 1;
+
     #query {
       position: relative;
       padding: 10px 15px;
       border-radius: 4px;
+      position: relative;
+      top: 0;
       z-index: 20;
-      top:0;
+      height: auto;
+      font-size: 1rem;
+      line-height: 1.1rem;
+    }
+
+
+    button {
+      background-color: $background-color_1;
+      border: none;
+      color: $color_1;
+      padding: 9px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      transition-duration: 0.4s;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-left: 1rem;
+
+      &:hover {
+        background-color: $background-color_2;
+        color: $color_2;
+      }
     }
 
     #query_autocomplete {
@@ -68,15 +74,18 @@ $background-color_2: lightgrey;
       z-index: 10;
       width: 98%;
       display: none;
-      ul{
-        list-style:none;
-        padding-left:0;
+
+      ul {
+        list-style: none;
+        padding-left: 0;
         padding-right: .5rem;
-        margin-left:1rem;
-        li{
+        margin-left: 1rem;
+
+        li {
           &:hover {
             cursor: pointer;
           }
+
           padding-bottom: .5rem;
           line-height: 1.4rem;
         }
@@ -92,8 +101,9 @@ $background-color_2: lightgrey;
   div {
     padding: 1rem;
     margin-bottom: 1rem;
-    h3{
-      margin-top:0;
+
+    h3 {
+      margin-top: 0;
     }
   }
 
@@ -114,6 +124,7 @@ $background-color_2: lightgrey;
     transform: rotate(360deg);
   }
 }
+
 .spin {
   animation: rotate 2s linear infinite;
 }
