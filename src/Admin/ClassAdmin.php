@@ -276,6 +276,11 @@ class ClassAdmin
         ];
     }
 
+    /**
+     * Handle the purging of the cache.
+     *
+     * @return void
+     */
     private function handle_purge_cache(): void
     {
         if ($this->purge_cache()) {
@@ -386,6 +391,11 @@ class ClassAdmin
         }
     }
 
+    /**
+     * Purges the cache by deleting all transients related to Omni search results.
+     *
+     * @return bool Returns true if all transients are successfully deleted, otherwise false.
+     */
     public function purge_cache(): bool
     {
         global $wpdb;
