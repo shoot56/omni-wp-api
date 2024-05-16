@@ -41,9 +41,12 @@
   flex-grow: 1;
 }
 .omni-search__search-wrp .query-wrp #query {
+  position: relative;
   padding: 10px 15px;
   border-radius: 4px;
   z-index: 20;
+  height: 18px;
+  top: 0;
 }
 .omni-search__search-wrp .query-wrp #query_autocomplete {
   background: #fff;
