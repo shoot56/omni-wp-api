@@ -123,7 +123,7 @@ $settings = $data->form['ai_omni_setting'];
                                             </div>
                                             <div class="form-row__item">
                                                 <input class="form-input" type="number" step=".1"  max=".9" min= ".1" name="ai_search_trust_level"
-                                                       value="<?php echo(esc_attr($ai_search_trust_level) ? esc_attr($ai_search_trust_level) : '0.6'); ?>">
+                                                       value="<?php echo esc_attr($ai_search_trust_level) ?? 0.6 ?>">
                                             </div>
                                         </div>
                                     </div>

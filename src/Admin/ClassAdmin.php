@@ -305,7 +305,7 @@ class ClassAdmin
         $ai_search_content = isset($_POST['ai_search_content']) ? 1 : 0;
         $ai_search_autocomplete = isset($_POST['ai_search_autocomplete']) ? 1 : 0;
         $ai_search_results_limit = isset($_POST['ai_search_results_limit']) ? intval($_POST['ai_search_results_limit']) : 5;
-        $ai_search_trust_level = isset($_POST['ai_search_trust_level']) ? intval($_POST['ai_search_trust_level']) : 5;
+        $ai_search_trust_level = isset($_POST['ai_search_trust_level']) ? floatval($_POST['ai_search_trust_level']) : 0.6;
         $ai_cache = isset($_POST['ai_cache']) ? intval($_POST['ai_cache']) : 24;
 
         // save data
