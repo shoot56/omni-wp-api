@@ -287,3 +287,37 @@ new DataTable('#request_table', {
 		}
 	]
 });
+
+let td = document.querySelector('td.data-links');
+
+
+//Get all the td elements
+let tdElements = document.querySelectorAll('td.data-links');
+
+tdElements.forEach((td) => {
+	let links = td.querySelectorAll('a');
+
+	if(links.length > 3) {
+		let collapsible = document.createElement('div');
+
+		collapsible.style.display = 'none';
+		collapsible.innerHTML = td.innerHTML;
+		td.innerHTML = '';
+
+		let button = document.createElement('button');
+		button.innerText = 'Show Links';
+
+		button.onclick = function() {
+			if(collapsible.style.display === 'none'){
+				collapsible.style.display = 'block';
+				button.innerText = 'Hide Links';
+			} else {
+				collapsible.style.display = 'none';
+				button.innerText = 'Show Links';
+			}
+		};
+
+		td.appendChild(button);
+		td.appendChild(collapsible);
+	}
+});
