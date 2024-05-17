@@ -80,7 +80,7 @@ class Omni
         add_action('admin_init', array($admin_init, 'add_quick_and_bulk_edit_to_post_types'));
         add_action('add_meta_boxes', array($admin_init, 'add_meta_box'));
         add_action('wp_ajax_sync_data_action', array($admin_init, 'sync_data_ajax_handler'));
-
+        add_action('save_post', array($admin_init, 'bulk_quick_save_post'));
         // Add shortcode and search query handler to WordPress hooks
         add_shortcode('omni_search', array($public_init, 'omni_search_shortcode'));
     }

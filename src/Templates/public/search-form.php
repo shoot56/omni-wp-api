@@ -15,7 +15,7 @@ $search_answer = esc_attr($data->form['search_answer']);
     <form id="omni_search_form">
         <div class="omni-search__search-wrp">
             <div class="query-wrp">
-                <input type="text" id="query" placeholder="<?php _e('Search..', 'omni') ?>">
+                <input type="text" id="query" placeholder="<?php _e('Type here your question...', 'omni') ?>">
                 <div id="query_autocomplete"></div>
             </div>
             <button id="get_results" type="submit"><?php _e('Search', 'omni') ?></button>

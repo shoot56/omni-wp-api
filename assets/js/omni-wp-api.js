@@ -307,6 +307,7 @@ tdElements.forEach((td) => {
 		let button = document.createElement('button');
 		button.innerText = 'Show Links';
 
+
 		button.onclick = function() {
 			if(collapsible.style.display === 'none'){
 				collapsible.style.display = 'block';
