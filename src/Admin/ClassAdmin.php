@@ -96,6 +96,7 @@ class ClassAdmin
             'ai_search_trust_level' => get_option('_omni_ai_search_trust_level'),
             'ai_cache' => get_option('_omni_ai_cache'),
             'ai_omni_setting' => $setting,
+            'search_log' => $this->get_transient_log(),
             'popup' => $this->message,
         );
     }
@@ -112,6 +113,23 @@ class ClassAdmin
                 add_action("manage_{$post_type}_posts_custom_column", array($this, 'omni_column_content'), 10, 2);
             }
         }
+    }
+
+    public function get_transient_log(): array
+    {
+        $transients = $this->read_transient();
+        $log = [];
+
+        foreach ($transients as $transient) {
+            $transient = get_transient(str_replace('_transient_', '', $transient));
+            $log[] = [
+                'date' => $transient['timestamp'],
+                'question' => $transient['query'],
+                'answer' => $transient['answer'],
+                'data' => $transient['results'],
+            ];
+        }
+        return $log;
     }
 
     /**
@@ -398,20 +416,8 @@ class ClassAdmin
      */
     public function purge_cache(): bool
     {
-        global $wpdb;
 
-        $prefix = 'omni_search_results_';
-        $options = $wpdb->options;
-
-        $transients = $wpdb->get_col(
-            $wpdb->prepare(
-                "SELECT option_name 
-        FROM $options 
-        WHERE option_name LIKE %s",
-                $wpdb->esc_like('_transient_' . $prefix) . '%'
-            )
-        );
-
+        $transients = $this->read_transient();
         $res = [];
         foreach ($transients as $transient) {
             // Strip away the WordPress prefix in order to arrive at the transient key.
@@ -424,6 +430,27 @@ class ClassAdmin
         if (count(array_unique($res)) === 1)
             return current($res);
         else return false;
+    }
+
+    /**
+     * Retrieves a list of transients that match a specific prefix.
+     *
+     * @return array List of transients.
+     */
+    private function read_transient(): array
+    {
+        global $wpdb;
+
+        $prefix = 'omni_search_results_';
+
+        return $wpdb->get_col(
+            $wpdb->prepare(
+                "SELECT option_name 
+        FROM $wpdb->options 
+        WHERE option_name LIKE %s",
+                $wpdb->esc_like('_transient_' . $prefix) . '%'
+            )
+        );
     }
 
 

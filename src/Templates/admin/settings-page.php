@@ -17,6 +17,7 @@ $ai_search_results_limit = $data->form['ai_search_results_limit'];
 $ai_search_trust_level = $data->form['ai_search_trust_level'];
 $ai_cache = $data->form['ai_cache'];
 $settings = $data->form['ai_omni_setting'];
+$logs = $data->form['search_log'];
 ?>
     <div class="omni-config wrap">
 
@@ -122,7 +123,8 @@ $settings = $data->form['ai_omni_setting'];
                                                 <div class="form-label"><?php _e('Proof level', 'omni') ?></div>
                                             </div>
                                             <div class="form-row__item">
-                                                <input class="form-input" type="number" step=".1"  max=".9" min= ".1" name="ai_search_trust_level"
+                                                <input class="form-input" type="number" step=".1" max=".9" min=".1"
+                                                       name="ai_search_trust_level"
                                                        value="<?php echo esc_attr($ai_search_trust_level) ?? 0.6 ?>">
                                             </div>
                                         </div>
@@ -144,7 +146,8 @@ $settings = $data->form['ai_omni_setting'];
                                                 </div>
                                             </div>
                                             <div class="form-block__button">
-                                                <button name="purge_cache" id="purge_cache_button" class="btn-omni btn-omni--warning btn-omni--block">
+                                                <button name="purge_cache" id="purge_cache_button"
+                                                        class="btn-omni btn-omni--warning btn-omni--block">
                                                     <svg class="svg-icon" width="16" height="16">
                                                         <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-purge', dirname(__FILE__)); ?>"></use>
                                                     </svg>
@@ -516,6 +519,42 @@ $settings = $data->form['ai_omni_setting'];
                     </div>
                     <div class="tab-item">
                         <p><?php _e('Here you can see you users search requests', 'omni'); ?></p>
+
+                        <table id="request_table" class="display" style="width:100%">
+                            <thead>
+                            <tr>
+                                <th><?php _e('Date', 'omni') ?></th>
+                                <th><?php _e('Question', 'omni') ?></th>
+                                <th><?php _e('Answer', 'omni') ?></th>
+                                <th><?php _e('Content', 'omni') ?></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php
+                            foreach ($logs as $log) {
+                                $datetime = date("d/m/Y H:i", $log['date'] / 1000);
+                                $content = [];
+                                foreach ($log['data'] as $datum) {
+                                    $content[] .= '<a href="' . esc_html($datum->url) . '">' . esc_html($datum->title) . '</a>';
+                                }
+                                echo '<tr>';
+                                echo '<td>' . esc_html($datetime) . '</td>';
+                                echo '<td>' . esc_html($log['question']) . '</td>';
+                                echo '<td>' . esc_html($log['answer']) . '</td>';
+                                echo '<td>' . implode(',', $content) . '</td>';
+                                echo '</tr>';
+                            }
+                            ?>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th><?php _e('Date', 'omni') ?></th>
+                                <th><?php _e('Question', 'omni') ?></th>
+                                <th><?php _e('Answer', 'omni') ?></th>
+                                <th><?php _e('Content', 'omni') ?></th>
+                            </tr>
+                            </tfoot>
+                        </table>
                     </div>
                     <div class="tab-item">
                         <p><?php _e('Use the shortcode [omni_search] to display the search field on the website page.', 'omni'); ?></p>
