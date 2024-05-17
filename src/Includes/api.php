@@ -95,15 +95,15 @@ class api
     {
         $omni_api_key = get_option('_omni_api_key');
         $project_id = get_option('_omni_project_id');
-        $limit = (int) get_option('_omni_ai_search_results_limit');
-        $proof_level = (float) get_option('_omni_ai_search_trust_level') ?? 0.6;
+        $limit = (int)get_option('_omni_ai_search_results_limit');
+        $proof_level = (float)get_option('_omni_ai_search_trust_level') ?? 0.6;
         $lang = get_locale();
         $url = ENV_URL . '/rest/v1/projects/' . $project_id . '/actions/reduce';
 
         $data = array(
             'language' => get_locale(),
             'hybrid' => 0,
-            'proofLevel' =>  $proof_level,
+            'proofLevel' => $proof_level,
             'customPrompt' => "You are a search engine. You must return suitable urls that regarding the user’s question. Generate in $lang language and search query '$query' with limit $limit, sort by relevance in descending order, in a VALID JSON FORMAT. Use pattern [{\"url\": \"url 1\", \"short_description\": \"short_descript 1\", \"title\": \"title 1\"}, {\"url\": \"url 2\", \"short_description\": \"short_descript 2\", \"title\": \"title 2\"}] Answers should only contain the essential key terms or phrases directly relevant to the question, without elaborating."
         );
 
@@ -137,14 +137,14 @@ class api
     {
         $omni_api_key = get_option('_omni_api_key');
         $project_id = get_option('_omni_project_id');
-        $proof_level = (float) get_option('_omni_ai_search_trust_level') ?? 0.6;
+        $proof_level = (float)get_option('_omni_ai_search_trust_level') ?? 0.6;
         $lang = get_locale();
         $url = ENV_URL . '/rest/v1/projects/' . $project_id . '/actions/reduce';
 
         $data = array(
             'language' => get_locale(),
             'hybrid' => 0,
-            'proofLevel' =>  $proof_level,
+            'proofLevel' => $proof_level,
             'customPrompt' => "You must return general answer on this question: '$query'. Generate in $lang language"
         );
 
@@ -225,6 +225,7 @@ class api
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . $omni_api_key,
             ),
+            'timeout' => '20000',
             'method' => 'GET'
         );
         $response = wp_remote_request($url, $args);
@@ -258,6 +259,7 @@ class api
             'headers' => array(
                 'Content-Type' => 'application/json',
             ),
+            'timeout' => '20000',
             'method' => 'DELETE'
         );
         $delete_response = wp_remote_request($new_url, $new_args);
@@ -292,11 +294,13 @@ class api
         $json_body = json_encode($json_data);
         $endpoint = ENV_URL . '/v1/functions/chain/template/run-multiple';
 
+
         $response = wp_safe_remote_post($endpoint, array(
             'headers' => array(
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . $omni_api_key,
             ),
+            'timeout' => '20000',
             'body' => $json_body,
             'method' => 'POST'
         ));

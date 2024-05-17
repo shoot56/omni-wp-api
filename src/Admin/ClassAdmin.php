@@ -122,6 +122,7 @@ class ClassAdmin
 
         foreach ($transients as $transient) {
             $transient = get_transient(str_replace('_transient_', '', $transient));
+
             $log[] = [
                 'date' => $transient['timestamp'],
                 'question' => $transient['query'],
@@ -252,7 +253,7 @@ class ClassAdmin
         $selected_post_types = get_option('_omni_selected_post_types');
 
         // ToDo: sync_data() does not expect parameters
-        $data_sent = sync_data($selected_post_types);
+        $data_sent = $this->sync_data($selected_post_types);
         if ($data_sent === true) {
             $this->debug->omni_error_log('Data successfully sent to remote server in CSV format.');
         } else {
@@ -338,7 +339,7 @@ class ClassAdmin
     /**
      * @return bool|null
      */
-    private function sync_data(): ?bool
+    private function sync_data($selected_post_types = []): ?bool
     {
         $omni_api_key = get_option('_omni_api_key');
         $project_id = get_option('_omni_project_id');
