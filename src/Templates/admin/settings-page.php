@@ -541,7 +541,7 @@ $logs = $data->form['search_log'];
                                 echo '<td>' . esc_html($datetime) . '</td>';
                                 echo '<td>' . esc_html($log['question']) . '</td>';
                                 echo '<td>' . esc_html($log['answer']) . '</td>';
-                                echo '<td>' . implode(',', $content) . '</td>';
+                                echo '<td class="data-links">' . implode(',', $content) . '</td>';
                                 echo '</tr>';
                             }
                             ?>
