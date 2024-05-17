@@ -127,6 +127,8 @@ class ClassPublic
                 $answer = $response_['results'][0]['results'];
         }
         $res['results'] = json_decode($response['results'][0]['results']);
+        $res['timestamp'] = date_create()->format( 'Uv' );
+        $res['query'] = $query;
         $res['answer'] = $answer;
         // If the search request fails, return an error
         if ($response === false) {

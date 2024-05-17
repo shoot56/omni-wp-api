@@ -419,3 +419,8 @@
 .omni-modal__text {
 	margin: 0;
 }
+
+div.dt-container select.dt-input {
+	padding: 4px;
+	min-width: 60px;
+}

@@ -273,3 +273,17 @@ function omniAlertHandler(alertStatus, alertMessage) {
 document.addEventListener('DOMContentLoaded', function() {
 	omniAlertHandler();
 });
+
+new DataTable('#request_table', {
+	columnDefs: [
+		{
+			targets: 0,
+			render: DataTable.render.datetime('d/m/Y H:i'),
+			orderable: true,
+		},
+		{
+			targets: '_all',
+			orderable: false,  // disable ordering for all other columns
+		}
+	]
+});

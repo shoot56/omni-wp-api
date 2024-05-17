@@ -23,6 +23,26 @@ $background-color_2: lightgrey;
   width: 100%;
 
 
+  button {
+    background-color: $background-color_1;
+    border: none;
+    color: $color_1;
+    padding: 9px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-left: 1rem;
+
+    &:hover {
+      background-color: $background-color_2;
+      color: $color_2;
+    }
+  }
+
   .query-wrp {
     display: flex;
     flex-direction: column;
@@ -41,26 +61,6 @@ $background-color_2: lightgrey;
       line-height: 1.1rem;
     }
 
-
-    button {
-      background-color: $background-color_1;
-      border: none;
-      color: $color_1;
-      padding: 9px 20px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      transition-duration: 0.4s;
-      cursor: pointer;
-      border-radius: 4px;
-      margin-left: 1rem;
-
-      &:hover {
-        background-color: $background-color_2;
-        color: $color_2;
-      }
-    }
 
     #query_autocomplete {
       background: #fff;
@@ -92,7 +92,6 @@ $background-color_2: lightgrey;
       }
     }
   }
-
 }
 
 #results {
@@ -112,8 +111,6 @@ $background-color_2: lightgrey;
     margin-left: 0;
     padding: 1rem;
   }
-
-
 }
 
 @keyframes rotate {
