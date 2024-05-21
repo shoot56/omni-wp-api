@@ -534,14 +534,14 @@ $logs = $data->form['search_log'];
                             foreach ($logs as $log) {
                                 $datetime = date("d/m/Y H:i", $log['date'] / 1000);
                                 $content = [];
-                                foreach ($log['data'] as $datum) {
+                                foreach ($log['data'] ?? [] as $datum) {
                                     $content[] .= '<a href="' . esc_html($datum->url) . '">' . esc_html($datum->title) . '</a>';
                                 }
                                 echo '<tr>';
                                 echo '<td>' . esc_html($datetime) . '</td>';
                                 echo '<td>' . esc_html($log['question']) . '</td>';
                                 echo '<td>' . esc_html($log['answer']) . '</td>';
-                                echo '<td class="data-links">' . implode(',', $content) . '</td>';
+                                echo '<td class="data-links">' . implode(', ', $content) . '</td>';
                                 echo '</tr>';
                             }
                             ?>
