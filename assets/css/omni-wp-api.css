@@ -424,3 +424,7 @@ div.dt-container select.dt-input {
 	padding: 4px;
 	min-width: 60px;
 }
+
+.data-links a{
+	//display: inline-block;
+}
