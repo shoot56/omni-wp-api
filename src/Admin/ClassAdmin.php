@@ -124,10 +124,10 @@ class ClassAdmin
             $transient = get_transient(str_replace('_transient_', '', $transient));
 
             $log[] = [
-                'date' => $transient['timestamp'],
-                'question' => $transient['query'],
-                'answer' => $transient['answer'],
-                'data' => $transient['results'],
+                'date' => $transient['timestamp'] ?? 0,
+                'question' => $transient['query'] ?? '',
+                'answer' => $transient['answer'] ?? '',
+                'data' => $transient['results'] ?? [],
             ];
         }
         return $log;
@@ -379,6 +379,69 @@ class ClassAdmin
     }
 
     /**
+     * Synchronize data with pointer one by one.
+     *
+     * @param int $pointer The pointer position. Default is 0.
+     *
+     * @return int The updated pointer position.
+     */
+    private function sync_data_pointer(int $pointer = 0): array
+    {
+        $chains = array();
+        $omni_api_key = get_option('_omni_api_key');
+        $project_id = get_option('_omni_project_id');
+        $fields_array = get_option('_omni_selected_fields_option');
+        $uploaded_fields_array = get_option('_omni_uploaded_fields_option');
+
+        if ($pointer === -1) {
+
+            add_option('_ommin_chains_cache', '');
+
+            if (!is_array($uploaded_fields_array)) {
+                $uploaded_fields_array = array();
+            }
+
+            foreach ($fields_array as $type => $fields) {
+                if (isset($uploaded_fields_array[$type])) {
+
+                    if ($this->compare_second_level($fields, $uploaded_fields_array[$type])) {
+                        $this->delete_posts_of_type($type, $project_id, $chains);
+                        $this->add_posts_of_type($type, $project_id, $chains, $fields);
+                    }
+                } else {
+                    $this->add_posts_of_type($type, $project_id, $chains, $fields);
+                }
+            }
+            foreach ($uploaded_fields_array as $type => $fields) {
+
+                if (!isset($fields_array[$type])) {
+
+                    $this->delete_posts_of_type($type, $project_id, $chains);
+                }
+            }
+
+            update_option('_ommin_chains_cache', $chains);
+            $count = count($chains);
+            return ['pointer' => $pointer + 1, 'count' => $count];
+        } else {
+            $chains = get_option('_ommin_chains_cache');
+            $count = count($chains);
+            if (array_key_exists($pointer, $chains)) {
+
+                $status = $this->api->send_requests($chains[$pointer], $omni_api_key, $project_id, $fields_array);
+
+                if ($status) {
+                    return ['pointer' => $pointer + 1, 'count' => $count];
+                }
+            } else {
+                update_option('_omni_last_sync_date', current_time('mysql'));
+                return ['pointer' => -1, 'count' => $count];
+            }
+        }
+        return ['pointer' => -1, 'count' => 100];
+    }
+
+    /**
      * @return bool
      */
     public function reindex_project(): bool
@@ -454,16 +517,15 @@ class ClassAdmin
         );
     }
 
-
     /**
      * @return void
      */
     public function sync_data_ajax_handler(): void
     {
-        $result = $this->sync_data();
-        wp_send_json_success(array('synced' => $result));
+        $pointer = sanitize_text_field($_POST['pointer']);
+        $result = $this->sync_data_pointer($pointer);
+        wp_send_json_success(array('pointer' => $result['pointer'], 'count' => $result['count']));
     }
-
 
     /**
      * @param $post_type
@@ -530,6 +592,7 @@ class ClassAdmin
             ),
         );
         $posts = get_posts($args);
+
 
         foreach ($posts as $post) {
             $post_id = $post->ID;

@@ -290,7 +290,7 @@ class api
     {
         // ToDo: $project_id unused
 
-        $json_data = array("chains" => $chains);
+        $json_data = array("chains" => [$chains]);
         $json_body = json_encode($json_data);
         $endpoint = ENV_URL . '/v1/functions/chain/template/run-multiple';
 
