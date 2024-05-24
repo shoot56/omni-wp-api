@@ -440,6 +440,12 @@ $logs = $data->form['search_log'];
                                                 <?= !empty($sync_date) ? $sync_date : 'N/A'; ?>
                                             </span>
                                             </p>
+                                            <!-- Progress bar -->
+                                            <div class="progress-bar__wrap omni-progress--hide" style="margin: 20px 0;width:100%;">
+                                                <p>Progress: <span id="remaining_time"></span></p>
+                                                <progress id="progress-bar" value="0" max="100"></progress>
+                                            </div>
+
                                         </div>
 
                                         <div class="form-block__button">

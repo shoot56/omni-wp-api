@@ -428,3 +428,14 @@ div.dt-container select.dt-input {
 .data-links a{
 	//display: inline-block;
 }
+.omni-progress--hide{
+	display: none;
+}
+#progress-bar{
+	width:100%;
+	height:20px;
+}
+#remaining_time {
+	text-align: right;
+	float: right;
+}
