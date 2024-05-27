@@ -169,6 +169,7 @@ if (syncForm) {
 
     function submitForm(event, pointer = -1) {
         if (event) event.preventDefault();
+        pointer = localStorage.getItem('pointer') || pointer;
 
         let formData = new FormData();
         const requestStartTime = Date.now();
@@ -200,6 +201,7 @@ if (syncForm) {
                 startCountdown();
 
                 progressBar.value = parseInt(res.data.pointer);
+                localStorage.setItem('pointer', res.data.pointer);
                 progressBar.setAttribute('max', res.data.count);
 
                 if (res.data.pointer > -1) {
@@ -216,12 +218,11 @@ if (syncForm) {
     }
 
     function processCompleted(data, syncFormSubmitButton) {
-
+        localStorage.removeItem('pointer');
         progressBar.value = data.count;
         progressBarWrp.classList.add('omni-progress--hide');
         syncFormSubmitButton.disabled = false;
         syncFormSubmitButton.classList.remove('btn-omni--loading');
-
     }
 
     function startCountdown() {

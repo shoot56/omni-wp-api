@@ -183,11 +183,14 @@ class api
             'headers' => array(
                 'Authorization' => 'Bearer ' . $omni_api_key,
             ),
-            'method' => 'DELETE'
+            'method' => 'DELETE',
+            'timeout' => '10000',
         );
         $response = wp_remote_request($url, $args);
 
+
         if (is_wp_error($response)) {
+
             return false;
         } else {
             $response_code = wp_remote_retrieve_response_code($response);
