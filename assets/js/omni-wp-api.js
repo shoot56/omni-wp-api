@@ -4,7 +4,6 @@
     if (activeTabIndex === null) {
         activeTabIndex = 0;
     }
-    console.log(activeTabIndex);
 
     $('.tab-opener').eq(activeTabIndex).addClass('active');
     $('.tab-item').eq(activeTabIndex).addClass('active');
@@ -173,9 +172,11 @@ if (syncForm) {
 
         let formData = new FormData();
         const requestStartTime = Date.now();
+        const nonce = document.getElementById('project_sync_nonce').value;
 
         formData.append('action', 'sync_data_action');
         formData.append('pointer', pointer);
+        formData.append('nonce', nonce);
 
         progressBarWrp.classList.remove('omni-progress--hide');
 
@@ -191,7 +192,7 @@ if (syncForm) {
             .then(response => response.json()
                 .then(data => ({data, requestTime: Date.now() - requestStartTime })))
             .then(({data: res, requestTime}) => {
-                const delay = 500 + requestTime;
+                const delay = 200 + requestTime;
                 //const fi = 2;
                 totalTime = res.data.count * delay / 1000; // total time in seconds including the request time
                 startTime = Date.now();

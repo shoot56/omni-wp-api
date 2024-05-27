@@ -15,10 +15,10 @@ $search_answer = esc_attr($data->form['search_answer']);
     <form id="omni_search_form">
         <div class="omni-search__search-wrp">
             <div class="query-wrp">
-                <input type="text" id="query" placeholder="<?php _e('Type here your question...', 'omni') ?>">
+                <input type="text" id="query" placeholder="<?php esc_html_e('Type here your question...', 'omni-wp-api') ?>">
                 <div id="query_autocomplete"></div>
             </div>
-            <button id="get_results" type="submit"><?php _e('Search', 'omni') ?></button>
+            <button id="get_results" type="submit"><?php esc_html_e('Search', 'omni-wp-api') ?></button>
 
         </div>
         <div class="omni-search__result-wrp" id="results"></div>

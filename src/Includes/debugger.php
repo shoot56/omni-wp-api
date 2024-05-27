@@ -112,20 +112,20 @@ class debugger
         if ($label == '') {
             $line1 = '';
         } else {
-            $line1 = "<strong>$label</strong> \n";
+            $line1 = "<strong>esc_html($label)</strong> \n";
         }
 
         $out = "\n<!-- Dumpr Begin -->\n" .
-            "<style type=\"text/css\">" . $style . "</style>\n" .
+            "<style type=\"text/css\">" . esc_html($style) . "</style>\n" .
             "<div class=\"dumpr\">
-        <div><pre>$line1 $callingFile : $callingFileLine \n$c\n</pre></div></div><div style=\"clear:both;\">&nbsp;</div>" .
+        <div><pre>$line1 esc_html($callingFile) : esc_html($callingFileLine) \n$c\n</pre></div></div><div style=\"clear:both;\">&nbsp;</div>" .
             "\n<!-- Dumpr End -->\n";
 
         if ($return) {
             return $out;
 
         } else {
-            echo $out;
+            echo esc_html($out);
         }
     }
 

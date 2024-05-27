@@ -40,8 +40,8 @@ class ClassAssets
             wp_add_inline_style('wp-admin', $css);
 
             wp_register_style('omni-style', plugins_url('../../assets/css/omni-wp-api.css', __FILE__), array(), PLUGIN_VER, 'all');
-            wp_enqueue_style('datatables', plugins_url('../../assets/vendor/datatables/datatables.min.css', __FILE__));
-            wp_enqueue_style('select2', plugins_url('../../assets/vendor/select2/select2.min.css', __FILE__));
+            wp_enqueue_style('datatables', plugins_url('../../assets/vendor/datatables/datatables.min.css', __FILE__), array(), PLUGIN_VER);
+            wp_enqueue_style('select2', plugins_url('../../assets/vendor/select2/select2.min.css', __FILE__), array(), PLUGIN_VER);
             wp_enqueue_style('omni-style');
 
             wp_register_script('omni-script', plugins_url('../../assets/js/omni-wp-api.js', __FILE__), array('jquery'), PLUGIN_VER, true);

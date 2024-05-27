@@ -8,6 +8,7 @@ if (!defined('ABSPATH')) {
 
 use Procoders\Omni\ClassLoader as Loader;
 use Procoders\Omni\Includes\api as Api;
+use Procoders\Omni\Public\ClassAssets as PublicAssets;
 
 class ClassPublic
 {
@@ -32,6 +33,8 @@ class ClassPublic
      */
     public function omni_search_shortcode()
     {
+
+        PublicAssets::run(); // Conditional Assets Loading
         ob_start();
         $this->template->set_template_data(
             array(
@@ -53,7 +56,7 @@ class ClassPublic
     {
         // Check and sanitize input values
         if (!isset($_POST['nonce'], $_POST['query']) || !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'omni_search_handle_query')) {
-            wp_send_json_error(['message' => __('Permission denied...', 'omni')]);
+            wp_send_json_error(['message' => __('Permission denied...', 'omni-wp-api')]);
             return;
         }
 
@@ -71,7 +74,7 @@ class ClassPublic
 
         // Check and sanitize input values
         if (!isset($_POST['nonce'], $_POST['query']) || !wp_verify_nonce(sanitize_text_field($_POST['nonce']), 'omni_search_handle_autocomplete')) {
-            wp_send_json_error(['message' => __('Permission denied...', 'omni')]);
+            wp_send_json_error(['message' => __('Permission denied...', 'omni-wp-api')]);
             return;
         }
 
@@ -121,7 +124,7 @@ class ClassPublic
         if(get_option('_omni_ai_search_answer') === '1'){
                 $response_ = $this->api->make_answer_req($query);
                 if ($response_ === false) {
-                    wp_send_json_error(['message' => __('Unable to process request.', 'omni')]);
+                    wp_send_json_error(['message' => __('Unable to process request.', 'omni-wp-api')]);
                     return;
                 }
                 $answer = $response_['results'][0]['results'];
@@ -132,7 +135,7 @@ class ClassPublic
         $res['answer'] = $answer;
         // If the search request fails, return an error
         if ($response === false) {
-            wp_send_json_error(['message' => __('Unable to process request.', 'omni')]);
+            wp_send_json_error(['message' => __('Unable to process request.', 'omni-wp-api')]);
             return;
         }
 
@@ -141,7 +144,7 @@ class ClassPublic
         if ($cached) {
             wp_send_json_success($res);
         } else {
-            wp_send_json_error(['message' => __('Unable to cache request.', 'omni')]);
+            wp_send_json_error(['message' => __('Unable to cache request.', 'omni-wp-api')]);
         }
     }
 

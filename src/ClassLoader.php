@@ -30,7 +30,7 @@ class ClassLoader extends TemplateLoader {
 	 *
 	 * @var string
 	 */
-	protected $filter_prefix = 'omni';
+	protected $filter_prefix = 'omni-wp-api';
 
 	/**
 	 * Directory name where custom templates for this plugin should be found in the theme.
@@ -39,7 +39,7 @@ class ClassLoader extends TemplateLoader {
 	 *
 	 * @var string
 	 */
-	protected $theme_template_directory = 'omni';
+	protected $theme_template_directory = 'omni-wp-api';
 
 	/**
 	 * Reference to the root directory path of this plugin.

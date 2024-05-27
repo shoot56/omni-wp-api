@@ -22,21 +22,21 @@ $logs = $data->form['search_log'];
     <div class="omni-config wrap">
 
         <div class="omni-config__container">
-            <h2><?php _e('Omnimind Configuration', 'omni'); ?></h2>
+            <h2><?php esc_html_e('Omnimind Configuration', 'omni-wp-api'); ?></h2>
             <div class="tabset">
                 <ul class="tab-control">
-                    <li><a class="tab-opener" href="#"><?php _e('General', 'omni'); ?></a></li>
-                    <li><a class="tab-opener" href="#"><?php _e('Content types', 'omni'); ?></a></li>
-                    <li><a class="tab-opener" href="#"><?php _e('Indexing', 'omni'); ?></a></li>
-                    <li><a class="tab-opener" href="#"><?php _e('Requests', 'omni'); ?></a></li>
-                    <li><a class="tab-opener" href="#"><?php _e('Info', 'omni'); ?></a></li>
+                    <li><a class="tab-opener" href="#"><?php esc_html_e('General', 'omni-wp-api'); ?></a></li>
+                    <li><a class="tab-opener" href="#"><?php esc_html_e('Content types', 'omni-wp-api'); ?></a></li>
+                    <li><a class="tab-opener" href="#"><?php esc_html_e('Indexing', 'omni-wp-api'); ?></a></li>
+                    <li><a class="tab-opener" href="#"><?php esc_html_e('Requests', 'omni-wp-api'); ?></a></li>
+                    <li><a class="tab-opener" href="#"><?php esc_html_e('Info', 'omni-wp-api'); ?></a></li>
                 </ul>
                 <div class="tabs-list">
                     <div class="tab-item">
                         <?php if ($api_key_status): ?>
                             <div class="form-row">
                                 <div class="form-row__label">
-                                    <div class="form-label"><?php _e('API Key', 'omni'); ?></div>
+                                    <div class="form-label"><?php esc_html_e('API Key', 'omni-wp-api'); ?></div>
                                 </div>
                                 <div class="form-row__item">
                                     <div class="api-status">
@@ -44,13 +44,14 @@ $logs = $data->form['search_log'];
                                                value="<?php echo esc_html($omni_api_key); ?>">
                                         <div class="status"><?php echo (esc_attr($api_key_status)) ? '<span class="dashicons dashicons-yes-alt"></span>' : '<span class="dashicons dashicons-dismiss"></span>'; ?></div>
                                     </div>
-                                    <div class="form-info"><?php _e('Your Omnimind API key', 'omni'); ?></div>
+                                    <div class="form-info"><?php esc_html_e('Your Omnimind API key', 'omni-wp-api'); ?></div>
                                 </div>
                             </div>
                             <form method="post">
+                                <?php wp_nonce_field('project_name_nonce_action', 'project_name_nonce'); ?>
                                 <div class="form-row">
                                     <div class="form-row__label">
-                                        <div class="form-label"><?php _e('Project', 'omni'); ?></div>
+                                        <div class="form-label"><?php esc_html_e('Project', 'omni-wp-api'); ?></div>
                                     </div>
                                     <div class="form-row__item">
                                         <div class="inputs-wrap">
@@ -59,22 +60,23 @@ $logs = $data->form['search_log'];
                                             <?php if ($project_id): ?>
                                                 <a href="<?php echo esc_attr($settings) ?>" target="_blank"
                                                    class="btn-omni btn-omni--primary"><span
-                                                            class="dashicons dashicons-external"></span> <?php _e('Settings', 'omni') ?>
+                                                            class="dashicons dashicons-external"></span> <?php esc_html_e('Settings', 'omni-wp-api') ?>
                                                 </a>
                                             <?php else: ?>
                                                 <button type="submit" name="send_project_name"
-                                                        class="btn-omni btn-omni--primary"><?php _e('Create', 'omni') ?>
+                                                        class="btn-omni btn-omni--primary"><?php esc_html_e('Create', 'omni-wp-api') ?>
                                                 </button>
                                             <?php endif ?>
                                         </div>
-                                        <div class="form-info"><?php _e('Your Omnimind Project name', 'omni') ?></div>
+                                        <div class="form-info"><?php esc_html_e('Your Omnimind Project name', 'omni-wp-api') ?></div>
                                     </div>
                                 </div>
                             </form>
                             <form method="post">
+                                <?php wp_nonce_field('project_config_nonce_action', 'project_config_nonce'); ?>
                                 <div class="form-row">
                                     <div class="form-row__label">
-                                        <div class="form-label"><?php _e('Options', 'omni') ?></div>
+                                        <div class="form-label"><?php esc_html_e('Options', 'omni-wp-api') ?></div>
                                     </div>
                                     <div class="form-row__item">
                                         <ul class="checkbox-list">
@@ -83,7 +85,7 @@ $logs = $data->form['search_log'];
                                                     <input name="ai_search_answer" type="checkbox"
                                                            class="checkbox" <?php checked(1, esc_html($ai_search_answer)); ?> />
                                                     <span class="checkbox-item">&nbsp;</span>
-                                                    <span class="checkbox-label"><?php _e('AI answer', 'omni') ?></span>
+                                                    <span class="checkbox-label"><?php esc_html_e('AI answer', 'omni-wp-api') ?></span>
                                                 </label>
                                             </li>
                                             <li>
@@ -91,7 +93,7 @@ $logs = $data->form['search_log'];
                                                     <input name="ai_search_content" type="checkbox"
                                                            class="checkbox" <?php checked(1, esc_html($ai_search_content)); ?> />
                                                     <span class="checkbox-item">&nbsp;</span>
-                                                    <span class="checkbox-label"><?php _e('Content', 'omni') ?></span>
+                                                    <span class="checkbox-label"><?php esc_html_e('Content', 'omni-wp-api') ?></span>
                                                 </label>
                                             </li>
                                             <li>
@@ -99,7 +101,7 @@ $logs = $data->form['search_log'];
                                                     <input name="ai_search_autocomplete" type="checkbox"
                                                            class="checkbox" <?php checked(1, esc_html($ai_search_autocomplete)); ?> />
                                                     <span class="checkbox-item">&nbsp;</span>
-                                                    <span class="checkbox-label"><?php _e('Autocomplete', 'omni') ?></span>
+                                                    <span class="checkbox-label"><?php esc_html_e('Autocomplete', 'omni-wp-api') ?></span>
                                                 </label>
                                             </li>
                                         </ul>
@@ -109,7 +111,7 @@ $logs = $data->form['search_log'];
                                     <div class="form-col">
                                         <div class="form-row">
                                             <div class="form-row__label">
-                                                <div class="form-label"><?php _e('Results limit', 'omni') ?></div>
+                                                <div class="form-label"><?php esc_html_e('Results limit', 'omni-wp-api') ?></div>
                                             </div>
                                             <div class="form-row__item">
                                                 <input class="form-input" type="number" name="ai_search_results_limit"
@@ -120,7 +122,7 @@ $logs = $data->form['search_log'];
                                     <div class="form-col">
                                         <div class="form-row">
                                             <div class="form-row__label">
-                                                <div class="form-label"><?php _e('Proof level', 'omni') ?></div>
+                                                <div class="form-label"><?php esc_html_e('Proof level', 'omni-wp-api') ?></div>
                                             </div>
                                             <div class="form-row__item">
                                                 <input class="form-input" type="number" step=".1" max=".9" min=".1"
@@ -132,26 +134,27 @@ $logs = $data->form['search_log'];
                                 </div>
 
                                 <div class="form-block">
-                                    <div class="form-block__title"><span><?php _e('Cache', 'omni') ?></span></div>
+                                    <div class="form-block__title">
+                                        <span><?php esc_html_e('Cache', 'omni-wp-api') ?></span></div>
                                     <div class="form-block__frame">
                                         <div class="form-block__wrap">
                                             <div class="form-block__content">
-                                                <p><?php _e('Output results can be cached to prevent numerous requests to AI and save
-                                                the costs. If you set it to 0 no cache is going to be applied', 'omni') ?></p>
+                                                <p><?php esc_html_e('Output results can be cached to prevent numerous requests to AI and save
+                                                the costs. If you set it to 0 no cache is going to be applied', 'omni-wp-api') ?></p>
                                                 <div class="cache-input">
-                                                    <div class="form-label"><?php _e('Cache period', 'omni') ?></div>
+                                                    <div class="form-label"><?php esc_html_e('Cache period', 'omni-wp-api') ?></div>
                                                     <input class="form-input" type="number" min="1" name="ai_cache"
                                                            value="<?php echo(esc_attr($ai_cache) ? esc_attr($ai_cache) : '24'); ?>">
-                                                    <div class="cache-input__info"><?php _e('hours', 'omni') ?></div>
+                                                    <div class="cache-input__info"><?php esc_html_e('hours', 'omni-wp-api') ?></div>
                                                 </div>
                                             </div>
                                             <div class="form-block__button">
                                                 <button name="purge_cache" id="purge_cache_button"
                                                         class="btn-omni btn-omni--warning btn-omni--block">
                                                     <svg class="svg-icon" width="16" height="16">
-                                                        <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-purge', dirname(__FILE__)); ?>"></use>
+                                                        <use xlink:href="<?php echo esc_html(plugins_url('../../assets/images/icons.svg#icon-purge', dirname(__FILE__))); ?>"></use>
                                                     </svg>
-                                                    <span><?php _e('Purge cache', 'omni') ?></span>
+                                                    <span><?php esc_html_e('Purge cache', 'omni-wp-api') ?></span>
                                                 </button>
                                             </div>
                                         </div>
@@ -159,16 +162,17 @@ $logs = $data->form['search_log'];
                                 </div>
                                 <button name="save_general" type="submit" class="btn-omni btn-omni--primary">
                                     <svg class="svg-icon" width="16" height="16">
-                                        <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-save', dirname(__FILE__)); ?>"></use>
+                                        <use xlink:href="<?php echo esc_html(plugins_url('../../assets/images/icons.svg#icon-save', dirname(__FILE__))); ?>"></use>
                                     </svg>
-                                    <span><?php _e('Save', 'omni') ?></span>
+                                    <span><?php esc_html_e('Save', 'omni-wp-api') ?></span>
                                 </button>
                             </form>
                         <?php else: ?>
                             <form method="post">
+                                <?php wp_nonce_field('project_apikey_nonce_action', 'project_apikey_nonce'); ?>
                                 <div class="form-row">
                                     <div class="form-row__label">
-                                        <div class="form-label"><?php _e('API Key', 'omni') ?></div>
+                                        <div class="form-label"><?php esc_html_e('API Key', 'omni-wp-api') ?></div>
                                     </div>
                                     <div class="form-row__item">
                                         <div class="api-verify">
@@ -177,7 +181,7 @@ $logs = $data->form['search_log'];
                                             <div class="status"><?php echo (esc_attr($api_key_status)) ? '<span class="dashicons dashicons-yes-alt"></span>' : '<span class="dashicons dashicons-dismiss"></span>'; ?></div>
                                             <button type="submit" name="check_api_key"
                                                     class="btn-omni btn-omni--primary">
-                                                <?php _e('Verify', 'omni') ?>
+                                                <?php esc_html_e('Verify', 'omni-wp-api') ?>
                                             </button>
                                         </div>
                                         <div class="form-info">
@@ -196,9 +200,10 @@ $logs = $data->form['search_log'];
                     </div>
                     <div class="tab-item">
                         <form method="post">
+                            <?php wp_nonce_field('project_content_nonce_action', 'project_content_nonce'); ?>
 
-                            <p><?php _e('Select the content types in your project that will be included in the search results and be
-                            used to construct AI answers', 'omni') ?></p>
+                            <p><?php esc_html_e('Select the content types in your project that will be included in the search results and be
+                            used to construct AI answers', 'omni-wp-api') ?></p>
 
                             <?php
                             $args = array(
@@ -264,9 +269,9 @@ $logs = $data->form['search_log'];
                                                     }
                                                 }
                                                 if (is_array($custom_fields)) {
-                                                    $jsonData = json_encode(array_keys($custom_fields));
+                                                    $jsonData = wp_json_encode(array_keys($custom_fields));
                                                 } else {
-                                                    $jsonData = json_encode([]);
+                                                    $jsonData = wp_json_encode([]);
                                                 }
                                                 ?>
                                                 <div class="autocomplete-data"
@@ -276,9 +281,9 @@ $logs = $data->form['search_log'];
                                                 </div>
                                                 <table class="attributes-table">
                                                     <tr>
-                                                        <th><?php _e('Attribute', 'omni'); ?></th>
-                                                        <th><?php _e('Searchable', 'omni'); ?></th>
-                                                        <th><?php _e('Label', 'omni'); ?></th>
+                                                        <th><?php esc_html_e('Attribute', 'omni-wp-api'); ?></th>
+                                                        <th><?php esc_html_e('Searchable', 'omni-wp-api'); ?></th>
+                                                        <th><?php esc_html_e('Label', 'omni-wp-api'); ?></th>
                                                     </tr>
 
 
@@ -293,9 +298,9 @@ $logs = $data->form['search_log'];
 
                                                                 <?php
                                                                 if (isset($selected_fields[$post_type->name][$key]['status']) && $selected_fields[$post_type->name][$key]['status'] == 1) {
-                                                                    echo '<input name="post_type_fields[' . esc_attr($post_type->name) . '][' . $key . '][status]" value="1" type="checkbox" class="checkbox" checked />';
+                                                                    echo '<input name="post_type_fields[' . esc_attr($post_type->name) . '][' . esc_attr($key) . '][status]" value="1" type="checkbox" class="checkbox" checked />';
                                                                 } else {
-                                                                    echo '<input name="post_type_fields[' . esc_attr($post_type->name) . '][' . $key . '][status]" value="1" type="checkbox" class="checkbox" />';
+                                                                    echo '<input name="post_type_fields[' . esc_attr($post_type->name) . '][' . esc_attr($key) . '][status]" value="1" type="checkbox" class="checkbox" />';
                                                                 }
                                                                 ?>
 
@@ -319,11 +324,11 @@ $logs = $data->form['search_log'];
                                                             echo '<tr>';
                                                             echo '<td>' . esc_html($key) . '</td>';
                                                             echo '<td>';
-                                                            echo '<input class="form-input" type="hidden" name="post_type_fields[' . esc_attr($post_type->name) . '][' . $key . '][name]" value="' . esc_attr($key) . '">';
+                                                            echo '<input class="form-input" type="hidden" name="post_type_fields[' . esc_attr($post_type->name) . '][' . esc_attr($key) . '][name]" value="' . esc_attr($key) . '">';
                                                             $checked = (isset($values['status']) && $values['status'] == 1) ? 'checked' : '';
-                                                            echo '<input name="post_type_fields[' . esc_attr($post_type->name) . '][' . $key . '][status]" value="1" type="checkbox" class="checkbox" ' . $checked . ' />';
+                                                            echo '<input name="post_type_fields[' . esc_attr($post_type->name) . '][' . esc_attr($key) . '][status]" value="1" type="checkbox" class="checkbox" ' . esc_html($checked) . ' />';
                                                             echo '</td>';
-                                                            echo '<td><input class="form-input" type="text" name="post_type_fields[' . esc_attr($post_type->name) . '][' . $key . '][label]" value="' . (isset($values['label']) ? esc_attr($values['label']) : '') . '"></td>';
+                                                            echo '<td><input class="form-input" type="text" name="post_type_fields[' . esc_attr($post_type->name) . '][' . esc_attr($key) . '][label]" value="' . (isset($values['label']) ? esc_attr($values['label']) : '') . '"></td>';
                                                             echo '</tr>';
                                                         }
                                                     }
@@ -336,18 +341,18 @@ $logs = $data->form['search_log'];
                                                            data-post-type="<?php echo esc_attr($post_type->name); ?>">
 
                                                     <button type="button" class="add-field btn-omni btn-omni--success"
-                                                            data-post-type="<?php echo esc_attr($post_type->name); ?>"><?php _e('add
-                                                    field', 'omni'); ?>
+                                                            data-post-type="<?php echo esc_attr($post_type->name); ?>"><?php esc_html_e('add
+                                                    field', 'omni-wp-api'); ?>
                                                     </button>
                                                 </div>
 
                                                 <div class="advanced-settings">
                                                     <button class="advanced-settings__opener btn-omni btn-omni--primary">
-                                                        <?php _e('Advanced Settings', 'omni'); ?>
+                                                        <?php esc_html_e('Advanced Settings', 'omni-wp-api'); ?>
                                                     </button>
                                                     <div class="advanced-settings__content">
                                                         <div class="advanced-settings__row">
-                                                            <div class="advanced-settings__label"> <?php _e('Select Title Columns', 'omni'); ?></div>
+                                                            <div class="advanced-settings__label"> <?php esc_html_e('Select Title Columns', 'omni-wp-api'); ?></div>
                                                             <div class="advanced-settings__input">
                                                                 <select class="js-example-basic-multiple"
                                                                         name="post_type_fields[<?php echo esc_attr($post_type->name); ?>][advanced-title-columns][]"
@@ -357,7 +362,7 @@ $logs = $data->form['search_log'];
                                                                     foreach ($additional_fields as $key => $values):
                                                                         $selected = in_array($key, $saved_title_columns) ? 'selected' : '';
                                                                         ?>
-                                                                        <option value="<?php echo esc_html($key); ?>" <?php echo $selected; ?>><?php echo esc_html($key); ?></option>
+                                                                        <option value="<?php echo esc_html($key); ?>" <?php echo esc_html($selected); ?>><?php echo esc_html($key); ?></option>
                                                                     <?php endforeach ?>
                                                                     <?php if (isset($selected_fields[$post_type->name])): ?>
                                                                         <?php foreach ($selected_fields[$post_type->name] as $key => $values): ?>
@@ -374,7 +379,7 @@ $logs = $data->form['search_log'];
                                                             </div>
                                                         </div>
                                                         <div class="advanced-settings__row">
-                                                            <div class="advanced-settings__label"> <?php _e('Select Metadata Columns', 'omni'); ?>
+                                                            <div class="advanced-settings__label"> <?php esc_html_e('Select Metadata Columns', 'omni-wp-api'); ?>
                                                             </div>
                                                             <div class="advanced-settings__input">
                                                                 <select class="js-example-basic-multiple"
@@ -400,15 +405,15 @@ $logs = $data->form['search_log'];
                                 <?php
                             }
                             ?>
-                            <p><?php _e('After making changes, it is highly advisable to run a re-synchronization at the <strong>Indexing</strong>
-                            tab.', 'omni'); ?></p>
+                            <p><?php esc_html_e('After making changes, it is highly advisable to run a re-synchronization at the <strong>Indexing</strong>
+                            tab.', 'omni-wp-api'); ?></p>
                             <button <?php echo ($api_key_status) ? '' : 'disabled'; ?> type="submit"
                                                                                        name="save_post_types"
                                                                                        class="btn-omni btn-omni--primary">
                                 <svg class="svg-icon" width="16" height="16">
-                                    <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-save', dirname(__FILE__)); ?>"></use>
+                                    <use xlink:href="<?php echo esc_html(plugins_url('../../assets/images/icons.svg#icon-save', dirname(__FILE__))); ?>"></use>
                                 </svg>
-                                <span><?php _e('Save Post Types', 'omni'); ?></span>
+                                <span><?php esc_html_e('Save Post Types', 'omni-wp-api'); ?></span>
                             </button>
                         </form>
                     </div>
@@ -419,43 +424,44 @@ $logs = $data->form['search_log'];
                         ?>
 
                         <form method="post" id="syncForm">
+                            <?php wp_nonce_field('project_sync_nonce_action', 'project_sync_nonce'); ?>
+
                             <div class="form-block">
                                 <div class="form-block__title">
-                                    <span><?php _e('Sync Settings', 'omni'); ?></span>
+                                    <span><?php esc_html_e('Sync Settings', 'omni-wp-api'); ?></span>
                                 </div>
 
                                 <div class="form-block__frame">
                                     <div class="form-block__wrap">
                                         <div class="form-block__content">
-                                            <p><?php _e('If you notice missing information in your search outcomes or if you\'ve
+                                            <p><?php esc_html_e('If you notice missing information in your search outcomes or if you\'ve
                                             recently incorporated new custom content categories to your platform, it\'s
-                                            advisable to initiate a synchronization to update these modifications.', 'omni'); ?></p>
+                                            advisable to initiate a synchronization to update these modifications.', 'omni-wp-api'); ?></p>
 
                                             <?php // Get last Sync Date
                                             $sync_date = get_option('_omni_last_sync_date'); ?>
 
                                             <p>Last sync status:
                                                 <span id="last-sync-date"
-                                                      style="<?= !empty($sync_date) ? 'color: green;' : '' ?>">
-                                                <?= !empty($sync_date) ? $sync_date : 'N/A'; ?>
+                                                      style="<?php echo !empty($sync_date) ? 'color: green;' : '' ?>">
+                                                <?php echo !empty($sync_date) ? esc_html($sync_date) : 'N/A'; ?>
                                             </span>
                                             </p>
                                             <!-- Progress bar -->
-                                            <div class="progress-bar__wrap omni-progress--hide" style="margin: 20px 0;width:100%;">
+                                            <div class="progress-bar__wrap omni-progress--hide"
+                                                 style="margin: 20px 0;width:100%;">
                                                 <p>Progress: <span id="remaining_time"></span></p>
                                                 <progress id="progress-bar" value="0" max="100"></progress>
                                             </div>
-
                                         </div>
-
                                         <div class="form-block__button">
                                             <button <?php echo ($api_key_status) ? '' : 'disabled'; ?>
                                                     name="send_post_types" type="submit" id="sync-button"
                                                     class="btn-omni btn-omni--primary btn-omni--block">
                                                 <svg class="svg-icon" width="16" height="16">
-                                                    <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-sync', dirname(__FILE__)); ?>"></use>
+                                                    <use xlink:href="<?php echo esc_html(plugins_url('../../assets/images/icons.svg#icon-sync', dirname(__FILE__))); ?>"></use>
                                                 </svg>
-                                                <span><?php _e('Sync Now', 'omni'); ?></span>
+                                                <span><?php esc_html_e('Sync Now', 'omni-wp-api'); ?></span>
                                             </button>
                                         </div>
                                     </div>
@@ -464,19 +470,21 @@ $logs = $data->form['search_log'];
                         </form>
 
                         <form method="post">
+                            <?php wp_nonce_field('project_wipe_nonce_action', 'project_wipe_nonce'); ?>
+
                             <div class="form-block">
                                 <div class="form-block__title">
-                                    <span><?php _e('Clear and Reinitialize', 'omni'); ?></span>
+                                    <span><?php esc_html_e('Clear and Reinitialize', 'omni-wp-api'); ?></span>
                                 </div>
                                 <div class="form-block__frame">
                                     <div class="form-block__wrap">
                                         <div class="form-block__content">
-                                            <p><?php _e('Should you continue to face discrepancies in your search outcomes, consider
-                                            starting a thorough re-synchronization.', 'omni'); ?> </p>
+                                            <p><?php esc_html_e('Should you continue to face discrepancies in your search outcomes, consider
+                                            starting a thorough re-synchronization.', 'omni-wp-api'); ?> </p>
                                             <p>
-                                                <?php _e('Executing this will remove all indexed information from OmniMind, but your
+                                                <?php esc_html_e('Executing this will remove all indexed information from OmniMind, but your
                                             WordPress site remains unaffected. The entire process might span several
-                                            hours, contingent on the volume of content awaiting', 'omni'); ?></p>
+                                            hours, contingent on the volume of content awaiting', 'omni-wp-api'); ?></p>
                                         </div>
                                         <div class="form-block__button">
                                             <button
@@ -484,9 +492,9 @@ $logs = $data->form['search_log'];
                                                 type="submit"
                                                 class="btn-omni btn-omni--warning btn-omni--block">
                                                 <svg class="svg-icon" width="16" height="16">
-                                                    <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-purge', dirname(__FILE__)); ?>"></use>
+                                                    <use xlink:href="<?php echo esc_html(plugins_url('../../assets/images/icons.svg#icon-purge', dirname(__FILE__))); ?>"></use>
                                                 </svg>
-                                                <span><?php _e('Re-Index', 'omni'); ?></span>
+                                                <span><?php esc_html_e('Re-Index', 'omni-wp-api'); ?></span>
                                             </button>
                                         </div>
                                     </div>
@@ -494,18 +502,20 @@ $logs = $data->form['search_log'];
                             </div>
                         </form>
                         <form method="post">
+                            <?php wp_nonce_field('project_purge_nonce_action', 'project_purge_nonce'); ?>
+
                             <div class="form-block">
                                 <div class="form-block__title">
-                                    <span><?php _e('Purge and change API key', 'omni'); ?></span>
+                                    <span><?php esc_html_e('Purge and change API key', 'omni-wp-api'); ?></span>
                                 </div>
                                 <div class="form-block__frame">
                                     <div class="form-block__wrap">
                                         <div class="form-block__content">
-                                            <p><?php _e('Clicking it you', 'omni'); ?> <span
-                                                        style="color: red;"><?php _e('remove', 'omni'); ?> </span> <?php _e('your project and
+                                            <p><?php esc_html_e('Clicking it you', 'omni-wp-api'); ?> <span
+                                                        style="color: red;"><?php esc_html_e('remove', 'omni-wp-api'); ?> </span> <?php esc_html_e('your project and
                                             purge all indexes at Omnimind. It doesn\'t affect you Wordpress data. This
-                                            action is not reversible.', 'omni'); ?></p>
-                                            <p><?php _e('You can setup a new API key and start from', 'omni'); ?></p>
+                                            action is not reversible.', 'omni-wp-api'); ?></p>
+                                            <p><?php esc_html_e('You can setup a new API key and start from', 'omni-wp-api'); ?></p>
                                         </div>
                                         <div class="form-block__button">
                                             <button <?php echo ($api_key_status) ? '' : 'disabled'; ?>
@@ -513,9 +523,9 @@ $logs = $data->form['search_log'];
                                                     type="submit"
                                                     class="btn-omni btn-omni--danger btn-omni--block">
                                                 <svg class="svg-icon" width="16" height="16">
-                                                    <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-delete', dirname(__FILE__)); ?>"></use>
+                                                    <use xlink:href="<?php echo esc_html(plugins_url('../../assets/images/icons.svg#icon-delete', dirname(__FILE__))); ?>"></use>
                                                 </svg>
-                                                <span><?php _e('Delete', 'omni'); ?></span>
+                                                <span><?php esc_html_e('Delete', 'omni-wp-api'); ?></span>
                                             </button>
                                         </div>
                                     </div>
@@ -524,21 +534,21 @@ $logs = $data->form['search_log'];
                         </form>
                     </div>
                     <div class="tab-item">
-                        <p><?php _e('Here you can see you users search requests', 'omni'); ?></p>
+                        <p><?php esc_html_e('Here you can see you users search requests', 'omni-wp-api'); ?></p>
 
                         <table id="request_table" class="display" style="width:100%">
                             <thead>
                             <tr>
-                                <th><?php _e('Date', 'omni') ?></th>
-                                <th><?php _e('Question', 'omni') ?></th>
-                                <th><?php _e('Answer', 'omni') ?></th>
-                                <th><?php _e('Content', 'omni') ?></th>
+                                <th><?php esc_html_e('Date', 'omni-wp-api') ?></th>
+                                <th><?php esc_html_e('Question', 'omni-wp-api') ?></th>
+                                <th><?php esc_html_e('Answer', 'omni-wp-api') ?></th>
+                                <th><?php esc_html_e('Content', 'omni-wp-api') ?></th>
                             </tr>
                             </thead>
                             <tbody>
                             <?php
                             foreach ($logs as $log) {
-                                $datetime = date("d/m/Y H:i", $log['date'] / 1000);
+                                $datetime = gmdate("d/m/Y H:i", $log['date'] / 1000);
                                 $content = [];
                                 foreach ($log['data'] ?? [] as $datum) {
                                     $content[] .= '<a href="' . esc_html($datum->url) . '">' . esc_html($datum->title) . '</a>';
@@ -547,23 +557,23 @@ $logs = $data->form['search_log'];
                                 echo '<td>' . esc_html($datetime) . '</td>';
                                 echo '<td>' . esc_html($log['question']) . '</td>';
                                 echo '<td>' . esc_html($log['answer']) . '</td>';
-                                echo '<td class="data-links">' . implode(', ', $content) . '</td>';
+                                echo '<td class="data-links">' . esc_html(implode(', ', $content)) . '</td>';
                                 echo '</tr>';
                             }
                             ?>
                             </tbody>
                             <tfoot>
                             <tr>
-                                <th><?php _e('Date', 'omni') ?></th>
-                                <th><?php _e('Question', 'omni') ?></th>
-                                <th><?php _e('Answer', 'omni') ?></th>
-                                <th><?php _e('Content', 'omni') ?></th>
+                                <th><?php esc_html_e('Date', 'omni-wp-api') ?></th>
+                                <th><?php esc_html_e('Question', 'omni-wp-api') ?></th>
+                                <th><?php esc_html_e('Answer', 'omni-wp-api') ?></th>
+                                <th><?php esc_html_e('Content', 'omni-wp-api') ?></th>
                             </tr>
                             </tfoot>
                         </table>
                     </div>
                     <div class="tab-item">
-                        <p><?php _e('Use the shortcode [omni_search] to display the search field on the website page.', 'omni'); ?></p>
+                        <p><?php esc_html_e('Use the shortcode [omni_search] to display the search field on the website page.', 'omni-wp-api'); ?></p>
                     </div>
                 </div>
             </div>
@@ -573,7 +583,7 @@ $logs = $data->form['search_log'];
     <div id="omniAlertModal" class="omni-modal">
     <span class="omni-modal__close">
         <svg class="svg-icon" width="16" height="16">
-            <use xlink:href="<?php echo plugins_url('../../assets/images/icons.svg#icon-close', dirname(__FILE__)); ?>"></use>
+            <use xlink:href="<?php echo esc_html(plugins_url('../../assets/images/icons.svg#icon-close', dirname(__FILE__))); ?>"></use>
         </svg>
     </span>
 
