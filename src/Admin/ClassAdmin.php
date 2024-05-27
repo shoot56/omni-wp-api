@@ -47,7 +47,12 @@ class ClassAdmin
 
     public function handle_post_requests()
     {
+
         if (isset($_POST['check_api_key'])) {
+            if (!isset($_POST['project_apikey_nonce'])
+                && !wp_verify_nonce($_POST['project_apikey_nonce'], 'project_apikey_nonce_action')) {
+                die();
+            }
             $this->handle_api_key();
         }
 
@@ -165,7 +170,7 @@ class ClassAdmin
                 <div class="inline-edit-col">
                     <label class="alignleft">
                         <input type="checkbox" name="exclude_from_omni_bulk" value="1"/>
-                        <span class="checkbox-title"><?php _e('Exclude from Omnimind', 'omni'); ?></span>
+                        <span class="checkbox-title"><?php esc_htmlesc_html_e('Exclude from Omnimind', 'omni-wp-api'); ?></span>
                     </label>
                 </div>
             </fieldset>
@@ -208,6 +213,12 @@ class ClassAdmin
 
     private function handle_api_key(): void
     {
+
+        if (!isset($_POST['project_apikey_nonce'])
+            && !wp_verify_nonce($_POST['project_apikey_nonce'], 'project_apikey_nonce_action')) {
+            die();
+        }
+
         $api_key_status = $this->api->verify_api_key(sanitize_text_field($_POST['verify_api_key']));
 
         update_option('_omni_api_key_status', $api_key_status);
@@ -220,10 +231,15 @@ class ClassAdmin
 
     private function handle_save_post_types(): void
     {
-        $selected_post_types = isset($_POST['post_types']) ? $_POST['post_types'] : array();
+        if (!isset($_POST['project_content_nonce'])
+            && !wp_verify_nonce($_POST['project_content_nonce'], 'project_content_nonce_action')) {
+            die();
+        }
+
+        $selected_post_types = sanitize_post($_POST['post_types']) ?? array();
         update_option('_omni_selected_post_types', $selected_post_types);
         if (isset($_POST['post_type_fields'])) {
-            $selected_fields = $_POST['post_type_fields'];
+            $selected_fields = sanitize_post($_POST['post_type_fields']);
             $filtered_selected_fields = array();
             foreach ($selected_fields as $post_type => $fields) {
                 if (in_array($post_type, $selected_post_types)) {
@@ -263,6 +279,12 @@ class ClassAdmin
 
     private function handle_send_project_name(): void
     {
+
+        if (!isset($_POST['project_name_nonce'])
+            && !wp_verify_nonce($_POST['project_name_nonce'], 'project_name_nonce_action')) {
+            die();
+        }
+
         $project_name = sanitize_text_field($_POST['project_name']);
         $project_created = $this->api->create_project($project_name);
         $this->message = [
@@ -320,6 +342,12 @@ class ClassAdmin
 
     private function handle_save_general(): void
     {
+
+        if (!isset($_POST['project_config_nonce'])
+            && !wp_verify_nonce($_POST['project_config_nonce'], 'project_config_nonce_action')) {
+            die();
+        }
+
         $ai_search_answer = isset($_POST['ai_search_answer']) ? 1 : 0;
         $ai_search_content = isset($_POST['ai_search_content']) ? 1 : 0;
         $ai_search_autocomplete = isset($_POST['ai_search_autocomplete']) ? 1 : 0;
@@ -506,15 +534,20 @@ class ClassAdmin
         global $wpdb;
 
         $prefix = 'omni_search_results_';
+        $cache_key = 'omni_search_results_transient_cache';
 
-        return $wpdb->get_col(
-            $wpdb->prepare(
-                "SELECT option_name 
-        FROM $wpdb->options 
-        WHERE option_name LIKE %s",
-                $wpdb->esc_like('_transient_' . $prefix) . '%'
-            )
-        );
+        $cached_value = wp_cache_get($cache_key);
+
+        if (false === $cached_value) {
+            $cached_value = $wpdb->get_col(
+                $wpdb->prepare(
+                    "SELECT option_name FROM $wpdb->options WHERE option_name LIKE %s",
+                    $wpdb->esc_like('_transient_' . $prefix) . '%'
+                )
+            );
+            wp_cache_set($cache_key, $cached_value);
+        }
+        return $cached_value;
     }
 
     /**
@@ -522,6 +555,7 @@ class ClassAdmin
      */
     public function sync_data_ajax_handler(): void
     {
+        check_ajax_referer('project_sync_nonce_action', 'nonce');
         $pointer = sanitize_text_field($_POST['pointer']);
         $result = $this->sync_data_pointer($pointer);
         wp_send_json_success(array('pointer' => $result['pointer'], 'count' => $result['count']));
@@ -548,7 +582,7 @@ class ClassAdmin
                 "chain" => "basic-delete",
                 "payload" => array(
                     "indexName" => $project_id,
-                    "where" => json_encode(array(
+                    "where" => wp_json_encode(array(
                         "operator" => "Equal",
                         "path" => array("eid"),
                         "valueNumber" => $post->ID
@@ -680,7 +714,7 @@ class ClassAdmin
         foreach ($post_types as $post_type) {
             add_meta_box(
                 'exclude_omni', // ID
-                __('Exclude from Omnimind', 'omni'), // Title
+                __('Exclude from Omnimind', 'omni-wp-api'), // Title
                 array($this, 'exclude_omni_meta_box_callback'), // Callback function
                 $post_type, // Screen (post type)
                 'side', // Context
@@ -692,7 +726,7 @@ class ClassAdmin
     public function exclude_omni_meta_box_callback($post): void
     {
         $value = get_post_meta($post->ID, '_exclude_from_omni', true);
-        echo '<label><input type="checkbox" name="exclude_from_omni" value="1"' . checked($value, 1, false) . '/> ' . __('Exclude from Omnimind', 'omni') . '</label>';
+        echo '<label><input type="checkbox" name="exclude_from_omni" value="1"' . checked(esc_html($value), 1, false) . '/> ' . esc_html__('Exclude from Omnimind', 'omni-wp-api') . '</label>';
     }
 
     /**

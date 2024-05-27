@@ -60,7 +60,7 @@ class api
             'name' => sanitize_text_field($project_name),
         );
         $args = array(
-            'body' => json_encode($data),
+            'body' => wp_json_encode($data),
             'headers' => array(
                 'Content-Type' => 'application/json',
             ),
@@ -255,7 +255,7 @@ class api
         );
 
         $new_args = array(
-            'body' => json_encode($new_data),
+            'body' => wp_json_encode($new_data),
             'headers' => array(
                 'Content-Type' => 'application/json',
             ),
@@ -291,7 +291,7 @@ class api
         // ToDo: $project_id unused
 
         $json_data = array("chains" => [$chains]);
-        $json_body = json_encode($json_data);
+        $json_body = wp_json_encode($json_data);
         $endpoint = ENV_URL . '/v1/functions/chain/template/run-multiple';
 
 
@@ -341,7 +341,7 @@ class api
                 "chain" => "basic-delete",
                 "payload" => array(
                     "indexName" => $project_id,
-                    "where" => json_encode(array(
+                    "where" => wp_json_encode(array(
                         "operator" => "Equal",
                         "path" => array("eid"),
                         "valueNumber" => $post_id
@@ -354,7 +354,7 @@ class api
             $json_data = array(
                 "chains" => $chains
             );
-            $json_body = json_encode($json_data);
+            $json_body = wp_json_encode($json_data);
             $endpoint = ENV_URL . '/v1/functions/chain/template/run-multiple';
             $response = wp_safe_remote_post($endpoint, array(
                 'headers' => array(
@@ -479,7 +479,7 @@ class api
             "chains" => $chains
         );
 
-        $json_body = json_encode($json_data);
+        $json_body = wp_json_encode($json_data);
         $endpoint = ENV_URL . '/v1/functions/chain/template/run-multiple';
         $response = wp_safe_remote_post($endpoint, array(
             'headers' => array(

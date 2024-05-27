@@ -5,7 +5,7 @@
  * Version: 1.1.2
  * Author: Procoders
  * Requires PHP: 8.0
- * Text Domain: omni
+ * Text Domain: omni-wp-api
  * Domain Path: /languages
  * GitHub Plugin URI: shoot56/omni-wp-api
  * Primary Branch: main
@@ -53,7 +53,7 @@ class Omni
     public function plugins_loaded(): void
     {
         load_plugin_textdomain(
-            'omni',
+            'omni-wp-api',
             false,
             basename(__FILE__) . '/languages'
         );
@@ -61,7 +61,6 @@ class Omni
         // Register the admin menu.
         AdminNav::run();
         // Register Script.
-        PublicAssets::run();
         AdminAssets::run();
 
         $public_init = new PublicInit();

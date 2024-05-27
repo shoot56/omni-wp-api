@@ -32,8 +32,8 @@ class ClassAssets
      */
     public static function public_assets(): void
     {
-        wp_enqueue_style('omni-search-style', plugins_url('../../assets/css/omni-wp-search.css', __FILE__));
-        //
+        wp_enqueue_style('omni-search-style', plugins_url('../../assets/css/omni-wp-search.css', __FILE__,), array(), PLUGIN_VER);
+
         wp_register_script('omni-search-script', plugins_url('../../assets/js/omni-wp-search.js', __FILE__), array(), PLUGIN_VER, true);
         wp_enqueue_script('omni-search-script');
         wp_localize_script('omni-search-script', 'omni_ajax',
@@ -45,12 +45,13 @@ class ClassAssets
                 'show_content' => esc_attr(get_option('_omni_ai_search_content')),
                 'show_autocomplete' => esc_attr(get_option('_omni_ai_search_autocomplete')),
                 'answers_per_page' => esc_attr(get_option('_omni_ai_search_results_limit')),
-                '_read_more' => __('Read More', 'omni'),
-                '_search' => __('Search', 'omni'),
-                '_results' => __('Results', 'omni'),
-                '_prev' => __('Prev', 'omni'),
-                '_next' => __('Next', 'omni'),
+                '_read_more' => __('Read More', 'omni-wp-api'),
+                '_search' => __('Search', 'omni-wp-api'),
+                '_results' => __('Results', 'omni-wp-api'),
+                '_prev' => __('Prev', 'omni-wp-api'),
+                '_next' => __('Next', 'omni-wp-api'),
             )
         );
+
     }
 }
