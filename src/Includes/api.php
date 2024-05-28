@@ -145,7 +145,7 @@ class api
             'language' => get_locale(),
             'hybrid' => 0,
             'proofLevel' => $proof_level,
-            'customPrompt' => "You must return general answer on this question: '$query'. Generate in $lang language"
+            'customPrompt' => "You must return general answer on this question: '$query'. Generate in $lang language. Answers should only contain the essential key terms or phrases directly relevant to the question, without elaborating."
         );
 
         $headers = array(
