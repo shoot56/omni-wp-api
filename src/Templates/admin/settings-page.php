@@ -453,6 +453,7 @@ $logs = $data->form['search_log'];
                                                 <p>Progress: <span id="remaining_time"></span></p>
                                                 <progress id="progress-bar" value="0" max="100"></progress>
                                             </div>
+                                            <div id="progress-bar__res"></div>
                                         </div>
                                         <div class="form-block__button">
                                             <button <?php echo ($api_key_status) ? '' : 'disabled'; ?>

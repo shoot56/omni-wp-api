@@ -170,10 +170,10 @@ if (syncForm) {
     function submitForm(event, pointer = -1) {
         if (event) event.preventDefault();
         pointer = localStorage.getItem('pointer') || pointer;
-
-        let formData = new FormData();
         const requestStartTime = Date.now();
         const nonce = document.getElementById('project_sync_nonce').value;
+
+        let formData = new FormData();
 
         formData.append('action', 'sync_data_action');
         formData.append('pointer', pointer);
@@ -191,7 +191,7 @@ if (syncForm) {
             body: formData
         })
             .then(response => response.json()
-                .then(data => ({data, requestTime: Date.now() - requestStartTime })))
+                .then(data => ({data, requestTime: Date.now() - requestStartTime})))
             .then(({data: res, requestTime}) => {
                 const delay = 200 + requestTime;
                 //const fi = 2;
@@ -207,7 +207,7 @@ if (syncForm) {
                 if (res.data.pointer > -1) {
                     setTimeout(function () {
                         submitForm(null, res.data.pointer);
-                    }, delay);
+                    }, 200);
                 } else {
                     processCompleted(res.data, syncFormSubmitButton);
                 }
@@ -221,6 +221,9 @@ if (syncForm) {
         localStorage.removeItem('pointer');
         progressBar.value = data.count;
         progressBarWrp.classList.add('omni-progress--hide');
+        document.querySelector('#progress-bar__res').innerText = data.count === 0
+            ? 'No new content to sync, '
+            : 'In total ' + data.count + ' posts synced successfully!'
         syncFormSubmitButton.disabled = false;
         syncFormSubmitButton.classList.remove('btn-omni--loading');
     }
@@ -317,7 +320,6 @@ new DataTable('#request_table', {
 });
 
 let td = document.querySelector('td.data-links');
-
 
 //Get all the td elements
 let tdElements = document.querySelectorAll('td.data-links');

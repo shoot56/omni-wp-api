@@ -170,7 +170,7 @@ class ClassAdmin
                 <div class="inline-edit-col">
                     <label class="alignleft">
                         <input type="checkbox" name="exclude_from_omni_bulk" value="1"/>
-                        <span class="checkbox-title"><?php esc_htmlesc_html_e('Exclude from Omnimind', 'omni-wp-api'); ?></span>
+                        <span class="checkbox-title"><?php esc_html_e('Exclude from Omnimind', 'omni-wp-api'); ?></span>
                     </label>
                 </div>
             </fieldset>
@@ -178,9 +178,9 @@ class ClassAdmin
         }
     }
 
-    public function add_omni_column($columns)
+    public function add_omni_column(array $columns): array
     {
-        $columns['omni_column'] = 'Omni sync status';
+        $columns['omni_column'] = __('Omni sync status', 'omni-wp-api');
         return $columns;
     }
 
