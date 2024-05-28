@@ -246,9 +246,11 @@ class ClassAdmin
                     $title_columns = $fields['advanced-title-columns'] ?? array();
                     $metadata_columns = $fields['advanced-metadata-columns'] ?? array();
                     $filtered_fields = array();
-                    foreach ($fields as $field) {
-                        if (!empty($field['status'])) {
-                            $filtered_fields[$field['name']] = $field;
+                    if(is_array($fields)) {
+                        foreach ($fields as $field) {
+                            if (!empty($field['status'])) {
+                                $filtered_fields[$field['name']] = $field;
+                            }
                         }
                     }
                     $filtered_selected_fields[$post_type] = $filtered_fields;

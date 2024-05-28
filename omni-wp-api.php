@@ -32,13 +32,13 @@ define('OMNI_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PLUGIN_VER', '1.0');
 
 use Procoders\Omni\Admin\{ClassAdmin as AdminInit, ClassAssets as AdminAssets, ClassNav as AdminNav};
-use Procoders\Omni\Public\{ClassAssets as PublicAssets, ClassPublic as PublicInit};
+use Procoders\Omni\Front\{ClassAssets as PublicAssets, ClassPublic as PublicInit};
 
 class Omni
 {
-    private static ?omni $instance = null;
+    private static $instance = null;
 
-    public static function get_instance(): Omni
+    public static function get_instance()
     {
         if (null === self::$instance) {
             self::$instance = new self();

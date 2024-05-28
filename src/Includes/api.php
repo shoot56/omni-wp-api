@@ -91,7 +91,7 @@ class api
      * @param string $query The search query.
      * @return bool|array Returns an array of search results if successful, false otherwise.
      */
-    public function make_search_req(string $query): bool|array
+    public function make_search_req(string $query)
     {
         $omni_api_key = get_option('_omni_api_key');
         $project_id = get_option('_omni_project_id');
@@ -133,7 +133,7 @@ class api
      * @return bool|array Returns `false` if there is an error in the request or decoding the response,
      *                   otherwise returns the decoded JSON response as an array.
      */
-    public function make_answer_req(string $query): bool|array
+    public function make_answer_req(string $query)
     {
         $omni_api_key = get_option('_omni_api_key');
         $project_id = get_option('_omni_project_id');
@@ -219,7 +219,7 @@ class api
      * @return bool|array Returns `false` if there is an error in the request or decoding the response,
      *                   otherwise returns the decoded JSON response as an array.
      */
-    public function get_resources(string $project_id): bool|array
+    public function get_resources(string $project_id)
     {
         $url = ENV_URL . '/rest/v1/projects/' . $project_id . '/resources/urls/';
         $omni_api_key = get_option('_omni_api_key');
@@ -247,7 +247,7 @@ class api
         }
     }
 
-    public function del_resources(string $data_url, string $project_id): bool|array
+    public function del_resources(string $data_url, string $project_id)
     {
         $omni_api_key = get_option('_omni_api_key');
         $new_url = ENV_URL . '/rest/v1/projects/' . $project_id . '/resources/urls/';
