@@ -4,7 +4,7 @@
  * Description: Customizable REST API endpoints with API Key authentication.
  * Version: 1.1.8
  * Author: Procoders
- * Requires PHP: 8.0
+ * Requires PHP: 7.3
  * Text Domain: omni-wp-api
  * Domain Path: /languages
  * GitHub Plugin URI: shoot56/omni-wp-api
