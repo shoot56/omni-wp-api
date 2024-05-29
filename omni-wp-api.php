@@ -21,8 +21,8 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
 
-define('ENV_URL', 'https://dev-api.omnimind.ai');
-//define('ENV_URL', 'https://app-api.omnimind.ai');
+//define('ENV_URL', 'https://dev-api.omnimind.ai');
+define('ENV_URL', 'https://app-api.omnimind.ai');
 
 // Temporary id set
 define('WIDGET_TYPE_ID', 12);
