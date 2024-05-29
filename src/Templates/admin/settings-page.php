@@ -248,9 +248,9 @@ $logs = $data->form['search_log'];
                         $post_types = get_post_types($args, $output, $operator);
                         unset($post_types['attachment']);
                         $selected_fields = get_option('_omni_selected_fields_option');
-                        unset($selected_post_types['ID']);
-                        unset($selected_post_types['filter']);
+
                         if ($post_types) {
+
                             ?>
                             <ul class="content-types">
                                 <?php foreach ($post_types as $post_type): ?>
@@ -261,10 +261,15 @@ $logs = $data->form['search_log'];
                                     ); ?>
                                     <li class="content-types__item">
                                         <?php
+
+
+
                                         $post_count = wp_count_posts($post_type->name);
                                         $label_with_count = $post_type->label . ' (' . $post_count->publish . ')';
 
                                         if (is_array($selected_post_types)) {
+                                            unset($selected_post_types['ID']);
+                                            unset($selected_post_types['filter']);
                                             $checked = in_array($post_type->name, $selected_post_types) ? 'checked' : '';
                                         } else {
                                             $checked = '';

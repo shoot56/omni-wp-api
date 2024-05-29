@@ -63,7 +63,6 @@ class api
             return [];
         }
         if (is_wp_error($response)) {
-
             $this->debug->omni_error_log('Get projects error code: ' . $response->get_error_message());
             return false;
         } else {
@@ -72,7 +71,7 @@ class api
                 $body = wp_remote_retrieve_body($response);
                 return json_decode($body);
             } else {
-                return false;
+                return [];
             }
         }
     }
