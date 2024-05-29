@@ -1,6 +1,6 @@
 <?php
 
-namespace Procoders\Omni\Public;
+namespace Procoders\Omni\Front;
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 
 use Procoders\Omni\ClassLoader as Loader;
 use Procoders\Omni\Includes\api as Api;
-use Procoders\Omni\Public\ClassAssets as PublicAssets;
+use Procoders\Omni\Front\ClassAssets as PublicAssets;
 
 class ClassPublic
 {

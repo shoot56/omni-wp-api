@@ -68,6 +68,10 @@ class ClassAdmin
             $this->handle_send_project_name();
         }
 
+        if (isset($_POST['existing_project'])) {
+            $this->handle_select_project();
+        }
+
         if (isset($_POST['delete_project'])) {
             $this->handle_delete_project();
         }
@@ -89,7 +93,8 @@ class ClassAdmin
     {
         $setting = str_replace('-api', '', ENV_URL) . '/projects/' . get_option('_omni_project_id');
         return array(
-            "selected_post_types" => get_option('_omni_selected_post_types', array()),
+            'selected_post_types' => get_option('_omni_selected_post_types', array()),
+            'projects_list' => $this->get_projects_list(),
             'api_key_status' => get_option('_omni_api_key_status'),
             'omni_api_key' => get_option('_omni_api_key'),
             'project_name' => get_option('_omni_project_name'),
@@ -246,9 +251,11 @@ class ClassAdmin
                     $title_columns = $fields['advanced-title-columns'] ?? array();
                     $metadata_columns = $fields['advanced-metadata-columns'] ?? array();
                     $filtered_fields = array();
-                    foreach ($fields as $field) {
-                        if (!empty($field['status'])) {
-                            $filtered_fields[$field['name']] = $field;
+                    if (is_array($fields)) {
+                        foreach ($fields as $field) {
+                            if (!empty($field['status'])) {
+                                $filtered_fields[$field['name']] = $field;
+                            }
                         }
                     }
                     $filtered_selected_fields[$post_type] = $filtered_fields;
@@ -277,6 +284,11 @@ class ClassAdmin
         }
     }
 
+    private function get_projects_list()
+    {
+        return $this->api->get_projects();
+    }
+
     private function handle_send_project_name(): void
     {
 
@@ -293,6 +305,17 @@ class ClassAdmin
                 ? __('Project Created successfully!')
                 : __('Failed to create project! Please try again later'),
         ];
+    }
+
+    private function handle_select_project()
+    {
+        if (!isset($_POST['project_name_nonce'])
+            && !wp_verify_nonce($_POST['project_name_nonce'], 'project_name_nonce_action')) {
+            die();
+        }
+        $project_id = sanitize_text_field($_POST['existing_project']);
+        update_option('_omni_project_id', $project_id);
+
     }
 
     private function handle_delete_project(): void
@@ -476,8 +499,7 @@ class ClassAdmin
     {
         $project_id = get_option('_omni_project_id');
         $data = $this->api->get_resources($project_id);
-
-        if (!$data) {
+        if (!$data && !is_array($data)) {
             $this->debug->omni_error_log('Reindex error code: ' . $data);
             return false;
         } else {
@@ -559,6 +581,19 @@ class ClassAdmin
         $pointer = sanitize_text_field($_POST['pointer']);
         $result = $this->sync_data_pointer($pointer);
         wp_send_json_success(array('pointer' => $result['pointer'], 'count' => $result['count']));
+    }
+
+    public function create_project_action(): void
+    {
+        check_ajax_referer('project_create_nonce_action', 'nonce');
+        $project_name = sanitize_text_field($_POST['projectName']);
+        $project_created = $this->api->create_project($project_name);
+
+        if($project_created) {
+            wp_send_json_success();
+        } else {
+            wp_send_json_error();
+        }
     }
 
     /**

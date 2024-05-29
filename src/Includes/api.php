@@ -45,6 +45,38 @@ class api
         }
     }
 
+    public function get_projects(): array
+    {
+        $url = ENV_URL . '/rest/v1/projects/';
+        $omni_api_key = get_option('_omni_api_key');
+
+        $args = array(
+            'headers' => array(
+                'Authorization' => 'Bearer ' . $omni_api_key,
+            ),
+            'method' => 'GET',
+            'timeout' => '10000',
+        );
+        if ($omni_api_key) {
+            $response = wp_remote_request($url, $args);
+        } else {
+            return [];
+        }
+        if (is_wp_error($response)) {
+
+            $this->debug->omni_error_log('Get projects error code: ' . $response->get_error_message());
+            return false;
+        } else {
+            $response_code = wp_remote_retrieve_response_code($response);
+            if ($response_code === 200) {
+                $body = wp_remote_retrieve_body($response);
+                return json_decode($body);
+            } else {
+                return false;
+            }
+        }
+    }
+
     /**
      * Creates a project in the Omni API with the given project name.
      *
@@ -91,7 +123,7 @@ class api
      * @param string $query The search query.
      * @return bool|array Returns an array of search results if successful, false otherwise.
      */
-    public function make_search_req(string $query): bool|array
+    public function make_search_req(string $query)
     {
         $omni_api_key = get_option('_omni_api_key');
         $project_id = get_option('_omni_project_id');
@@ -133,7 +165,7 @@ class api
      * @return bool|array Returns `false` if there is an error in the request or decoding the response,
      *                   otherwise returns the decoded JSON response as an array.
      */
-    public function make_answer_req(string $query): bool|array
+    public function make_answer_req(string $query)
     {
         $omni_api_key = get_option('_omni_api_key');
         $project_id = get_option('_omni_project_id');
@@ -186,15 +218,15 @@ class api
             'method' => 'DELETE',
             'timeout' => '10000',
         );
+
         $response = wp_remote_request($url, $args);
 
 
         if (is_wp_error($response)) {
-
             return false;
         } else {
             $response_code = wp_remote_retrieve_response_code($response);
-            if ($response_code === 200) {
+          //  if ($response_code === 200) {
                 update_option('_omni_api_key', '');
                 update_option('_omni_project_id', '');
                 update_option('_omni_project_name', '');
@@ -205,9 +237,9 @@ class api
                 update_option('_omni_api_key_status', false);
 
                 return true;
-            } else {
-                return false;
-            }
+//            } else {
+//                return false;
+//            }
         }
     }
 
@@ -219,7 +251,7 @@ class api
      * @return bool|array Returns `false` if there is an error in the request or decoding the response,
      *                   otherwise returns the decoded JSON response as an array.
      */
-    public function get_resources(string $project_id): bool|array
+    public function get_resources(string $project_id)
     {
         $url = ENV_URL . '/rest/v1/projects/' . $project_id . '/resources/urls/';
         $omni_api_key = get_option('_omni_api_key');
@@ -247,7 +279,7 @@ class api
         }
     }
 
-    public function del_resources(string $data_url, string $project_id): bool|array
+    public function del_resources(string $data_url, string $project_id)
     {
         $omni_api_key = get_option('_omni_api_key');
         $new_url = ENV_URL . '/rest/v1/projects/' . $project_id . '/resources/urls/';

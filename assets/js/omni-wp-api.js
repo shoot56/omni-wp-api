@@ -67,6 +67,85 @@ checkboxes.forEach(function (checkbox) {
 });
 // add new field
 document.addEventListener('DOMContentLoaded', function () {
+
+    const dropdown = document.querySelector("#existing_project");
+    const settingsLink = document.querySelector('.btn-omni--primary[href]');
+    const selectButton = document.querySelector('button[name="select_project"]');
+    //settingsLink.style.display = "none";
+    dropdown.addEventListener('change', () => {
+        const selectedOption = dropdown.options[dropdown.selectedIndex];
+        if (selectedOption.hasAttribute('selected')) {
+            settingsLink.style.display = 'inline-flex';
+            selectButton.style.display = 'none';
+        } else {
+            settingsLink.style.display = 'none';
+            selectButton.style.display = 'inline-flex';
+        }
+    });
+
+    const modal = document.getElementById('omni_modal');
+    const openModalButton = document.getElementById('openModal');
+    const submitProjectButton = document.getElementById('submitProject');
+    const projectNameInput = document.getElementById('projectName');
+    const closeModalButton = document.querySelector('.omni-modal-close');
+
+    openModalButton.addEventListener('click', function (e) {
+        e.preventDefault();
+        openModal();
+    });
+    submitProjectButton.addEventListener('click', submitProject);
+    closeModalButton.addEventListener('click', closeModal);
+    window.addEventListener('click', closeIfClickedOutside);
+
+    function openModal() {
+        modal.style.display = 'block';
+    }
+
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+
+    function submitProject() {
+        const projectName = projectNameInput.value;
+        if (projectName.length > 0) {
+            createProject(projectName);
+            projectNameInput.value = '';
+            closeModal();
+        }
+    }
+
+    function closeIfClickedOutside(event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    function createProject(projectName) {
+        projectName = projectName.trim(); // Remove unnecessary white spaces
+        if (projectName === '') {
+            alert('Project name should not be empty!');
+            return;
+        }
+
+        const params = new URLSearchParams();
+        const nonce = document.getElementById('project_create_nonce').value;
+
+        params.append('action', 'create_project_action');
+        params.append('projectName', projectName);
+        params.append('nonce', nonce);
+
+        fetch(ajaxurl, {
+            method: 'POST',
+            body: params
+        })
+            .then(response => response.json())
+            .then(data =>  location.reload())
+            .catch((error) => {
+                console.error('Error:', error);
+
+            });
+    }
+
     document.querySelectorAll('.add-field').forEach(button => {
         button.addEventListener('click', function () {
             var tableName = this.getAttribute('data-post-type');
@@ -352,3 +431,4 @@ tdElements.forEach((td) => {
         td.appendChild(collapsible);
     }
 });
+

@@ -4,7 +4,7 @@
  * Description: Customizable REST API endpoints with API Key authentication.
  * Version: 1.1.8
  * Author: Procoders
- * Requires PHP: 8.0
+ * Requires PHP: 7.3
  * Text Domain: omni-wp-api
  * Domain Path: /languages
  * GitHub Plugin URI: shoot56/omni-wp-api
@@ -32,13 +32,13 @@ define('OMNI_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PLUGIN_VER', '1.0');
 
 use Procoders\Omni\Admin\{ClassAdmin as AdminInit, ClassAssets as AdminAssets, ClassNav as AdminNav};
-use Procoders\Omni\Public\{ClassAssets as PublicAssets, ClassPublic as PublicInit};
+use Procoders\Omni\Front\{ClassPublic as PublicInit};
 
 class Omni
 {
-    private static ?omni $instance = null;
+    private static $instance = null;
 
-    public static function get_instance(): Omni
+    public static function get_instance()
     {
         if (null === self::$instance) {
             self::$instance = new self();
@@ -74,6 +74,8 @@ class Omni
         add_action('wp_ajax_nopriv_omni_handle_autocomplete', array($public_init, 'omni_search_handle_autocomplete'));
         add_action('wp_ajax_omni_handle_autocomplete', array($public_init, 'omni_search_handle_autocomplete'));
 
+        // Register ajax cals for create project.
+        add_action('wp_ajax_create_project_action', array($admin_init, 'create_project_action'));
 
         add_action('admin_init', array($admin_init, 'add_omni_columns_to_post_types'));
         add_action('admin_init', array($admin_init, 'add_quick_and_bulk_edit_to_post_types'));

@@ -5,7 +5,7 @@
  * @package Omni
  */
 
-namespace Procoders\Omni\Public;
+namespace Procoders\Omni\Front;
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.

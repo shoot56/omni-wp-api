@@ -80,8 +80,8 @@
 .omni-config .inputs-wrap {
 	display:-ms-grid;
 	display:grid;
-	-ms-grid-columns:1fr 100px;
-	grid-template-columns:1fr 100px;
+	-ms-grid-columns:1fr 100px 30px;
+	grid-template-columns:1fr 100px 30px;
 	grid-gap: 10px;
 	align-items: center;
 }
@@ -438,4 +438,54 @@ div.dt-container select.dt-input {
 #remaining_time {
 	text-align: right;
 	float: right;
+}
+/* Modal */
+.omni-form-modal {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.omni-project-modal-content {
+	background-color: #fefefe;
+	margin: 15% auto;
+	padding: 30px;
+	border: 1px solid #888;
+	width: 50%;
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+	animation-name: animatetop;
+	animation-duration: 0.4s;
+	text-align: center;
+
+	display: grid;
+	-ms-grid-columns: 1fr 100px;
+	grid-template-columns: 1fr 100px;
+	grid-gap: 10px;
+	align-items: center;
+	position: relative;
+}
+
+/* Close Button */
+.omni-modal-close {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+	position: absolute;
+	right:3px;
+	top:3px;
+}
+
+.omni-modal-close:hover,
+.omni-modal-close:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
 }
