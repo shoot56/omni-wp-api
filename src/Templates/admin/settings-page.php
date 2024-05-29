@@ -93,7 +93,7 @@ $logs = $data->form['search_log'];
                                                 type="submit"
                                                 name="select_project"
                                                 class="btn-omni btn-omni--primary"><span
-                                                    class="dashicons dashicons-external"></span><?php esc_html_e('Select', 'omni-wp-api') ?>
+                                                    class="dashicons dashicons-yes"></span><?php esc_html_e('Select', 'omni-wp-api') ?>
                                         </button>
                                         <button id="openModal" class="btn-omni btn-omni--primary"><span
                                                     class="dashicons dashicons-plus-alt"></span></button>
@@ -248,7 +248,8 @@ $logs = $data->form['search_log'];
                         $post_types = get_post_types($args, $output, $operator);
                         unset($post_types['attachment']);
                         $selected_fields = get_option('_omni_selected_fields_option');
-
+                        unset($selected_post_types['ID']);
+                        unset($selected_post_types['filter']);
                         if ($post_types) {
                             ?>
                             <ul class="content-types">
@@ -262,6 +263,7 @@ $logs = $data->form['search_log'];
                                         <?php
                                         $post_count = wp_count_posts($post_type->name);
                                         $label_with_count = $post_type->label . ' (' . $post_count->publish . ')';
+
                                         if (is_array($selected_post_types)) {
                                             $checked = in_array($post_type->name, $selected_post_types) ? 'checked' : '';
                                         } else {
